@@ -2,6 +2,7 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
+// #include <EEPROM> //used for writing to flash memory, to maintain certain information
 
 #define LED_PIN 32
 #define SERVICE_UUID           "7A0247E7-8E88-409B-A959-AB5092DDB03E"
@@ -36,7 +37,9 @@ void setup() {
     // Create a BLE Characteristic
     pCharacteristic = pService->createCharacteristic(
                         CHARACTERISTIC_UUID,
-                        BLECharacteristic::PROPERTY_NOTIFY
+                        BLECharacteristic::PROPERTY_NOTIFY |
+                        BLECharacteristic::PROPERTY_READ |
+                        BLECharacteristic::PROPERTY_WRITE
                       );                   
 
     // Create a BLE Descriptor
@@ -62,10 +65,18 @@ void setup() {
 
 void loop() {
     if (deviceConnected) {
-        // pCharacteristic->setValue((uint8_t*)1, 4); // send data
+        // pCharacteristic->setValue((uint8_t*)1, 4); // (uint8_t* data, size_t size) accepts other fields tho, max of 20 bytes
         // pCharacteristic->notify(); ping connected client
         digitalWrite(LED_PIN, HIGH);
-        Serial.println("LED turned on");
+        // this is where i would receive packets and do something with the received data
+        std::string rxValue = pCharacteristic->getValue();
+        Serial.print("Characteristic 2 (getValue): ");
+        Serial.println(rxValue.c_str());
+
+        String txValue = "String with random value from Server: " + String(random(1000));
+        pCharacteristic->setValue(txValue.c_str());
+        Serial.println("Characteristic 2 (setValue): " + txValue);
+        Serial.println("Device connected");
         delay(1000);
     }
 
@@ -73,8 +84,8 @@ void loop() {
     else {
         delay(500); // give the bluetooth stack the chance to get things ready
         pServer->startAdvertising(); // restart advertising
-        Serial.println("start advertising");
+        Serial.println("No device connected, advertising");
+        // send some sort of data back to the device indicating that the device is disconnected
         digitalWrite(LED_PIN, LOW);
-        Serial.println("LED turned off");
     }
 }
