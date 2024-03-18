@@ -11,8 +11,8 @@
 #define VIBRATION_PIN 32
 #define BUTTON_PIN 4 // button used to wake up the esp32
 
-#define SERVICE_UUID           "0e6fdd68-b08d-46e2-b42f-18b2a2a92689"
-#define CHARACTERISTIC_UUID    "b71cb168-2e10-446e-9eb1-c2200544cbea"
+#define SERVICE_UUID           "7A0247E7-8E88-409B-A959-AB5092DDB03E"
+#define CHARACTERISTIC_UUID    "82258BAA-DF72-47E8-99BC-B73D7ECD08A5"
 
 BLEServer* pServer = NULL;
 BLECharacteristic* pCharacteristic = NULL;
@@ -76,7 +76,7 @@ void runSession(int durationMinutes) {
             digitalWrite(LED_PIN_2, HIGH);
         }
     }
-    pCharacteristic->setValue(String(violations));
+    pCharacteristic->setValue(String(violations).c_str());
     pCharacteristic->notify();
     // Turn on LEDs to indicate completion of the session
     digitalWrite(LED_PIN_3, HIGH);
@@ -85,9 +85,9 @@ void runSession(int durationMinutes) {
 
 void buttonInterruptHandler() {
   // This function is called to wake up the ESP32 from deep sleep when the button is presseD
-  esp_deep_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);
-  esp_deep_sleep_pd_config(ESP_PD_DOMAIN_RTC_FAST_MEM, ESP_PD_OPTION_ON);
-  esp_deep_sleep_pd_config(ESP_PD_DOMAIN_RTC_SLOW_MEM, ESP_PD_OPTION_ON);
+  // esp_deep_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);
+  // esp_deep_sleep_pd_config(ESP_PD_DOMAIN_RTC_FAST_MEM, ESP_PD_OPTION_ON);
+  // esp_deep_sleep_pd_config(ESP_PD_DOMAIN_RTC_SLOW_MEM, ESP_PD_OPTION_ON);
 }
 
 void processString(const String& input) {
@@ -202,12 +202,21 @@ void loop() {
     connectAttempts++;
     if (deviceConnected) {
         Serial.println("Device connected");
+        // Get the value from the characteristic
         std::string value = pCharacteristic->getValue();
-        // Serial.print("Characteristic 2 (getValue): ");
-        // Serial.println(rxValue.c_str());
-        processString(value);
+        // Print the original value
+        Serial.print("Original value: ");
+        Serial.println(value.c_str());
+        // Convert std::string to String
+        String stringValue(value.c_str());
+        // Print the converted value
+        Serial.print("Converted value: ");
+        Serial.println(stringValue);
+        // Process the value
+        processString(stringValue);
         delay(5000); // every 5 seconds, scan for update to value and process it
     }
+
 
     else {
         delay(500); // give the bluetooth stack the chance to get things ready
