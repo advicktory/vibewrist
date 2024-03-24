@@ -5,7 +5,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import HomeScreen from "./pages/home";
+import HomeScreen from "./pages/homeScreenComponents/home";
 import AccountScreen from "./pages/account";
 import BLEScreen from "./pages/bleSettings";
 
