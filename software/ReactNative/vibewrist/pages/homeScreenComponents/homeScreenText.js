@@ -1,8 +1,7 @@
 import { View, Text } from "react-native";
 
 export default function cycleReport(props) {
-  const { sLength, bLength, cAmount } = props.cycleOrder;
-  const { isMinutes } = props.isMinutes;
+  const { sLength, bLength, cAmount, isMinutes } = props.cycleOrder;
   return (
     <>
       <Text>You will be studying for:</Text>
