@@ -35,18 +35,21 @@ export default function cycleLengthSelector() {
         <SelectList
           setSelected={(val) => setStudyLengthSelected(val)}
           data={studyOptions}
+          search={false}
           placeholder="Study Length"
           save="key"
         />
         <SelectList
           setSelected={(val) => setBreakLengthSelected(val)}
           data={breakOptions}
+          search={false}
           placeholder="Break Length"
           save="key"
         />
         <SelectList
           setSelected={(val) => setCycleAmountSelected(val)}
           data={cycleOptions}
+          search={false}
           placeholder="How many Cycles?"
           save="key"
         />
