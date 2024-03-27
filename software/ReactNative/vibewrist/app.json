@@ -11,12 +11,10 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.advicktory.vibewrist"
+      "bundleIdentifier": "com.advicktory.vibewrist2"
     },
     "android": {
       "adaptiveIcon": {
