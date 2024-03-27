@@ -70,13 +70,6 @@ export default function HomeScreen({ navigation }) {
       />
 
       <Button
-        title="Go to Account"
-        onPress={() => {
-          navigation.navigate("Account");
-        }}
-      />
-
-      <Button
         title="Go to Connected BLE Settings"
         onPress={() => {
           navigation.navigate("cBle");
