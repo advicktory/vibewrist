@@ -90,7 +90,9 @@ export default function App() {
         setConnectionStatus('Error searching for devices');
         return;
       }
-      if (device.name == 'ESP32') {
+
+      setDevices((prevDevices) => [...prevDevices, device]);
+      if (device.name == 'VibeWrist') {
         console.log('In loop');
         bleManager.stopDeviceScan();
         setConnectionStatus('Connecting...');
