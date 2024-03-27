@@ -1,5 +1,9 @@
 import { View, Text } from "react-native";
 
+function calculateTotalTime(sTime, bTime, cAmount) {
+  return (sTime + bTime) * cAmount;
+}
+
 export default function cycleReport(props) {
   const { sLength, bLength, cAmount, isMinutes } = props.cycleOrder;
   return (
@@ -16,6 +20,10 @@ export default function cycleReport(props) {
 
       <Text>You have choosen to do this:</Text>
       <Text>{cAmount} times</Text>
+      <Text>
+        You will be studying for {calculateTotalTime(sLength, bLength, cAmount)}{" "}
+        {isMinutes ? "Minutes" : "Hours"}
+      </Text>
     </>
   );
 }
