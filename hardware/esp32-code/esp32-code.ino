@@ -48,109 +48,113 @@ uint64_t minutesToMicroseconds(int minutes) {
     return (uint64_t)minutes * 60 * 1000000;
 }
 
-void checkViolation() {
-    // Get the value from the characteristic
-    std::string value = pCharacteristic->getValue();
-
-    // Convert the std::string to a String
-    String stringValue(value.c_str());
-
-    // Check if the value is equal to "vibrate"
-    if (stringValue.equals("vibrate")) {
-        // Send a high signal to the VIBRATION_PIN
-        digitalWrite(VIBRATION_PIN, HIGH);
-        Serial.println("command to vibrate received");
-    }
-    else {
-        digitalWrite(VIBRATION_PIN, LOW);
-        Serial.println("not vibrating");
-    }
-}
-
-void runSession(int durationMinutes) {
-
-    pulsePattern(1);
-    // Calculate duration in milliseconds
-    unsigned long durationMillis = durationMinutes * 60 * 1000;
-    // Serial.print("Session duration in milliseconds: ");
-    // Serial.println(durationMillis);
-
-    // Calculate time intervals for turning on LEDs
-    unsigned long oneThirdTime = durationMillis / 3;
-    unsigned long twoThirdsTime = 2 * oneThirdTime;
-    // Serial.print("1/3 time interval: ");
-    // Serial.println(oneThirdTime);
-    // Serial.print("2/3 time interval: ");
-    // Serial.println(twoThirdsTime);
-
-    // Start time of the session
-    unsigned long sessionStartTime = millis();
-    // Serial.print("Session start time: ");
-    // Serial.println(sessionStartTime);
-
-    unsigned long lastProximityCheckTime;
-
-    // Loop until the session duration elapses
-    while (millis() - sessionStartTime < durationMillis) {
-        // Run detectProximity function every 5 seconds
-        unsigned long currentTime = millis();
-        if (currentTime - lastProximityCheckTime >= 5000) {
-            // Serial.println("Checking for violations at time: ");
-            // Serial.println(currentTime);
-            lastProximityCheckTime = currentTime;
-            checkViolation();
-        }
-
-        // Check if 1/3 of the session is complete
-        if (currentTime - sessionStartTime >= oneThirdTime) {
-            digitalWrite(LED_PIN_1, HIGH);
-            // Serial.println("LED_PIN_1 turned on.");
-        }
-
-        // Check if 2/3 of the session is complete
-        if (currentTime - sessionStartTime >= twoThirdsTime) {
-            // Turn on LEDs to indicate 2/3 completion
-            digitalWrite(LED_PIN_2, HIGH);
-            // Serial.println("LED_PIN_2 turned on.");
-        }
-    }
-    digitalWrite(LED_PIN_3, HIGH);
-
-    // Turn on LEDs to indicate completion of the session
-    pulsePattern(2);
-}
-
 void processString(const String& input) {
-    // Find the position of the comma in the input string
+    // Check if the input string is empty
+    if (input.length() == 0) {
+        Serial.println("Empty input string");
+        return;
+    }
+
+    // Extract the command type (first character)
+    char commandType = input.charAt(0);
+
+    // Process based on the command type
+    switch (commandType) {
+        case '1': // LED control
+            processLEDCommand(input);
+            break;
+        case '2': // Vibration control
+            processVibrationCommand(input);
+            break;
+        case '3': // Deep sleep
+            processDeepSleepCommand(input);
+            break;
+        default:
+            Serial.println("Invalid command type");
+            break;
+    }
+}
+
+void processLEDCommand(const String& input) {
+    // Extract LED number and state from the input string
+    int commaIndex1 = input.indexOf(',');
+    int commaIndex2 = input.indexOf(',', commaIndex1 + 1);
+
+    // Check if both commas are found
+    if (commaIndex1 == -1 || commaIndex2 == -1) {
+        Serial.println("Invalid LED command format");
+        return;
+    }
+
+    // Extract LED number and state
+    int ledNumber = input.substring(commaIndex1 + 1, commaIndex2).toInt();
+    int ledState = input.substring(commaIndex2 + 1).toInt();
+
+    // Perform LED control based on the extracted values
+    switch (ledNumber) {
+        case 1:
+            digitalWrite(LED_PIN_1, ledState);
+            break;
+        case 2:
+            digitalWrite(LED_PIN_2, ledState);
+            break;
+        case 3:
+            digitalWrite(LED_PIN_3, ledState);
+            break;
+        default:
+            Serial.println("Invalid LED number");
+            break;
+    }
+}
+
+void processVibrationCommand(const String& input) {
+    // Extract vibration pattern, strength, and state from the input string
+    int commaIndex1 = input.indexOf(',');
+    int commaIndex2 = input.indexOf(',', commaIndex1 + 1);
+    int commaIndex3 = input.indexOf(',', commaIndex2 + 1);
+
+    // Check if all commas are found
+    if (commaIndex1 == -1 || commaIndex2 == -1 || commaIndex3 == -1) {
+        Serial.println("Invalid vibration command format");
+        return;
+    }
+
+    // Extract vibration pattern, strength, and state
+    int vibrationPattern = input.substring(commaIndex1 + 1, commaIndex2).toInt();
+    int vibrationStrength = input.substring(commaIndex2 + 1, commaIndex3).toInt();
+    int vibrationState = input.substring(commaIndex3 + 1).toInt();
+
+    if (vibrationState == 0) {
+      digitalWrite(VIBRATION_PIN, LOW);
+      return;
+    }
+
+    // Perform vibration control based on the extracted values
+    // Call the pulsePattern function with the processed pattern integer
+    pulsePattern(vibrationPattern, vibrationStrength);
+}
+
+
+void processDeepSleepCommand(const String& input) {
+    // Extract sleep duration from the input string
     int commaIndex = input.indexOf(',');
 
-    // If the comma is found
-    if (commaIndex != -1) {
-        // Extract the substrings before and after the comma
-        String onStr = input.substring(0, commaIndex);
-        String offStr = input.substring(commaIndex + 1);
-
-        // Convert string values to integers
-        int on = onStr.toInt();
-        int off = offStr.toInt();
-        runSession(on);
-        delay(15000); // delay going to sleep for 15 seconds, so the user can see the last light is on and know the session is completed
-        digitalWrite(LED_PIN_1, LOW);
-        digitalWrite(LED_PIN_2, LOW);
-        digitalWrite(LED_PIN_3, LOW);
-        esp_sleep_enable_timer_wakeup(minutesToMicroseconds(off));
-        // Enter deep sleep mode
-        esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);
-        esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_FAST_MEM, ESP_PD_OPTION_ON);
-        esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_SLOW_MEM, ESP_PD_OPTION_ON);
-        esp_deep_sleep_start();
-
-    } else {
-        Serial.println("Invalid input format");
+    // Check if comma is found
+    if (commaIndex == -1) {
+        Serial.println("Invalid deep sleep command format");
+        return;
     }
+
+    int sleepDuration = input.substring(commaIndex + 1).toInt();
+    esp_sleep_enable_timer_wakeup(minutesToMicroseconds(sleepDuration));
+    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);
+    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_FAST_MEM, ESP_PD_OPTION_ON);
+    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_SLOW_MEM, ESP_PD_OPTION_ON);
+    esp_deep_sleep_start();
 }
 
-void pulsePattern(int pattern) {
+
+void pulsePattern(int pattern, int strength) {
     switch (pattern) {
         case 1:
             // Send a high signal for 1 second
@@ -167,13 +171,67 @@ void pulsePattern(int pattern) {
                 delay(500);
             }
             break;
-        // Add more cases for additional patterns
+        case 3:
+            // hullabaloo caneck caneck
+            digitalWrite(VIBRATION_PIN, HIGH); // hul
+            delay(100);
+            digitalWrite(VIBRATION_PIN, LOW);
+            delay(100);
+            digitalWrite(VIBRATION_PIN, HIGH); // a
+            delay(100);
+            digitalWrite(VIBRATION_PIN, LOW);
+            delay(100);
+            digitalWrite(VIBRATION_PIN, HIGH); // ba
+            delay(100);
+            digitalWrite(VIBRATION_PIN, LOW);
+            delay(100);
+            digitalWrite(VIBRATION_PIN, HIGH); // loo
+            delay(100);
+            digitalWrite(VIBRATION_PIN, LOW);
+            delay(500);
+            digitalWrite(VIBRATION_PIN, HIGH); // ca
+            delay(100);
+            digitalWrite(VIBRATION_PIN, LOW);
+            delay(100);
+            digitalWrite(VIBRATION_PIN, HIGH); // neck
+            delay(100);
+            digitalWrite(VIBRATION_PIN, LOW);
+            delay(500);
+            digitalWrite(VIBRATION_PIN, HIGH); // ca
+            delay(100);
+            digitalWrite(VIBRATION_PIN, LOW);
+            delay(100);
+            digitalWrite(VIBRATION_PIN, HIGH); // neck
+            delay(100);
+            digitalWrite(VIBRATION_PIN, LOW);
+            delay(100);
+
+            break;
+        case 4:
+            // 5 even shorter pulses
+            for (int i = 0; i < 5; i++) {
+                digitalWrite(VIBRATION_PIN, HIGH);
+                delay(200);
+                digitalWrite(VIBRATION_PIN, LOW);
+                delay(800);
+            }
+            break;
+        case 5:
+            // 3 long pulses
+            for (int i = 0; i < 3; i++) {
+                digitalWrite(VIBRATION_PIN, HIGH);
+                delay(800);
+                digitalWrite(VIBRATION_PIN, LOW);
+                delay(200);
+            }
+            break;
         default:
             // Default behavior if an invalid pattern is provided
             Serial.println("Invalid pulse pattern");
             break;
     }
 }
+
 
 
 void setup() {
@@ -184,7 +242,7 @@ void setup() {
     pinMode(LED_PIN_3, OUTPUT);
     pinMode(VIBRATION_PIN, OUTPUT);
     Serial.begin(115200);
-    BLEDevice::init("ESP32"); // Initialize BLE
+    BLEDevice::init("VibeWrist"); // Initialize BLE
     pServer = BLEDevice::createServer();
     pServer->setCallbacks(new MyServerCallbacks());
 
