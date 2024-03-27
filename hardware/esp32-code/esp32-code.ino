@@ -213,7 +213,7 @@ void pulsePattern(int pattern, int strength) {
                 digitalWrite(VIBRATION_PIN, HIGH);
                 delay(200);
                 digitalWrite(VIBRATION_PIN, LOW);
-                delay(800);
+                delay(200);
             }
             break;
         case 5:
@@ -225,6 +225,32 @@ void pulsePattern(int pattern, int strength) {
                 delay(200);
             }
             break;
+        case 6: 
+            // case 6 used for violation indication (when phone is too close)
+            switch(strength) {
+                case 1:
+                    // buzz for 25% of the time
+                    digitalWrite(VIBRATION_PIN, HIGH);
+                    delay(100);
+                    digitalWrite(VIBRATION_PIN, LOW);
+                    delay(300);
+                case 2:
+                    // buzz for 50% of the time
+                    digitalWrite(VIBRATION_PIN, HIGH);
+                    delay(200);
+                    digitalWrite(VIBRATION_PIN, LOW);
+                    delay(200);
+                case 3:
+                    // buzz for 75% of the time
+                    digitalWrite(VIBRATION_PIN, HIGH);
+                    delay(300);
+                    digitalWrite(VIBRATION_PIN, LOW);
+                    delay(100);
+                case 4:
+                    // buzz for 100% of the time
+                    digitalWrite(VIBRATION_PIN, HIGH);
+                    delay(400);
+            }
         default:
             // Default behavior if an invalid pattern is provided
             Serial.println("Invalid pulse pattern");
@@ -301,9 +327,7 @@ void loop() {
         // Serial.println(stringValue);
         // Process the value
         processString(stringValue);
-        delay(5000); // every 5 seconds, scan for update to value and process it
     }
-
 
     else {
         delay(500); // give the bluetooth stack the chance to get things ready
