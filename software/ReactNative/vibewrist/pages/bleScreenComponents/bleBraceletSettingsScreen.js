@@ -7,6 +7,8 @@ export default function BleDeviceSettingsScreen() {
   const { buzzRhythmDropdown, buzzRhythmResponce } = buzzRhythmSelection();
   const { buzzStrengthDropdown, buzzStrengthResponce } =
     buzzFrequencySelection();
+  const { buzzSensitivityDropdown, buzzSensitivityRespocnce } =
+    buzzSensitivitySelection();
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -14,6 +16,7 @@ export default function BleDeviceSettingsScreen() {
       <Text>Your device</Text>
       <Text>"device Name here"</Text>
       <Text>Distance: </Text>
+      {buzzSensitivityDropdown}
       <Text>Buzz Settings:</Text>
       {buzzRhythmDropdown}
       {buzzStrengthDropdown}
@@ -25,6 +28,28 @@ export default function BleDeviceSettingsScreen() {
       />
     </View>
   );
+}
+
+function buzzSensitivitySelection() {
+  const [buzzSensitivity, setBuzzSensitivity] = useState([]);
+  const buzzSensitivityOptions = [{ key: 1, value: "Low" }];
+
+  return {
+    buzzSensitivityDropdown: (
+      <>
+        <SelectList
+          setSelected={(val) => {
+            setBuzzSensitivity(val);
+          }}
+          data={buzzSensitivityOptions}
+          search={false}
+          placeholder="When do you want your bracelet to buzz?"
+          save="key"
+        />
+      </>
+    ),
+    buzzSensitivityResponce: buzzSensitivity,
+  };
 }
 
 function buzzRhythmSelection() {
