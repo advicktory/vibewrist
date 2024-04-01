@@ -1,5 +1,7 @@
 import { useState } from "react";
 // import { View, Text, Button } from "react-native";
+import { View, Text, Button, Image, TouchableOpacity, StyleSheet } from "react-native";
+
 import { SelectList } from "react-native-dropdown-select-list";
 
 export default function cycleLengthSelector() {
@@ -32,27 +34,49 @@ export default function cycleLengthSelector() {
   return {
     cycleOptions: (
       <>
-        <SelectList
-          setSelected={(val) => setStudyLengthSelected(val)}
-          data={studyOptions}
-          search={false}
-          placeholder="Study Length"
-          save="key"
-        />
-        <SelectList
-          setSelected={(val) => setBreakLengthSelected(val)}
-          data={breakOptions}
-          search={false}
-          placeholder="Break Length"
-          save="key"
-        />
+      <View style={styles.container}>
+        <View style={styles.topPortion}>
+          <SelectList
+            setSelected={(val) => setStudyLengthSelected(val)}
+            data={studyOptions}
+            search={false}
+            placeholder="Study Length"
+            save="key"
+            inputStyles={styles.inputContainer}
+            dropdownTextStyles={styles.dropdownContainer}
+            boxStyles={styles.boxContainer}
+            dropdownStyles={styles.boxContainer}
+
+
+          />
+          <SelectList
+            setSelected={(val) => setBreakLengthSelected(val)}
+            data={breakOptions}
+            search={false}
+            placeholder="Break Length"
+            save="key"
+            inputStyles={styles.inputContainer}
+            dropdownTextStyles={styles.dropdownContainer}
+            boxStyles={styles.boxContainer}
+            dropdownStyles={styles.boxContainer}
+
+
+          />
+        </View>
+
         <SelectList
           setSelected={(val) => setCycleAmountSelected(val)}
           data={cycleOptions}
           search={false}
           placeholder="How many Cycles?"
           save="key"
+          inputStyles={styles.inputContainer}
+          dropdownTextStyles={styles.dropdownContainer}
+          boxStyles={styles.boxContainer}
+          dropdownStyles={styles.boxContainer}
+
         />
+      </View>
       </>
     ),
     cycleOptionResponces: [
@@ -62,3 +86,32 @@ export default function cycleLengthSelector() {
     ],
   };
 }
+const styles = StyleSheet.create({
+  container: {
+    // flex: 1,
+    // alignItems: "center",
+    // justifyContent: "center",
+    // position: "relative",
+    backgroundColor: '#0066ff', // Change the background color here
+    borderRadius: 20, // Adjust the border radius to make it more rounded
+    padding: 10, // Add padding to the container
+    margin: 20, // Add margin to the container
+  },
+
+  topPortion:{
+    // flex:1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    // marginTop: 10,
+  },
+  inputContainer:{
+    color:"white"
+  },
+  dropdownContainer:{
+    color:"white"
+  },
+  boxContainer:{
+    borderColor: 'white', // Set background color to white
+  }
+
+});

@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Button, Image } from "react-native";
+import { View, Text, Button, Image, TouchableOpacity, StyleSheet } from "react-native";
+
 import cycleLengthSelector from "./homeScreenCycleChooser.js";
 import CycleReport from "./homeScreenText.js";
+import StartButton from "./homeScreenStartButton"
+import ProgressBar from "./progressBar"
 // import _BackgroundTimer from "react-native-background-timer";
 
 // function onStartPress(isTimerOn) {
@@ -52,36 +55,55 @@ export default function HomeScreen({ navigation }) {
     cAmount: cycleOptionResponces[2],
     isMinutes: true,
   }; // Information gathered from Cycle Selector to send to Cycle Report
+  
+  const handleImagePress = () => {
+    // Your logic for handling image button press
+    console.log("Image button pressed");
+  };
+
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Image
-        source={require("./../../assets/blue_bracelet.png")}
-        style={{ width: 100, height: 100 }}
-      />
-      {cycleOptions}
-      <CycleReport cycleOrder={cycleLengths} />
-      <Button
-        title="Start?"
-        onPress={() => {
-          setTimerOn((timerOn) => !timerOn);
-          console.log(timerOn);
-          onStartPress(timerOn);
-        }}
-      />
-
-      <Button
-        title="Go to Connected BLE Settings"
-        // onPress={() => {
-        //   navigation.navigate("cBle");
-        // }}
-      />
-
-      <Button
-        title="Go to Disconnected BLE Settings"
-        // onPress={() => {
-        // navigation.navigate("dBle");
-        // }}
-      />
+    <View style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={handleImagePress} style={styles.imageButton}>
+          <Image
+            source={require("./../../assets/blue_bracelet.png")}
+            style={styles.image}
+          />
+        </TouchableOpacity>
+        {cycleOptions}
+        <CycleReport cycleOrder={cycleLengths} />
+        <ProgressBar/>
+        <StartButton/>
+        {/* <Button
+          title="Start?"
+          onPress={() => {
+            setTimerOn((timerOn) => !timerOn);
+            console.log(timerOn);
+            // Commenting out for now as onStartPress is commented out
+            // onStartPress(timerOn);
+          }}
+        /> */}
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    backgroundColor: "black"
+  },
+  imageButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+  },
+  image: {
+    width:50,
+    height: 50,
+  },
+});
+
