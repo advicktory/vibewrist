@@ -2,19 +2,32 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Button, Image } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 import braceletPng from "../../assets/blue_bracelet.png";
+import User from "../User";
 
-export default function BleDeviceSettingsScreen() {
+export default function BleDeviceSettingsScreen({ navigation, route }) {
+  const { buzzSensitivityDropdown, buzzSensitivityResponce } =
+    buzzSensitivitySelection();
   const { buzzRhythmDropdown, buzzRhythmResponce } = buzzRhythmSelection();
   const { buzzStrengthDropdown, buzzStrengthResponce } =
     buzzFrequencySelection();
-  const { buzzSensitivityDropdown, buzzSensitivityRespocnce } =
-    buzzSensitivitySelection();
 
+  const user = route.params.userObj;
+
+  useEffect(() => {
+    user.setBuzzRange(buzzSensitivityResponce);
+    user.setBuzzDuration(buzzRhythmResponce);
+    user.setBuzzFrequency(buzzStrengthResponce);
+    // console.log(
+    //   `Range: ${user.getBuzzRange()} Duration: ${user.getBuzzDuration()} Frequency: ${user.getBuzzFrequency()} `,
+    // );
+  }, [buzzRhythmResponce, buzzStrengthResponce, buzzSensitivityResponce]); // Saves the responces to the user obj. No need to save. Just need to save the obj on app close.
+
+  // console.log(route);
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Image source={braceletPng} style={{ width: 100, height: 100 }} />
       <Text>Your device</Text>
-      <Text>"device Name here"</Text>
+      <Text>{user.getDeviceName()}</Text>
       <Text>Distance: </Text>
       {buzzSensitivityDropdown}
       <Text>Buzz Settings:</Text>
@@ -26,13 +39,22 @@ export default function BleDeviceSettingsScreen() {
           null;
         }}
       />
+      <Button
+        title="Go back to HomeScreen"
+        onPress={() => {
+          navigation.navigate("Home", { userObj: user });
+        }}
+      />
     </View>
   );
 }
 
 function buzzSensitivitySelection() {
-  const [buzzSensitivity, setBuzzSensitivity] = useState([]);
-  const buzzSensitivityOptions = [{ key: 1, value: "Low" }];
+  const [buzzSensitivity, setBuzzSensitivity] = useState(0);
+  const buzzSensitivityOptions = [
+    { key: 1, value: "Low" },
+    { key: 2, value: "Something" },
+  ];
 
   return {
     buzzSensitivityDropdown: (
@@ -53,7 +75,7 @@ function buzzSensitivitySelection() {
 }
 
 function buzzRhythmSelection() {
-  const [buzzRhythm, setBuzzRhythm] = useState([]);
+  const [buzzRhythm, setBuzzRhythm] = useState(0);
   const buzzRhythmOptions = [
     { key: 1, value: "Short Quick Buzz" },
     { key: 2, value: "Three Quick Buzzes" },
@@ -81,7 +103,7 @@ function buzzRhythmSelection() {
 }
 
 function buzzFrequencySelection() {
-  const [buzzStrength, setBuzzStrength] = useState([]);
+  const [buzzStrength, setBuzzStrength] = useState(0);
   const buzzStrengthOptions = [
     { key: 1, value: "Low" },
     { key: 2, value: "Medium Low" },
