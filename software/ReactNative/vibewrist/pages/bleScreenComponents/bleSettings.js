@@ -8,7 +8,11 @@ const bleManager = new BleManager();
 const SERVICE_UUID = '7a0247e7-8e88-409b-a959-ab5092ddb03e';
 const CHAR_UUID = '82258baa-df72-47e8-99bc-b73d7ecd08a5';
 
-export default function App() {
+export default function useConnectToDevice(
+  distanceOpSel,
+  colorOpSel,
+  strengthOpSel
+) {
   const [deviceID, setDeviceID] = useState(null);
   const [devices, setDevices] = useState([]);
   const [connectionStatus, setConnectionStatus] = useState('Searching...');
@@ -18,6 +22,10 @@ export default function App() {
   const [distance, setDistance] = useState(null);
 
   const connectToDevice = async (device) => {
+    console.log('distance option selected: ', distanceOpSel);
+    console.log('color option selected: ', colorOpSel);
+    console.log('strength option selected: ', strengthOpSel);
+
     try {
       const connectedDevice = await device.connect();
       setDeviceID(connectedDevice.id);
@@ -25,8 +33,6 @@ export default function App() {
       deviceRef.current = connectedDevice;
 
       await connectedDevice.discoverAllServicesAndCharacteristics();
-
-      //startDistanceMeasurement(connectedDevice);
 
       const services = await connectedDevice.services();
 
@@ -47,8 +53,7 @@ export default function App() {
       setData(dataCharacteristic);
       const charValue = await dataCharacteristic.read();
       const value = atob(charValue.value);
-      const base64data = btoa('vibrate');
-      await dataCharacteristic.writeWithResponse(base64data);
+
       setCharacteristicValue(value);
       console.log(value);
       distanceMeasured(device);
@@ -105,8 +110,8 @@ export default function App() {
     const readRSSIInterval = setInterval(async () => {
       try {
         const rssiResponse = await device.readRSSI();
+        let distanceVal = rssiResponse.rssi;
         console.log('RSSI: ', rssiResponse.rssi);
-        let distanceVal = estimateDistanceInMeters(rssiResponse.rssi);
         setDistance(distanceVal);
       } catch (error) {
         console.error('Error reading RSSI:', error);
@@ -114,52 +119,18 @@ export default function App() {
     }, 500); // Interval set to 1 second (1000 milliseconds)
   };
 
-  const estimateDistanceInMeters = (rssiValue) => {
-    const referenceRSSI1Meter = -60; // TX power in dBm (reference value)
-    const distance1Meter = 1;
-    const logDistanceRatio = (rssiValue - referenceRSSI1Meter) / -10; // Assuming logarithmic relationship
-
-    const estimatedDistance = distance1Meter * Math.pow(10, logDistanceRatio);
-
-    return estimatedDistance;
-  };
-
-  //   setTimeout(() => {
-  //     bleManager.stopDeviceScan();
-  //     setConnectionStatus('Scan complete');
-  //   }, 100000); // stop scanning after 10 seconds
-
   useEffect(() => {
     searchForDevices();
     return () => bleManager.stopDeviceScan(); // Ensure scanning is stopped when the component unmounts
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <Text>App.js to start working on your app!</Text>
-      <Text>{connectionStatus}</Text>
-
-      <Text>Characteristic Value: {characteristicValue}</Text>
-      <Text>Distance in meters: {distance}</Text>
-
-      {/* <FlatList
-        data={devices}
-        keyExtractor={(item) => item.id}
-        renderItem={renderDevice}
-      /> */}
-      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
-
-      <StatusBar style="auto" />
-    </View>
-  );
+  return {
+    deviceID,
+    devices,
+    connectionStatus,
+    characteristicValue,
+    data,
+    distance,
+    connectToDevice, // Make sure this is defined in your hook
+  };
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
