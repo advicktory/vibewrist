@@ -34,14 +34,14 @@ void print_wakeup_reason(){
 
   wakeup_reason = esp_sleep_get_wakeup_cause();
 
-  switch(wakeup_reason){
-    case ESP_SLEEP_WAKEUP_EXT0 : Serial.println("Wakeup caused by external signal using RTC_IO"); break;
-    case ESP_SLEEP_WAKEUP_EXT1 : Serial.println("Wakeup caused by external signal using RTC_CNTL"); break;
-    case ESP_SLEEP_WAKEUP_TIMER : Serial.println("Wakeup caused by timer"); break;
-    case ESP_SLEEP_WAKEUP_TOUCHPAD : Serial.println("Wakeup caused by touchpad"); break;
-    case ESP_SLEEP_WAKEUP_ULP : Serial.println("Wakeup caused by ULP program"); break;
-    default : Serial.printf("Wakeup was not caused by deep sleep: %d\n",wakeup_reason); break;
-  }
+  // switch(wakeup_reason){
+  //   case ESP_SLEEP_WAKEUP_EXT0 : Serial.println("Wakeup caused by external signal using RTC_IO"); break;
+  //   case ESP_SLEEP_WAKEUP_EXT1 : Serial.println("Wakeup caused by external signal using RTC_CNTL"); break;
+  //   case ESP_SLEEP_WAKEUP_TIMER : Serial.println("Wakeup caused by timer"); break;
+  //   case ESP_SLEEP_WAKEUP_TOUCHPAD : Serial.println("Wakeup caused by touchpad"); break;
+  //   case ESP_SLEEP_WAKEUP_ULP : Serial.println("Wakeup caused by ULP program"); break;
+  //   default : Serial.printf("Wakeup was not caused by deep sleep: %d\n",wakeup_reason); break;
+  // }
 }
 
 uint64_t minutesToMicroseconds(int minutes) {
@@ -51,7 +51,7 @@ uint64_t minutesToMicroseconds(int minutes) {
 void processString(const String& input) {
     // Check if the input string is empty
     if (input.length() == 0) {
-        Serial.println("Empty input string");
+        // Serial.println("Empty input string");
         return;
     }
 
@@ -70,7 +70,7 @@ void processString(const String& input) {
             processDeepSleepCommand(input);
             break;
         default:
-            Serial.println("Invalid command type");
+            // Serial.println("Invalid command type");
             break;
     }
 }
@@ -82,7 +82,7 @@ void processLEDCommand(const String& input) {
 
     // Check if both commas are found
     if (commaIndex1 == -1 || commaIndex2 == -1) {
-        Serial.println("Invalid LED command format");
+        // Serial.println("Invalid LED command format");
         return;
     }
 
@@ -102,7 +102,7 @@ void processLEDCommand(const String& input) {
             digitalWrite(LED_PIN_3, ledState);
             break;
         default:
-            Serial.println("Invalid LED number");
+            // Serial.println("Invalid LED number");
             break;
     }
 }
@@ -115,7 +115,7 @@ void processVibrationCommand(const String& input) {
 
     // Check if all commas are found
     if (commaIndex1 == -1 || commaIndex2 == -1 || commaIndex3 == -1) {
-        Serial.println("Invalid vibration command format");
+        // Serial.println("Invalid vibration command format");
         return;
     }
 
@@ -141,7 +141,7 @@ void processDeepSleepCommand(const String& input) {
 
     // Check if comma is found
     if (commaIndex == -1) {
-        Serial.println("Invalid deep sleep command format");
+        // Serial.println("Invalid deep sleep command format");
         return;
     }
 
@@ -204,7 +204,8 @@ void pulsePattern(int pattern, int strength) {
             digitalWrite(VIBRATION_PIN, HIGH); // neck
             delay(100);
             digitalWrite(VIBRATION_PIN, LOW);
-            delay(1000);
+            delay(100);
+
             break;
         case 4:
             // 5 even shorter pulses
@@ -252,7 +253,7 @@ void pulsePattern(int pattern, int strength) {
             }
         default:
             // Default behavior if an invalid pattern is provided
-            Serial.println("Invalid pulse pattern");
+            // Serial.println("Invalid pulse pattern");
             break;
     }
 }
@@ -266,14 +267,20 @@ void setup() {
     pinMode(LED_PIN_2, OUTPUT);
     pinMode(LED_PIN_3, OUTPUT);
     pinMode(VIBRATION_PIN, OUTPUT);
+    digitalWrite(LED_PIN_1, HIGH);
     Serial.begin(115200);
     BLEDevice::init("VibeWrist"); // Initialize BLE
+    digitalWrite(LED_PIN_1, LOW);
+    Serial.println("reached");
     pServer = BLEDevice::createServer();
+    digitalWrite(LED_PIN_2, HIGH);
     pServer->setCallbacks(new MyServerCallbacks());
+    digitalWrite(LED_PIN_2, LOW);
 
     // Create the BLE Service
     // the service is what other devices can see and connect to
     BLEService *pService = pServer->createService(SERVICE_UUID); 
+    digitalWrite(LED_PIN_3, HIGH);
 
     // Create a BLE Characteristic
     // characteristic defines attributes about the service
@@ -284,7 +291,7 @@ void setup() {
                         BLECharacteristic::PROPERTY_READ |
                         BLECharacteristic::PROPERTY_WRITE
                       );                   
-
+    digitalWrite(LED_PIN_3, LOW);
     // Create a BLE Descriptor
     // Descriptors provide an specification about the value of the characteristic
     pDescr = new BLEDescriptor((uint16_t)0x2901);
@@ -305,13 +312,13 @@ void setup() {
     // BLEDevice::startAdvertising(); 
     // pAdvertising->start();
     pServer->startAdvertising();
-    Serial.println("Waiting a client connection to notify...");
+    // Serial.println("Waiting a client connection to notify...");
 }
 
 void loop() {
     connectAttempts++;
     if (deviceConnected) {
-      connectAttempts = 0;
+        // Serial.println("Device connected");
         // Get the value from the characteristic
         std::string value = pCharacteristic->getValue();
         // Print the original value
@@ -331,16 +338,17 @@ void loop() {
     else {
         delay(500); // give the bluetooth stack the chance to get things ready
         pServer->startAdvertising(); // restart advertising
-        Serial.print("No device connected, advertising: ");
-        Serial.println(connectAttempts);
+        // Serial.print("No device connected, advertising: ");
+        // Serial.println(connectAttempts);
         // if a device does not connect within 30 seconds, go into deep sleep mode
         if (connectAttempts >= 60) {
             esp_sleep_enable_ext0_wakeup(GPIO_NUM_27, 1);
             esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);
             esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_FAST_MEM, ESP_PD_OPTION_ON);
             esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_SLOW_MEM, ESP_PD_OPTION_ON);
-            Serial.println("deep sleep... zzz");
+            // Serial.println("deep sleep... zzz");
             esp_deep_sleep_start();
         }
     }
+
 }
