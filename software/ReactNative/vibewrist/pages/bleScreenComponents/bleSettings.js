@@ -3,32 +3,33 @@ import { StyleSheet, Text, View, FlatList, Button } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
 import { useState, useEffect, useRef } from 'react';
 import { atob, btoa } from 'react-native-quick-base64';
+import User from '../User';
+import { useUser } from '../UserContext';
 
 const bleManager = new BleManager();
 const SERVICE_UUID = '7a0247e7-8e88-409b-a959-ab5092ddb03e';
 const CHAR_UUID = '82258baa-df72-47e8-99bc-b73d7ecd08a5';
 
-export default function useConnectToDevice(
-  distanceOpSel,
-  colorOpSel,
-  strengthOpSel
-) {
+export default function useConnectToDevice() {
   const [deviceID, setDeviceID] = useState(null);
   const [devices, setDevices] = useState([]);
   const [connectionStatus, setConnectionStatus] = useState('Searching...');
   const deviceRef = useRef(null);
   const [characteristicValue, setCharacteristicValue] = useState('');
   const [data, setData] = useState(null);
-  const [distance, setDistance] = useState(null);
+  // const [distance, setDistance] = useState(null);
 
+  const user = useUser();
+
+  //console.log('User in settings: ', user);
   const connectToDevice = async (device) => {
-    console.log('distance option selected: ', distanceOpSel);
-    console.log('color option selected: ', colorOpSel);
-    console.log('strength option selected: ', strengthOpSel);
-
+    // console.log('distance option selected: ', distanceOpSel);
+    // console.log('color option selected: ', colorOpSel);
+    // console.log('strength option selected: ', strengthOpSel);
     try {
       const connectedDevice = await device.connect();
       setDeviceID(connectedDevice.id);
+      //console.log(connectedDevice.id);
       setConnectionStatus('Connected');
       deviceRef.current = connectedDevice;
 
@@ -51,12 +52,6 @@ export default function useConnectToDevice(
       }
 
       setData(dataCharacteristic);
-      const charValue = await dataCharacteristic.read();
-      const value = atob(charValue.value);
-
-      setCharacteristicValue(value);
-      console.log(value);
-      distanceMeasured(device);
     } catch (error) {
       console.error('Error in connection or data fetching:', error);
       setConnectionStatus('Error in Connection');
@@ -106,19 +101,6 @@ export default function useConnectToDevice(
     });
   };
 
-  const distanceMeasured = async (device) => {
-    const readRSSIInterval = setInterval(async () => {
-      try {
-        const rssiResponse = await device.readRSSI();
-        let distanceVal = rssiResponse.rssi;
-        console.log('RSSI: ', rssiResponse.rssi);
-        setDistance(distanceVal);
-      } catch (error) {
-        console.error('Error reading RSSI:', error);
-      }
-    }, 500); // Interval set to 1 second (1000 milliseconds)
-  };
-
   useEffect(() => {
     searchForDevices();
     return () => bleManager.stopDeviceScan(); // Ensure scanning is stopped when the component unmounts
@@ -130,7 +112,7 @@ export default function useConnectToDevice(
     connectionStatus,
     characteristicValue,
     data,
-    distance,
+    deviceRef,
     connectToDevice, // Make sure this is defined in your hook
   };
 }
