@@ -5,6 +5,7 @@ import cycleLengthSelector from "./homeScreenCycleChooser.js";
 import CycleReport from "./homeScreenText.js";
 import StartButton from "./homeScreenStartButton"
 import ProgressBar from "./progressBar"
+import SavePreset from "./savePreset"
 // import _BackgroundTimer from "react-native-background-timer";
 
 // function onStartPress(isTimerOn) {
@@ -70,9 +71,12 @@ export default function HomeScreen({ navigation }) {
             style={styles.image}
           />
         </TouchableOpacity>
-        {cycleOptions}
-        <CycleReport cycleOrder={cycleLengths} />
-        <ProgressBar/>
+        <View style={styles.cycleContainer}>
+          {cycleOptions}
+          <CycleReport cycleOrder={cycleLengths} />
+          {/* <SavePreset/> */}
+          <ProgressBar/>
+        </View>
         <StartButton/>
         {/* <Button
           title="Start?"
@@ -94,8 +98,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
-    backgroundColor: "black"
+    backgroundColor: "black",
   },
+  cycleContainer:{
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    bottom: 70
+  },
+
   imageButton: {
     position: "absolute",
     top: 10,

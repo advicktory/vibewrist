@@ -16,7 +16,7 @@ export default function Loader() {
   }, []);
 
   const goalTime= 5
-  const timeStudied=4
+  const timeStudied=2
   range=((timeStudied / goalTime) * 100)/1.4
   const loaderWidth = progress.interpolate({
     inputRange: [0, 1],

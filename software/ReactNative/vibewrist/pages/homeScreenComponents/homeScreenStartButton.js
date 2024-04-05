@@ -11,6 +11,9 @@ const StartButton = ({ onPress }) => {
 
 const styles = StyleSheet.create({
   button: {
+    position: "absolute",
+    left:122,
+    bottom:40,
     marginTop: 30,
     width: 150,
     height: 150,
