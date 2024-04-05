@@ -8,7 +8,7 @@ export default function Loader() {
     Animated.loop(
       Animated.timing(progress, {
         toValue: 1,
-        duration: 3500,
+        duration: 5000,
         easing: Easing.inOut(Easing.ease),
         useNativeDriver: false,
       })
@@ -26,8 +26,8 @@ export default function Loader() {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.loader, { width: loaderWidth }]} >
-        <Text>{timeStudied} hours completed</Text>
-        {/* <Text>30%</Text> */}
+        {/* <Text>{timeStudied} hours completed</Text> */}
+        <Text>{((timeStudied / goalTime) * 100)}%</Text>
 
       </Animated.View>
     </View>

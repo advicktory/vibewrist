@@ -104,7 +104,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    bottom: 70
+    bottom: 210,
+    position: "absolute",
+    
+
   },
 
   imageButton: {

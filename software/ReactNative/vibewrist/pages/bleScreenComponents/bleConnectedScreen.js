@@ -65,7 +65,7 @@
 //       });
 //   };
 
-//   useEffect(() => {
+//   useEffect(() => {m 
 //     const subscription = bleManager.onDeviceDisconnected(
 //       deviceID,
 //       (error, device) => {

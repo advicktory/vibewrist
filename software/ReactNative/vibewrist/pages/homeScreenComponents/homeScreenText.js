@@ -49,7 +49,7 @@ export default function cycleReport(props) {
 }
 const styles = StyleSheet.create({
   container: {
-    marginBottom:50,
+    marginBottom:20,
     // justifyContent:"center",
 
   },
