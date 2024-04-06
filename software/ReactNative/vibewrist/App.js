@@ -1,26 +1,14 @@
-// In App.js in a new project
+//Imports
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-// import * as React from "react";
-// import { View } from "react-native";
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { UserProvider } from './pages/UserContext';
+// User Shit
+import { UserProvider } from "./pages/UserContext";
+import User from "./pages/User";
 
-import HomeScreen from './pages/homeScreenComponents/home';
-// import AccountScreen from "./pages/account";
-// import BleConnectedScreen from "./pages/bleScreenComponents/bleConnectedScreen";
-// import BleDisconnectedScreen from "./pages/bleScreenComponents/bleDisconnectedScreen";
-<<<<<<< HEAD
-import BleDeviceSettingsScreen from './pages/bleScreenComponents/bleBraceletSettingsScreen';
-import useConnectToDevice from './pages/bleScreenComponents/bleSettings';
-import User from './pages/User';
-//import getDistance from "./pages/bleScreenComponents/bleDistance"
-=======
-<<<<<<< HEAD
+//Screens
+import HomeScreen from "./pages/homeScreenComponents/home";
 import BleDeviceSettingsScreen from "./pages/bleScreenComponents/bleBraceletSettingsScreen";
-=======
->>>>>>> d8fd703c8e7ac8fd3113757d1955e83e246336a5
->>>>>>> main
 
 // These are meant to get the reference to the device to be accessed anywhere
 const user = new User();
