@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState } from 'react';
 // import { View, Text, Button } from "react-native";
+<<<<<<< HEAD
+import { SelectList } from 'react-native-dropdown-select-list';
+=======
 import { View, Text, Button, Image, TouchableOpacity, StyleSheet } from "react-native";
 import SavePreset from "./savePreset"
 
 
 import { SelectList } from "react-native-dropdown-select-list";
+>>>>>>> main
 
 export default function cycleLengthSelector() {
   const [studyLengthSelected, setStudyLengthSelected] = useState([]);
@@ -18,21 +22,33 @@ export default function cycleLengthSelector() {
 
 
   const studyOptions = [
+<<<<<<< HEAD
+    { key: 0, value: 'None' },
+=======
     // { key: 0, value: "None" },
+>>>>>>> main
     { key: 15, value: 15 },
     { key: 30, value: 30 },
     { key: 45, value: 45 },
     { key: 60, value: 60 },
   ];
   const breakOptions = [
+<<<<<<< HEAD
+    { key: 0, value: 'None' },
+=======
     // { key: 0, value: "None" },
+>>>>>>> main
     { key: 15, value: 15 },
     { key: 30, value: 30 },
     { key: 45, value: 45 },
     { key: 60, value: 60 },
   ];
   const cycleOptions = [
+<<<<<<< HEAD
+    { key: 0, value: 'None' },
+=======
     // { key: 0, value: "None" },
+>>>>>>> main
     { key: 1, value: 1 },
     { key: 2, value: 2 },
     { key: 3, value: 3 },

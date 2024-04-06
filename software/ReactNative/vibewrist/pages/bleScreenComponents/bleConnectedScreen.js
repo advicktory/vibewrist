@@ -65,7 +65,7 @@ export default function App({ navigation }) {
       });
   };
 
-  useEffect(() => {m 
+  useEffect(() => {
     const subscription = bleManager.onDeviceDisconnected(
       deviceID,
       (error, device) => {
