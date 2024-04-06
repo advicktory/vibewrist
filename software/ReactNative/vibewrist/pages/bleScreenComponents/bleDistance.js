@@ -2,9 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { atob, btoa } from 'react-native-quick-base64';
 import User from '../User';
 import { recordViolation } from './bleViolation';
+import { useUser } from '../UserContext';
 
-export default function getDistance({ device, user }) {
+export default function getDistance({ device, dataCharacteristic }) {
   const [distance, setDistance] = useState(null);
+  const [start, setStartState] = useState(null);
+  const user = useUser();
 
   useEffect(() => {
     // Assuming 'device' is available in this context, otherwise, it should be passed as a dependency
@@ -36,13 +39,38 @@ export default function getDistance({ device, user }) {
     };
   }, [device, distance]); // Dependencies array, re-run effect if 'device' or 'distance' changes
 
-  const sendDistanceParams = () => {
-    if (user.getBuzzRange == 1) {
-      recordViolation(true, distance, -47, -60); // true is going have to be the start parameter
-    } else if ((user.getBuzzRange = 2)) {
-      recordViolation(true, distance, -31, -46); // true is going have to be the start parameter
-    } else if ((user.getBuzzRange = 3)) {
-      recordViolation(true, distance, -15, -30); // true is going have to be the start parameter
-    }
-  };
+  useEffect(() => {
+    const onViolation = (hasViolation) => {
+      if (hasViolation) {
+        // Send command to ESP device to buzz
+        try {
+            const str = `2,${user.getBuzzDuration()},${user.getBuzzFrequency()},1`
+            const vibrationToSend = btoa(str)
+            dataCharacteristic.writeWithResponse(vibrationToSend);
+            console.log("Violation detected, sending command to ESP to buzz");
+        // Code to send command to ESP
+        } catch (e) {
+            console.log(e);
+        }
+      } else {
+        dataCharacteristic.writeWithResponse(`2,${user.getBuzzDuration()},${user.getBuzzFrequency()},0`);
+      }
+    };
+  
+    const sendDistanceParams = (start) => {
+      if (user.getBuzzRange() == 1) {
+        recordViolation(start, distance, -47, -60, onViolation);
+      } else if (user.getBuzzRange() == 2) {
+        recordViolation(start, distance, -31, -46, onViolation);
+      } else if (user.getBuzzRange() == 3) {
+        recordViolation(start, distance, -15, -30, onViolation);
+      }
+    };
+  
+    // Call sendDistanceParams based on the value of `start`
+    sendDistanceParams(start);
+  }, [start, distance, user]); // Ensure `distance` and `user` are also in the dependency array
+  
+
+
 }

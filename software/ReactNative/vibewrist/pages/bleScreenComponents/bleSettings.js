@@ -23,13 +23,9 @@ export default function useConnectToDevice() {
 
   //console.log('User in settings: ', user);
   const connectToDevice = async (device) => {
-    // console.log('distance option selected: ', distanceOpSel);
-    // console.log('color option selected: ', colorOpSel);
-    // console.log('strength option selected: ', strengthOpSel);
     try {
       const connectedDevice = await device.connect();
       setDeviceID(connectedDevice.id);
-      //console.log(connectedDevice.id);
       setConnectionStatus('Connected');
       deviceRef.current = connectedDevice;
 
@@ -67,7 +63,6 @@ export default function useConnectToDevice() {
         }
         setConnectionStatus('Disconnected');
         console.log('Disconnected device');
-        //setStepCount(0); // Reset the step count
         if (deviceRef.current) {
           setConnectionStatus('Reconnecting...');
           connectToDevice(deviceRef.current)
