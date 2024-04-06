@@ -1,46 +1,43 @@
-function manageStudyTime(device, studyValue) {
+function manageStudyTime(dataCharacteristic, studyValue, breakValue) {
   const oneThirdStudyTime = studyValue / 3;
 
   // After 1/3 of the study time
   setTimeout(() => {
     console.log('(1,1,1)'); // replace with sending the data over the device connection
-    //const base64data = btoa('1,1,1');
-    //await dataCharacteristic.writeWithResponse(base64data);
+    const led1 = btoa('1,1,1');
+    dataCharacteristic.writeWithResponse(led1);
   }, oneThirdStudyTime);
 
   // After 2/3 of the study time
   setTimeout(() => {
     console.log('(1,2,1)');
-    //const base64data = btoa('1,2,1');
-    //await dataCharacteristic.writeWithResponse
+    const led2 = btoa('1,2,1');
+    dataCharacteristic.writeWithResponse(led2);
   }, oneThirdStudyTime * 2);
 
   // After the full study time
   setTimeout(() => {
     console.log('(1,3,1)');
-    //const base64data = btoa('1,3,1');
-    //await dataCharacteristic.writeWithResponse
+    const led3 = btoa('1,3,1');
+    dataCharacteristic.writeWithResponse(led3);
     // Log "Done" five times at one-second intervals
     for (let i = 0; i < 5; i++) {
       setTimeout(() => {
         // FLASHES ALL LIGHTS FIVE TIMES
-        //const base64data = btoa('1,1,1');
-        //await dataCharacteristic.writeWithResponse
-        //const base64data = btoa('1,2,1');
-        //await dataCharacteristic.writeWithResponse
-        //const base64data = btoa('1,3,1');
-        //await dataCharacteristic.writeWithResponse
+        dataCharacteristic.writeWithResponse(btoa('1,1,1'));
+        dataCharacteristic.writeWithResponse(btoa('1,2,1'));
+        dataCharacteristic.writeWithResponse(btoa('1,3,1'));
         console.log('Done');
       }, i * 1000); // 1000 milliseconds = 1 second
     }
     // Will turn off each of the leds
-    //const base64data = btoa('1,1,0');
-    //await dataCharacteristic.writeWithResponse
-    //const base64data = btoa('1,2,0');
-    //await dataCharacteristic.writeWithResponse
-    //const base64data = btoa('1,3,0');
-    //await dataCharacteristic.writeWithResponse
+    dataCharacteristic.writeWithResponse(btoa('1,1,0'));
+    dataCharacteristic.writeWithResponse(btoa('1,2,0'));
+    dataCharacteristic.writeWithResponse(btoa('1,3,0'));
   }, studyValue);
+
+  // Tell esp to fall shleep
+  dataCharacteristic.writeWithResponse(btoa(`3,${breakValue}`));
 }
 
-export default manageStudyAndBreakTimes;
+export default manageStudyTime;
