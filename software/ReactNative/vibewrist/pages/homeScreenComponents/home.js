@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,17 +6,17 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-} from "react-native";
-import _BackgroundTimer from "react-native-background-timer";
-import { useUser } from "../UserContext";
-import useConnectToDevice from "../bleScreenComponents/bleSettings.js";
-import manageStudyTime from "../bleScreenComponents/bleLEDfunct.js";
-import getDistance from "../bleScreenComponents/bleDistance.js";
-import cycleLengthSelector from "./homeScreenCycleChooser.js";
-import CycleReport from "./homeScreenText.js";
-import StartButton from "./homeScreenStartButton";
-import ProgressBar from "./progressBar";
-import SavePreset from "./savePreset";
+} from 'react-native';
+import _BackgroundTimer from 'react-native-background-timer';
+import { useUser } from '../UserContext';
+import useConnectToDevice from '../bleScreenComponents/bleSettings.js';
+import manageStudyTime from '../bleScreenComponents/bleLEDfunct.js';
+import getDistance from '../bleScreenComponents/bleDistance.js';
+import cycleLengthSelector from './homeScreenCycleChooser.js';
+import CycleReport from './homeScreenText.js';
+import StartButton from './homeScreenStartButton';
+import ProgressBar from './progressBar';
+import SavePreset from './savePreset';
 
 export default function HomeScreen({ navigation, route }) {
   const user = useUser();
@@ -39,7 +39,7 @@ export default function HomeScreen({ navigation, route }) {
 
   const handleImagePress = () => {
     // Your logic for handling image button press
-    console.log("Image button pressed");
+    console.log('Image button pressed');
   };
 
   return (
@@ -47,7 +47,7 @@ export default function HomeScreen({ navigation, route }) {
       <View style={styles.container}>
         <TouchableOpacity onPress={handleImagePress} style={styles.imageButton}>
           <Image
-            source={require("./../../assets/blue_bracelet.png")}
+            source={require('./../../assets/blue_bracelet.png')}
             style={styles.image}
           />
         </TouchableOpacity>
@@ -57,11 +57,23 @@ export default function HomeScreen({ navigation, route }) {
           {/* <SavePreset/> */}
           <ProgressBar />
         </View>
-        <StartButton />
+        <StartButton
+          onPress={() => {
+            console.log(user);
+            let studyTime = user.getStudyLength();
+            let breakTime = user.getBreakLength();
+            // manageStudyTime(dataCharacteristic, studyTime);
+
+            // Stuff for vibration module
+            let buzzLength = user.getBuzzDuration();
+            let buzzFreq = user.getBuzzFrequency();
+            // getDistance(deviceCurr, dataCharacteristic);
+          }}
+        />
         <Button
           title="Go to Bracelet Settings"
           onPress={() => {
-            navigation.navigate("sBle", { userObj: user });
+            navigation.navigate('sBle', { userObj: user });
           }}
         />
       </View>
@@ -72,21 +84,21 @@ export default function HomeScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-    backgroundColor: "black",
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    backgroundColor: 'black',
   },
   cycleContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     bottom: 210,
-    position: "absolute",
+    position: 'absolute',
   },
 
   imageButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 10,
     right: 10,
   },
