@@ -22,7 +22,6 @@ export default function HomeScreen({ navigation, route }) {
   const user = useUser();
   const { deviceRef: deviceCurr, data: dataCharacteristic } =
     useConnectToDevice();
-
   const { cycleOptions, cycleOptionResponces } = cycleLengthSelector();
   const cycleLengths = {
     sLength: cycleOptionResponces[0],
@@ -53,7 +52,7 @@ export default function HomeScreen({ navigation, route }) {
         </TouchableOpacity>
         <View style={styles.cycleContainer}>
           {cycleOptions}
-          <CycleReport cycleOrder={cycleLengths} />
+          {/* <CycleReport cycleOrder={cycleLengths} /> */}
           {/* <SavePreset/> */}
           <ProgressBar />
         </View>
@@ -62,12 +61,12 @@ export default function HomeScreen({ navigation, route }) {
             console.log(user);
             let studyTime = user.getStudyLength();
             let breakTime = user.getBreakLength();
-            // manageStudyTime(dataCharacteristic, studyTime);
+            //manageStudyTime(dataCharacteristic, 1, 1);
 
             // Stuff for vibration module
             let buzzLength = user.getBuzzDuration();
             let buzzFreq = user.getBuzzFrequency();
-            // getDistance(deviceCurr, dataCharacteristic);
+            getDistance(true, deviceCurr.current, dataCharacteristic, user);
           }}
         />
         <Button
