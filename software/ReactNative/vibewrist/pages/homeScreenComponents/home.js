@@ -20,6 +20,7 @@ import SavePreset from './savePreset';
 
 export default function HomeScreen({ navigation, route }) {
   const user = useUser();
+  const [startDistanceFn, setStartDistanceFn] = useState(false);
   const { deviceRef: deviceCurr, data: dataCharacteristic } =
     useConnectToDevice();
   const { cycleOptions, cycleOptionResponces } = cycleLengthSelector();
@@ -29,6 +30,30 @@ export default function HomeScreen({ navigation, route }) {
     cAmount: cycleOptionResponces[2],
     isMinutes: true,
   }; // Information gathered from Cycle Selector to send to Cycle Report
+
+  // useEffect(() => {
+  //   if (startDistanceFn) {
+  //     // Stuff for vibration module
+  //     let buzzLength = user.getBuzzDuration();
+  //     let buzzFreq = user.getBuzzFrequency();
+  //     getDistance(true, deviceCurr.current, dataCharacteristic, user);
+  //   } else {
+  //     // Error condition met
+  //     console.log('Error in distance monitoring, trying to reconnect');
+  //     useConnectToDevice();
+  //     // Clean up the interval on unmount or when stopping manually
+  //   }
+  // }, [startDistanceFn, deviceCurr, useConnectToDevice]);
+
+  const handleStartButtonPress = () => {
+    console.log(user);
+    let studyTime = user.getStudyLength();
+    let breakTime = user.getBreakLength();
+    manageStudyTime(dataCharacteristic, 1, 1);
+    let buzzLength = user.getBuzzDuration();
+    let buzzFreq = user.getBuzzFrequency();
+    getDistance(true, deviceCurr.current, dataCharacteristic, user);
+  };
 
   useEffect(() => {
     user.setStudyLength(cycleLengths.sLength);
@@ -56,19 +81,7 @@ export default function HomeScreen({ navigation, route }) {
           {/* <SavePreset/> */}
           <ProgressBar />
         </View>
-        <StartButton
-          onPress={() => {
-            console.log(user);
-            let studyTime = user.getStudyLength();
-            let breakTime = user.getBreakLength();
-            //manageStudyTime(dataCharacteristic, 1, 1);
-
-            // Stuff for vibration module
-            let buzzLength = user.getBuzzDuration();
-            let buzzFreq = user.getBuzzFrequency();
-            getDistance(true, deviceCurr.current, dataCharacteristic, user);
-          }}
-        />
+        <StartButton onPress={handleStartButtonPress} />
         <Button
           title="Go to Bracelet Settings"
           onPress={() => {

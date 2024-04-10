@@ -40,15 +40,16 @@ async function manageStudyTime(dataCharacteristic, studyValue, breakValue) {
       await dataCharacteristic.writeWithResponse(btoa('1,2,1'));
       await dataCharacteristic.writeWithResponse(btoa('1,3,1'));
     }
-    console.log('here');
+    console.log('here and time is : ', breakValue * msTomin);
     dataCharacteristic.writeWithResponse(btoa('1,1,0'));
     dataCharacteristic.writeWithResponse(btoa('1,2,0'));
     dataCharacteristic.writeWithResponse(btoa('1,3,0'));
-
     await sleep(3000);
     await dataCharacteristic.writeWithResponse(
       btoa(`3,${breakValue * msTomin}`)
     );
+
+    return false;
   }, studyValue * msTomin);
 }
 
