@@ -31,29 +31,23 @@ export default function HomeScreen({ navigation, route }) {
     isMinutes: true,
   }; // Information gathered from Cycle Selector to send to Cycle Report
 
-  // useEffect(() => {
-  //   if (startDistanceFn) {
-  //     // Stuff for vibration module
-  //     let buzzLength = user.getBuzzDuration();
-  //     let buzzFreq = user.getBuzzFrequency();
-  //     getDistance(true, deviceCurr.current, dataCharacteristic, user);
-  //   } else {
-  //     // Error condition met
-  //     console.log('Error in distance monitoring, trying to reconnect');
-  //     useConnectToDevice();
-  //     // Clean up the interval on unmount or when stopping manually
-  //   }
-  // }, [startDistanceFn, deviceCurr, useConnectToDevice]);
+  // const handleStartButtonPress = () => {
+  //   console.log(user);
+  //   let studyTime = user.getStudyLength();
+  //   let breakTime = user.getBreakLength();
+  //   manageStudyTime(dataCharacteristic, 1, 1);
+  //   let buzzLength = user.getBuzzDuration();
+  //   let buzzFreq = user.getBuzzFrequency();
+  //   getDistance(true, deviceCurr.current, dataCharacteristic, user);
+  // };
 
-  const handleStartButtonPress = () => {
-    console.log(user);
-    let studyTime = user.getStudyLength();
-    let breakTime = user.getBreakLength();
-    manageStudyTime(dataCharacteristic, 1, 1);
-    let buzzLength = user.getBuzzDuration();
-    let buzzFreq = user.getBuzzFrequency();
-    getDistance(true, deviceCurr.current, dataCharacteristic, user);
-  };
+  useEffect(() => {
+    if (startDistanceFn) {
+      getDistance(true, deviceCurr.current, dataCharacteristic, user);
+    } else {
+      getDistance(false, deviceCurr.current, dataCharacteristic, user); // Stop tracking
+    }
+  }, [startDistanceFn]);
 
   useEffect(() => {
     user.setStudyLength(cycleLengths.sLength);
@@ -81,7 +75,16 @@ export default function HomeScreen({ navigation, route }) {
           {/* <SavePreset/> */}
           <ProgressBar />
         </View>
-        <StartButton onPress={handleStartButtonPress} />
+        <StartButton
+          onPress={() => {
+            setStartDistanceFn(true); // Start distance tracking
+            manageStudyTime(dataCharacteristic, studyTime, breakTime).then(
+              () => {
+                setStartDistanceFn(false); // Stop distance tracking after manageStudyTime completes
+              }
+            );
+          }}
+        />
         <Button
           title="Go to Bracelet Settings"
           onPress={() => {
