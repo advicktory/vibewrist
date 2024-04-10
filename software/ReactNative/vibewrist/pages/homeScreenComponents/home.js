@@ -8,17 +8,17 @@ import {
   StyleSheet,
 } from "react-native";
 // import _BackgroundTimer from "react-native-background-timer";
-import { useUser } from "../UserContext";
-import useConnectToDevice from "../bleScreenComponents/bleSettings.js";
-import manageStudyTime from "../bleScreenComponents/bleLEDfunct.js";
-import getDistance from "../bleScreenComponents/bleDistance.js";
+// import { useUser } from "../UserContext";
+// import useConnectToDevice from "../bleScreenComponents/bleSettings.js";
+// import manageStudyTime from "../bleScreenComponents/bleLEDfunct.js";
+// import getDistance from "../bleScreenComponents/bleDistance.js";
 import cycleLengthSelector from "./homeScreenCycleChooser.js";
 import CycleReport from "./homeScreenText.js";
 import StartButton from "./homeScreenStartButton";
 import ProgressBar from "./progressBar";
 import SavePreset from "./savePreset";
 
-export default function HomeScreen({ navigation, route }) {
+export default function HomeScreen() {
   // const user = useUser();
   // const { deviceRef: deviceCurr, data: dataCharacteristic } =
   //   useConnectToDevice();
@@ -45,16 +45,16 @@ export default function HomeScreen({ navigation, route }) {
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={handleImagePress} style={styles.imageButton}>
+        <TouchableOpacity  style={styles.imageButton}>
           <Image
             source={require("./../../assets/blue_bracelet.png")}
             style={styles.image}
           />
         </TouchableOpacity>
         <View style={styles.cycleContainer}>
-          {cycleOptions}
+          {/* {cycleOptions}
           <CycleReport cycleOrder={cycleLengths} />
-          {/* <SavePreset/> */}
+          <SavePreset/> */}
           <ProgressBar />
         </View>
         <StartButton />

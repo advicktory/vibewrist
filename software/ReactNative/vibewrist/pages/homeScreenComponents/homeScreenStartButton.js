@@ -1,12 +1,41 @@
-import React from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, Button, Modal, TextInput,Image,TouchableOpacity,Text } from "react-native";
 import { useUser } from "../UserContext";
 
+
+
 const StartButton = ({ onPress }) => {
+  const [isPaused, setIsPaused] = useState(false); // State to track if the pop-up is open
+
+    // Function to handle the press of the start button
+    const handleStartPress = () => {
+      // Your logic for handling start button press
+      setIsPaused(true); // Open the pop-up
+    };
+  
+    // Function to handle the press of the pause button in the pop-up
+    const handlePausePress = () => {
+      // Your logic for handling pause button press
+      setIsPaused(false); // Close the pop-up
+    };
   return (
-    <TouchableOpacity onPress={onPress} style={styles.button}>
+    <>
+    <TouchableOpacity onPress={handleStartPress} style={styles.button}>
       <Text style={styles.buttonText}>Start</Text>
     </TouchableOpacity>
+    
+      {/* Pop-up */}
+      <Modal visible={isPaused} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text>Do you want to pause?</Text>
+            <TouchableOpacity style={[styles.stopButton, { backgroundColor: "red" }]} onPress={handlePausePress}>
+              <Text style={styles.stopButtonText}>Stop</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 };
 
@@ -21,8 +50,40 @@ const onStartPress = () => {
   let buzzFreq = user.getBuzzFrequency();
   // getDistance(deviceCurr, dataCharacteristic);
 };
+  
+
+
+
 
 const styles = StyleSheet.create({
+  container: {
+    // flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  stopButton: {
+    backgroundColor: "#007AFF", // Default color
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  stopButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+  },
   button: {
     position: "absolute",
     left: 122,
@@ -47,3 +108,9 @@ const styles = StyleSheet.create({
 });
 
 export default StartButton;
+
+
+
+
+
+
