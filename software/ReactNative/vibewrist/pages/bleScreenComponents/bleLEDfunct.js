@@ -1,5 +1,6 @@
 import { BleManager } from 'react-native-ble-plx';
 import { atob, btoa } from 'react-native-quick-base64';
+import getDistance from '../bleScreenComponents/bleDistance.js';
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -8,26 +9,30 @@ function sleep(ms) {
 async function manageStudyTime(dataCharacteristic, studyValue, breakValue) {
   const oneThirdStudyTime = studyValue / 3;
   const msTomin = 60000;
-  // dataCharacteristic.writeWithResponse(btoa('1,1,0'));
-  // console.log((studyValue / 3) * 60000);
 
-  // After 1/3 of the study time
-  setTimeout(() => {
-    console.log("(1,1,1)"); // replace with sending the data over the device connection
-    const led1 = btoa("1,1,1");
+
+  // Using an async function to await the completion of each timed section
+  const executeAfterDelay = async (delay, callback) => {
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    callback();
+  };
+
+  await executeAfterDelay(oneThirdStudyTime * msTomin, () => {
+    console.log('(1,1,1)');
+    const led1 = btoa('1,1,1');
+
     dataCharacteristic.writeWithResponse(led1);
-    console.log('Sent data for timer one');
-  }, oneThirdStudyTime * msTomin);
+  });
 
-  // After 2/3 of the study time
-  setTimeout(() => {
-    console.log("(1,2,1)");
-    const led2 = btoa("1,2,1");
+
+  await executeAfterDelay(oneThirdStudyTime * msTomin, () => {
+    console.log('(1,2,1)');
+    const led2 = btoa('1,2,1');
+
     dataCharacteristic.writeWithResponse(led2);
-  }, oneThirdStudyTime * 2 * msTomin);
+  });
 
-  // After study session is complete
-  setTimeout(async () => {
+  await executeAfterDelay(oneThirdStudyTime * msTomin, async () => {
     dataCharacteristic.writeWithResponse(btoa('1,3,1'));
     for (let i = 0; i < 4; i++) {
       await sleep(1000);
@@ -40,16 +45,11 @@ async function manageStudyTime(dataCharacteristic, studyValue, breakValue) {
       await dataCharacteristic.writeWithResponse(btoa('1,2,1'));
       await dataCharacteristic.writeWithResponse(btoa('1,3,1'));
     }
-    console.log('here and time is : ', breakValue * msTomin);
-    dataCharacteristic.writeWithResponse(btoa('1,1,0'));
-    dataCharacteristic.writeWithResponse(btoa('1,2,0'));
-    dataCharacteristic.writeWithResponse(btoa('1,3,0'));
+    await dataCharacteristic.writeWithResponse(btoa('1,1,0'));
+    await dataCharacteristic.writeWithResponse(btoa('1,2,0'));
+    await dataCharacteristic.writeWithResponse(btoa('1,3,0'));
     await sleep(3000);
-    await dataCharacteristic.writeWithResponse(
-      btoa(`3,${breakValue * msTomin}`)
-    );
-    return false;
-  }, studyValue * msTomin);
-}
+  });
 
+}
 export default manageStudyTime;

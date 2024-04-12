@@ -17,6 +17,7 @@ import CycleReport from './homeScreenText.js';
 import StartButton from './homeScreenStartButton';
 import ProgressBar from './progressBar';
 import SavePreset from './savePreset';
+import { atob, btoa } from 'react-native-quick-base64';
 
 export default function HomeScreen({ navigation }) {
   const user = useUser();
@@ -31,21 +32,22 @@ export default function HomeScreen({ navigation }) {
     isMinutes: true,
   }; // Information gathered from Cycle Selector to send to Cycle Report
 
-  // const handleStartButtonPress = () => {
-  //   console.log(user);
-  //   let studyTime = user.getStudyLength();
-  //   let breakTime = user.getBreakLength();
-  //   manageStudyTime(dataCharacteristic, 1, 1);
-  //   let buzzLength = user.getBuzzDuration();
-  //   let buzzFreq = user.getBuzzFrequency();
-  //   getDistance(true, deviceCurr.current, dataCharacteristic, user);
-  // };
+  // Provide ability to run a function after a set amount of time
+  const executeAfterDelay = async (delay, callback) => {
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    callback();
+  };
 
   useEffect(() => {
-    if (startDistanceFn) {
+    if (startDistanceFn && deviceCurr.current) {
       getDistance(true, deviceCurr.current, dataCharacteristic, user);
-    } else {
+    } else if (deviceCurr.current) {
       getDistance(false, deviceCurr.current, dataCharacteristic, user); // Stop tracking
+      executeAfterDelay(10000, () => {
+        dataCharacteristic.writeWithResponse(
+          btoa(`3,${user.getBreakLength()}`)
+        );
+      });
     }
   }, [startDistanceFn]);
 
@@ -80,12 +82,28 @@ export default function HomeScreen({ navigation }) {
         </View>
         <StartButton
           onPress={() => {
-            setStartDistanceFn(true); // Start distance tracking
-            manageStudyTime(dataCharacteristic, studyTime, breakTime).then(
-              () => {
-                setStartDistanceFn(false); // Stop distance tracking after manageStudyTime completes
+            setStartDistanceFn((currentStartDistanceFn) => {
+              // Check if already true, if so, return the same value without changing it
+              if (currentStartDistanceFn) {
+                return currentStartDistanceFn;
               }
-            );
+              // Only if it is not already true, set it to true and start the manageStudyTime process
+              manageStudyTime(
+                dataCharacteristic,
+                user.getStudyLength(),
+                user.getBreakLength() /*this parameter not used, leaving in case */
+              )
+                .then(() => {
+                  //console.log('manageStudyTime completed');
+                  setStartDistanceFn(false); // Stop distance tracking once manageStudyTime is finished
+                })
+                .catch((error) => {
+                  console.error('Error in manageStudyTime:', error);
+                  setStartDistanceFn(false); // Optionally stop distance tracking on error as well
+                });
+
+              return true;
+            });
           }}
         />
         <Button

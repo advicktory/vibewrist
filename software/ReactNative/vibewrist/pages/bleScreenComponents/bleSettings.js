@@ -49,9 +49,6 @@ export default function useConnectToDevice() {
           throw new Error('Characteristic not found');
         }
         setData(dataCharacteristic);
-        //dataCharacteristic.writeWithResponse(btoa('1,1,0'));
-        // console.log(device);
-        // console.log(deviceRef.current);
       })
       .catch((error) => {
         console.error('Error in connection or data fetching:', error);
@@ -94,8 +91,8 @@ export default function useConnectToDevice() {
       }
 
       setDevices((prevDevices) => [...prevDevices, device]);
-      if (device.name == "VibeWrist") {
-        console.log("In loop");
+      if (device.name == 'VibeWrist') {
+
         bleManager.stopDeviceScan();
         setConnectionStatus("Connecting...");
         connectToDevice(device);

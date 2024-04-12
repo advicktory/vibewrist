@@ -5,15 +5,8 @@ import User from '../User';
 import { recordViolation } from './bleViolation'; // Ensure this is correctly imported
 import { useUser } from '../UserContext';
 
-
+let readRSSIInterval = null;
 function getDistance(isStarted, device, dataCharacteristic, user) {
-  console.log(user);
-
-  console.log('Starting to get distance...');
-
-
-  let readRSSIInterval;
-
   const startReading = () => {
     if (!device) {
       console.log('No device provided');
@@ -58,16 +51,12 @@ function getDistance(isStarted, device, dataCharacteristic, user) {
               //console.log('Violation detected');
               // Handle the violation, e.g., send a signal to buzz
               dataCharacteristic.writeWithResponse(
-                btoa(
-                  `2,${user.getBuzzDuration()}, ${user.getBuzzFrequency()},1`
-                )
+                btoa(`2,${user.getBuzzDuration()},${user.getBuzzFrequency()},1`)
               );
             } else if (!hasViolation) {
               console.log('Outside of range');
               dataCharacteristic.writeWithResponse(
-                btoa(
-                  `2,${user.getBuzzDuration()}, ${user.getBuzzFrequency()},0`
-                )
+                btoa(`2,${user.getBuzzDuration()},${user.getBuzzFrequency()},0`)
               );
             }
           }
@@ -86,7 +75,7 @@ function getDistance(isStarted, device, dataCharacteristic, user) {
 
   if (isStarted) {
     startReading();
-  } else {
+  } else if (!isStarted) {
     stopReading();
   }
 
