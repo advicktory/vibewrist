@@ -17,15 +17,6 @@ const StartButton = ({ onPress }) => {
   // Function to handle the press of the start button
   const handleStartPress = () => {
     // Your logic for handling start button press
-    const user = useUser();
-    let studyTime = user.getStudyLength();
-    let breakTime = user.getBreakLength();
-    // manageStudyTime(dataCharacteristic, studyTime);
-
-    // Stuff for vibration module
-    let buzzLength = user.getBuzzDuration();
-    let buzzFreq = user.getBuzzFrequency();
-    // getDistance(deviceCurr, dataCharacteristic);
     setIsPaused(true); // Open the pop-up
   };
 
