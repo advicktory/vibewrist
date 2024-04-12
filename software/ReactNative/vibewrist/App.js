@@ -8,7 +8,7 @@ import User from "./pages/User";
 
 //Screens
 import HomeScreen from "./pages/homeScreenComponents/home";
-import BleDeviceSettingsScreen from "./pages/bleScreenComponents/bleBraceletSettingsScreen";
+import BleDeviceSettingsScreen from "./pages/bleScreenComponents/bleBraceletSettingsScreen.js";
 
 // These are meant to get the reference to the device to be accessed anywhere
 const user = new User();

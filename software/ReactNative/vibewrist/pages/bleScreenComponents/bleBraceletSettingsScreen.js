@@ -1,37 +1,39 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
-import { SelectList } from 'react-native-dropdown-select-list';
-import braceletPng from '../../assets/blue_bracelet.png';
+import { SelectList } from "react-native-dropdown-select-list";
+import braceletPng from "../../assets/blue_bracelet.png";
 
-export default function BleDeviceSettingsScreen({ navigation, route }) {
-  const [buzzSensitivity, setBuzzSensitivity] = useState('Default');
-  const [buzzRhythm, setBuzzRhythm] = useState('Short Quick Buzz');
-  const [buzzStrength, setBuzzStrength] = useState('Low');
+export default function BleDeviceSettingsScreen({ navigation }) {
+  const [buzzSensitivity, setBuzzSensitivity] = useState("Default");
+  const [buzzRhythm, setBuzzRhythm] = useState("Short Quick Buzz");
+  const [buzzStrength, setBuzzStrength] = useState("Low");
 
   const buzzSensitivityOptions = [
-    { key: 1, value: 'Default' },
-    { key: 2, value: 'Close' },
-    { key: 3, value: 'Very Close' },
+    { key: 1, value: "Default" },
+    { key: 2, value: "Close" },
+    { key: 3, value: "Very Close" },
   ];
 
   const buzzRhythmOptions = [
-    { key: '1', value: 'Short Quick Buzz' },
-    { key: '2', value: 'Three Quick Buzzes' },
-    { key: '3', value: 'Aggie Special' },
-    { key: '4', value: 'Five Short Pulses' },
-    { key: '5', value: 'Three Long Pulses' },
+    { key: "1", value: "Short Quick Buzz" },
+    { key: "2", value: "Three Quick Buzzes" },
+    { key: "3", value: "Aggie Special" },
+    { key: "4", value: "Five Short Pulses" },
+    { key: "5", value: "Three Long Pulses" },
   ];
 
   const buzzStrengthOptions = [
-    { key: '1', value: 'Low' },
-    { key: '2', value: 'Medium Low' },
-    { key: '3', value: 'Medium High' },
-    { key: '4', value: 'High' },
+    { key: "1", value: "Low" },
+    { key: "2", value: "Medium Low" },
+    { key: "3", value: "Medium High" },
+    { key: "4", value: "High" },
   ];
 
   const handleSave = () => {
     // Handle saving here
-    navigation.navigate('Home', { /* pass necessary data */ });
+    navigation.navigate("Home", {
+      /* pass necessary data */
+    });
   };
 
   return (
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
   boxContainer: {
     borderColor: "white",
     margin: 5,
-    backgroundColor:"#1c1b1d",
+    backgroundColor: "#1c1b1d",
   },
   image: {
     width: 100,
@@ -159,6 +161,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
-    marginHorizontal:40,
+    marginHorizontal: 40,
   },
 });
