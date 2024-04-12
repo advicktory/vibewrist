@@ -13,22 +13,18 @@ const recordViolation = (
 ) => {
   if (startRecording) {
     // Interval to check distance
-    const intervalId = setInterval(() => {
-      if (
-        actualDistance >= endThreshold &&
-        actualDistance <= startThreshold &&
-        !isViolationRecorded
-      ) {
-        violations++;
-        isViolationRecorded = true;
-        onViolation(true); // Call the callback function when a violation occurs
-        console.log(`Violation recorded. Total violations: ${violations}`);
-      } else if (actualDistance < endThreshold) {
-        isViolationRecorded = false;
-      }
-    }, 500); // Check every second
 
-    return () => clearInterval(intervalId); // Return a cleanup function
+    console.log('In violationFunction');
+    if (actualDistance >= startThreshold && !isViolationRecorded) {
+      violations++;
+      isViolationRecorded = true;
+      onViolation(true); // Call the callback function when a violation occurs
+      console.log(`Violation recorded. Total violations: ${violations}`);
+    } else if (actualDistance < endThreshold) {
+      onViolation(false);
+      isViolationRecorded = false;
+    }
+
   }
 };
 

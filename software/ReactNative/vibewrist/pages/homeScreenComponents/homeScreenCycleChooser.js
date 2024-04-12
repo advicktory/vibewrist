@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 // import { View, Text, Button } from "react-native";
 import {
   View,
@@ -7,9 +7,9 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-} from "react-native";
-import SavePreset from "./savePreset";
-import { SelectList } from "react-native-dropdown-select-list";
+} from 'react-native';
+import SavePreset from './savePreset';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 export default function cycleLengthSelector() {
   const [studyLengthSelected, setStudyLengthSelected] = useState([]);
@@ -40,7 +40,7 @@ export default function cycleLengthSelector() {
     // { key: 0, value: "None" },
     {
       key: 1,
-      value: "Pomodoro Method",
+      value: 'Pomodoro Method',
       studyLength: 25,
       breakLength: 5,
       cycleCount: 2,
@@ -58,7 +58,7 @@ export default function cycleLengthSelector() {
 
   const handleSelectPreset = (key) => {
     setCurrPresetKey(key);
-    console.log("Received new preset:", presetSelected[key].studyLength);
+    console.log('Received new preset:', presetSelected[key].studyLength);
     // console.log("Received new presetTTTT:", newPreset[0].studyLength);
     setStudyLengthSelected(presetSelected[key].studyLength.toString());
     setBreakLengthSelected(presetSelected[key].breakLength.toString());
@@ -91,7 +91,7 @@ export default function cycleLengthSelector() {
               setSelected={(val) => setStudyLengthSelected(val)}
               data={studyOptions}
               search={false}
-              placeholder="Break Length"
+              placeholder="Study Length"
               save="key"
               inputStyles={styles.inputContainer}
               dropdownTextStyles={styles.dropdownContainer}
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     // justifyContent: "center",
     // position: "relative",
-    backgroundColor: "#0066ff", // Change the background color here
+    backgroundColor: '#0066ff', // Change the background color here
     borderRadius: 20, // Adjust the border radius to make it more rounded
     padding: 10, // Add padding to the container
     margin: 20, // Add margin to the container
@@ -168,23 +168,23 @@ const styles = StyleSheet.create({
 
   topPortion: {
     // flex:1,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     // marginBottom: 10,
     // position: "absolute",
   },
   inputContainer: {
-    color: "white",
-    fontWeight: "bold",
+    color: 'white',
+    fontWeight: 'bold',
     // fontSize: 10,
   },
   dropdownContainer: {
-    color: "white",
-    fontWeight: "bold",
+    color: 'white',
+    fontWeight: 'bold',
     // fontSize: 10,
   },
   boxContainer: {
-    borderColor: "white", // Set background color to white
+    borderColor: 'white', // Set background color to white
     margin: 5,
   },
 });

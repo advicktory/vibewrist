@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,23 +6,23 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-} from "react-native";
-import _BackgroundTimer from "react-native-background-timer";
-import { useUser } from "../UserContext";
-import useConnectToDevice from "../bleScreenComponents/bleSettings.js";
-import manageStudyTime from "../bleScreenComponents/bleLEDfunct.js";
-import getDistance from "../bleScreenComponents/bleDistance.js";
-import cycleLengthSelector from "./homeScreenCycleChooser.js";
-import CycleReport from "./homeScreenText.js";
-import StartButton from "./homeScreenStartButton";
-import ProgressBar from "./progressBar";
-import SavePreset from "./savePreset";
+} from 'react-native';
+import _BackgroundTimer from 'react-native-background-timer';
+import { useUser } from '../UserContext';
+import useConnectToDevice from '../bleScreenComponents/bleSettings.js';
+import manageStudyTime from '../bleScreenComponents/bleLEDfunct.js';
+import getDistance from '../bleScreenComponents/bleDistance.js';
+import cycleLengthSelector from './homeScreenCycleChooser.js';
+import CycleReport from './homeScreenText.js';
+import StartButton from './homeScreenStartButton';
+import ProgressBar from './progressBar';
+import SavePreset from './savePreset';
 
 export default function HomeScreen({ navigation }) {
   const user = useUser();
+  const [startDistanceFn, setStartDistanceFn] = useState(false);
   const { deviceRef: deviceCurr, data: dataCharacteristic } =
     useConnectToDevice();
-
   const { cycleOptions, cycleOptionResponces } = cycleLengthSelector();
   const cycleLengths = {
     sLength: cycleOptionResponces[0],
@@ -31,23 +31,43 @@ export default function HomeScreen({ navigation }) {
     isMinutes: true,
   }; // Information gathered from Cycle Selector to send to Cycle Report
 
+  // const handleStartButtonPress = () => {
+  //   console.log(user);
+  //   let studyTime = user.getStudyLength();
+  //   let breakTime = user.getBreakLength();
+  //   manageStudyTime(dataCharacteristic, 1, 1);
+  //   let buzzLength = user.getBuzzDuration();
+  //   let buzzFreq = user.getBuzzFrequency();
+  //   getDistance(true, deviceCurr.current, dataCharacteristic, user);
+  // };
+
+  useEffect(() => {
+    if (startDistanceFn) {
+      getDistance(true, deviceCurr.current, dataCharacteristic, user);
+    } else {
+      getDistance(false, deviceCurr.current, dataCharacteristic, user); // Stop tracking
+    }
+  }, [startDistanceFn]);
+
   useEffect(() => {
     user.setStudyLength(cycleLengths.sLength);
     user.setBreakLength(cycleLengths.bLength);
     user.setCycleAmount(cycleLengths.cAmount);
   }, [cycleLengths.sLength, cycleLengths.bLength, cycleLengths.cAmount]);
 
+
   // const handleImagePress = () => {
   //   // Your logic for handling image button press
   //   console.log("Image button pressed");
   // };
+
 
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <TouchableOpacity style={styles.imageButton}>
           <Image
-            source={require("./../../assets/blue_bracelet.png")}
+            source={require('./../../assets/blue_bracelet.png')}
             style={styles.image}
           />
         </TouchableOpacity>
@@ -55,13 +75,23 @@ export default function HomeScreen({ navigation }) {
           {cycleOptions}
           <CycleReport cycleOrder={cycleLengths} />
           <SavePreset />
+
           <ProgressBar />
         </View>
-        <StartButton />
+        <StartButton
+          onPress={() => {
+            setStartDistanceFn(true); // Start distance tracking
+            manageStudyTime(dataCharacteristic, studyTime, breakTime).then(
+              () => {
+                setStartDistanceFn(false); // Stop distance tracking after manageStudyTime completes
+              }
+            );
+          }}
+        />
         <Button
           title="Go to Bracelet Settings"
           onPress={() => {
-            navigation.navigate("sBle", { userObj: user });
+            navigation.navigate('sBle', { userObj: user });
           }}
         />
       </View>
@@ -72,21 +102,21 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-    backgroundColor: "black",
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    backgroundColor: 'black',
   },
   cycleContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     bottom: 210,
-    position: "absolute",
+    position: 'absolute',
   },
 
   imageButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 10,
     right: 10,
   },

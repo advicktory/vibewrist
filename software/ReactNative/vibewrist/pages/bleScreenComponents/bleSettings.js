@@ -22,40 +22,42 @@ export default function useConnectToDevice() {
   const user = useUser();
 
   //console.log('User in settings: ', user);
-  const connectToDevice = async (device) => {
-    // console.log('distance option selected: ', distanceOpSel);
-    // console.log('color option selected: ', colorOpSel);
-    // console.log('strength option selected: ', strengthOpSel);
-    try {
-      const connectedDevice = await device.connect();
-      setDeviceID(connectedDevice.id);
-      //console.log(connectedDevice.id);
-      setConnectionStatus("Connected");
-      deviceRef.current = connectedDevice;
 
-      await connectedDevice.discoverAllServicesAndCharacteristics();
+  const connectToDevice = (device) => {
+    return device
+      .connect()
+      .then((device) => {
+        setDeviceID(device.id);
+        setConnectionStatus('Connected');
+        deviceRef.current = device;
+        console.log('Connected');
+        return device.discoverAllServicesAndCharacteristics();
+      })
+      .then((device) => device.services())
+      .then((services) => {
+        let service = services.find((s) => s.uuid === SERVICE_UUID);
+        if (!service) {
+          throw new Error('Service not found');
+        }
+        return service.characteristics();
+      })
+      .then((characteristics) => {
+        let dataCharacteristic = characteristics.find(
+          (c) => c.uuid === CHAR_UUID
+        );
+        if (!dataCharacteristic) {
+          throw new Error('Characteristic not found');
+        }
+        setData(dataCharacteristic);
+        //dataCharacteristic.writeWithResponse(btoa('1,1,0'));
+        // console.log(device);
+        // console.log(deviceRef.current);
+      })
+      .catch((error) => {
+        console.error('Error in connection or data fetching:', error);
+        setConnectionStatus('Error in Connection');
+      });
 
-      const services = await connectedDevice.services();
-
-      const service = services.find((s) => s.uuid === SERVICE_UUID);
-      if (!service) {
-        throw new Error("Service not found");
-      }
-
-      const characteristics = await service.characteristics();
-
-      const dataCharacteristic = characteristics.find(
-        (c) => c.uuid === CHAR_UUID,
-      );
-      if (!dataCharacteristic) {
-        throw new Error("Characteristic not found");
-      }
-
-      setData(dataCharacteristic);
-    } catch (error) {
-      console.error("Error in connection or data fetching:", error);
-      setConnectionStatus("Error in Connection");
-    }
   };
 
   useEffect(() => {
