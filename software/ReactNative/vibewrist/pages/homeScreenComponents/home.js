@@ -37,10 +37,10 @@ export default function HomeScreen({ navigation }) {
     user.setCycleAmount(cycleLengths.cAmount);
   }, [cycleLengths.sLength, cycleLengths.bLength, cycleLengths.cAmount]);
 
-  const handleImagePress = () => {
-    // Your logic for handling image button press
-    console.log("Image button pressed");
-  };
+  // const handleImagePress = () => {
+  //   // Your logic for handling image button press
+  //   console.log("Image button pressed");
+  // };
 
   return (
     <View style={{ flex: 1 }}>

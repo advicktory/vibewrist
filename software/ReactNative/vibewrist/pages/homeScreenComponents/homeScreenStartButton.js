@@ -1,35 +1,55 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Button, Modal, TextInput,Image,TouchableOpacity,Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Button,
+  Modal,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import { useUser } from "../UserContext";
-
-
 
 const StartButton = ({ onPress }) => {
   const [isPaused, setIsPaused] = useState(false); // State to track if the pop-up is open
 
-    // Function to handle the press of the start button
-    const handleStartPress = () => {
-      // Your logic for handling start button press
-      setIsPaused(true); // Open the pop-up
-    };
-  
-    // Function to handle the press of the pause button in the pop-up
-    const handlePausePress = () => {
-      // Your logic for handling pause button press
-      setIsPaused(false); // Close the pop-up
-    };
+  // Function to handle the press of the start button
+  const handleStartPress = () => {
+    // Your logic for handling start button press
+    const user = useUser();
+    let studyTime = user.getStudyLength();
+    let breakTime = user.getBreakLength();
+    // manageStudyTime(dataCharacteristic, studyTime);
+
+    // Stuff for vibration module
+    let buzzLength = user.getBuzzDuration();
+    let buzzFreq = user.getBuzzFrequency();
+    // getDistance(deviceCurr, dataCharacteristic);
+    setIsPaused(true); // Open the pop-up
+  };
+
+  // Function to handle the press of the pause button in the pop-up
+  const handlePausePress = () => {
+    // Your logic for handling pause button press
+    // ADAM's NOTE: We will need a way to pause the process at hand.
+    setIsPaused(false); // Close the pop-up
+  };
   return (
     <>
-    <TouchableOpacity onPress={handleStartPress} style={styles.button}>
-      <Text style={styles.buttonText}>Start</Text>
-    </TouchableOpacity>
-    
+      <TouchableOpacity onPress={handleStartPress} style={styles.button}>
+        <Text style={styles.buttonText}>Start</Text>
+      </TouchableOpacity>
+
       {/* Pop-up */}
       <Modal visible={isPaused} transparent animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text>Do you want to pause?</Text>
-            <TouchableOpacity style={[styles.stopButton, { backgroundColor: "red" }]} onPress={handlePausePress}>
+            <TouchableOpacity
+              style={[styles.stopButton, { backgroundColor: "red" }]}
+              onPress={handlePausePress}
+            >
               <Text style={styles.stopButtonText}>Stop</Text>
             </TouchableOpacity>
           </View>
@@ -39,21 +59,17 @@ const StartButton = ({ onPress }) => {
   );
 };
 
-const onStartPress = () => {
-  const user = useUser();
-  let studyTime = user.getStudyLength();
-  let breakTime = user.getBreakLength();
-  // manageStudyTime(dataCharacteristic, studyTime);
-
-  // Stuff for vibration module
-  let buzzLength = user.getBuzzDuration();
-  let buzzFreq = user.getBuzzFrequency();
-  // getDistance(deviceCurr, dataCharacteristic);
-};
-  
-
-
-
+// const onStartPress = () => {
+//   const user = useUser();
+//   let studyTime = user.getStudyLength();
+//   let breakTime = user.getBreakLength();
+//   // manageStudyTime(dataCharacteristic, studyTime);
+//
+//   // Stuff for vibration module
+//   let buzzLength = user.getBuzzDuration();
+//   let buzzFreq = user.getBuzzFrequency();
+//   // getDistance(deviceCurr, dataCharacteristic);
+// };
 
 const styles = StyleSheet.create({
   container: {
@@ -108,9 +124,3 @@ const styles = StyleSheet.create({
 });
 
 export default StartButton;
-
-
-
-
-
-
