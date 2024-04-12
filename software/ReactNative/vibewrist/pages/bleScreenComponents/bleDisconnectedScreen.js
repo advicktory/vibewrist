@@ -9,7 +9,7 @@ const ScanScreen = () => {
   useEffect(() => {
     scanForDevices();
 
-    // Clean up function
+    //     // Clean up function
     return () => {
       manager.stopDeviceScan();
       // manager.destroy();

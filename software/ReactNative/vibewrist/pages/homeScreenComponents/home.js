@@ -19,7 +19,7 @@ import ProgressBar from './progressBar';
 import SavePreset from './savePreset';
 import { atob, btoa } from 'react-native-quick-base64';
 
-export default function HomeScreen({ navigation, route }) {
+export default function HomeScreen({ navigation }) {
   const user = useUser();
   const [startDistanceFn, setStartDistanceFn] = useState(false);
   const { deviceRef: deviceCurr, data: dataCharacteristic } =
@@ -57,15 +57,17 @@ export default function HomeScreen({ navigation, route }) {
     user.setCycleAmount(cycleLengths.cAmount);
   }, [cycleLengths.sLength, cycleLengths.bLength, cycleLengths.cAmount]);
 
-  const handleImagePress = () => {
-    // Your logic for handling image button press
-    console.log('Image button pressed');
-  };
+
+  // const handleImagePress = () => {
+  //   // Your logic for handling image button press
+  //   console.log("Image button pressed");
+  // };
+
 
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={handleImagePress} style={styles.imageButton}>
+        <TouchableOpacity style={styles.imageButton}>
           <Image
             source={require('./../../assets/blue_bracelet.png')}
             style={styles.image}
@@ -73,8 +75,9 @@ export default function HomeScreen({ navigation, route }) {
         </TouchableOpacity>
         <View style={styles.cycleContainer}>
           {cycleOptions}
-          {/* <CycleReport cycleOrder={cycleLengths} /> */}
-          {/* <SavePreset/> */}
+          <CycleReport cycleOrder={cycleLengths} />
+          <SavePreset />
+
           <ProgressBar />
         </View>
         <StartButton

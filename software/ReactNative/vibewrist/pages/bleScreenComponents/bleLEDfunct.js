@@ -10,6 +10,7 @@ async function manageStudyTime(dataCharacteristic, studyValue, breakValue) {
   const oneThirdStudyTime = studyValue / 3;
   const msTomin = 60000;
 
+
   // Using an async function to await the completion of each timed section
   const executeAfterDelay = async (delay, callback) => {
     await new Promise((resolve) => setTimeout(resolve, delay));
@@ -19,12 +20,15 @@ async function manageStudyTime(dataCharacteristic, studyValue, breakValue) {
   await executeAfterDelay(oneThirdStudyTime * msTomin, () => {
     console.log('(1,1,1)');
     const led1 = btoa('1,1,1');
+
     dataCharacteristic.writeWithResponse(led1);
   });
+
 
   await executeAfterDelay(oneThirdStudyTime * msTomin, () => {
     console.log('(1,2,1)');
     const led2 = btoa('1,2,1');
+
     dataCharacteristic.writeWithResponse(led2);
   });
 
@@ -41,11 +45,11 @@ async function manageStudyTime(dataCharacteristic, studyValue, breakValue) {
       await dataCharacteristic.writeWithResponse(btoa('1,2,1'));
       await dataCharacteristic.writeWithResponse(btoa('1,3,1'));
     }
-
     await dataCharacteristic.writeWithResponse(btoa('1,1,0'));
     await dataCharacteristic.writeWithResponse(btoa('1,2,0'));
     await dataCharacteristic.writeWithResponse(btoa('1,3,0'));
     await sleep(3000);
   });
+
 }
 export default manageStudyTime;

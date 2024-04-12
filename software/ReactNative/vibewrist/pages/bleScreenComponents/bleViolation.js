@@ -1,4 +1,4 @@
-// recordViolation.js
+// // recordViolation.js
 
 let isViolationRecorded = false; // This state persists across function calls
 let violations = 0;
@@ -9,11 +9,12 @@ const recordViolation = (
   actualDistance,
   startThreshold,
   endThreshold,
-  onViolation
+  onViolation,
 ) => {
   if (startRecording) {
     // Interval to check distance
     //console.log('In violationFunction');
+
     if (actualDistance >= startThreshold && !isViolationRecorded) {
       violations++;
       isViolationRecorded = true;
@@ -25,6 +26,7 @@ const recordViolation = (
     }
   } else {
     return 'Finished';
+
   }
 };
 
