@@ -13,16 +13,16 @@ async function manageStudyTime(dataCharacteristic, studyValue, breakValue) {
 
   // After 1/3 of the study time
   setTimeout(() => {
-    console.log('(1,1,1)'); // replace with sending the data over the device connection
-    const led1 = btoa('1,1,1');
+    console.log("(1,1,1)"); // replace with sending the data over the device connection
+    const led1 = btoa("1,1,1");
     dataCharacteristic.writeWithResponse(led1);
     console.log('Sent data for timer one');
   }, oneThirdStudyTime * msTomin);
 
   // After 2/3 of the study time
   setTimeout(() => {
-    console.log('(1,2,1)');
-    const led2 = btoa('1,2,1');
+    console.log("(1,2,1)");
+    const led2 = btoa("1,2,1");
     dataCharacteristic.writeWithResponse(led2);
   }, oneThirdStudyTime * 2 * msTomin);
 
@@ -48,7 +48,6 @@ async function manageStudyTime(dataCharacteristic, studyValue, breakValue) {
     await dataCharacteristic.writeWithResponse(
       btoa(`3,${breakValue * msTomin}`)
     );
-
     return false;
   }, studyValue * msTomin);
 }

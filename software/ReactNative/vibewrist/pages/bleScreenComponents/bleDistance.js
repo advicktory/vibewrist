@@ -5,10 +5,12 @@ import User from '../User';
 import { recordViolation } from './bleViolation'; // Ensure this is correctly imported
 import { useUser } from '../UserContext';
 
+
 function getDistance(isStarted, device, dataCharacteristic, user) {
   console.log(user);
 
   console.log('Starting to get distance...');
+
 
   let readRSSIInterval;
 
@@ -17,6 +19,7 @@ function getDistance(isStarted, device, dataCharacteristic, user) {
       console.log('No device provided');
       return;
     }
+
 
     readRSSIInterval = setInterval(async () => {
       try {
@@ -89,6 +92,7 @@ function getDistance(isStarted, device, dataCharacteristic, user) {
 
   // Return a function to allow manual stopping of the distance reading
   return stopReading;
+
 }
 
 export default getDistance;

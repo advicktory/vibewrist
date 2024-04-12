@@ -1,16 +1,16 @@
-// Class used to quickly obtain user data.
+// // Class used to quickly obtain user data.
 export default class User {
   constructor(
-    userName = 'unnamed',
-    devName = 'VibeWrist', // Name of the bracelet
-    serUUID = 'TTT', // Service UUID of the bracelet
-    charUUID = 'SSS', // Characteristic UUID of the bracelet
+    userName = "unnamed",
+    devName = "VibeWrist", // Name of the bracelet
+    serUUID = "TTT", // Service UUID of the bracelet
+    charUUID = "SSS", // Characteristic UUID of the bracelet
     sLen = 0, // Users study length
     bLen = 0, // Users break length
     cAmo = 0, // Cycle Amount
     bRange = 0, // Buzz Range
     bDur = 0, // Buzz Duration
-    bFreq = 0 // Buzz Frequency
+    bFreq = 0, // Buzz Frequency
   ) {
     this.userName = userName;
     this.devName = devName;
