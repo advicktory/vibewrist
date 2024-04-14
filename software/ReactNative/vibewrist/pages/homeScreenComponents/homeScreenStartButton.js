@@ -99,9 +99,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 122,
     // bottom: 40,
-    top: 390,
-    // left: windowWidth / 2 - 75, // Centered horizontally
-    // bottom: (windowHeight * 0.005), // Adjusted position based on screen height
+    // top: 390,
+    left: windowWidth / 2 - 75, // Centered horizontally
+    bottom: (windowHeight * 0.02), // Adjusted position based on screen height
     marginTop: 30,
     width: 150,
     height: 150,

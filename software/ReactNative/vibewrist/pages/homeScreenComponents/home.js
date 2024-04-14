@@ -79,6 +79,7 @@ export default function HomeScreen({ navigation }) {
           <CycleReport cycleOrder={cycleLengths} />
           <ProgressBar />
             <Text style={styles.goalText}>Goal for this week: [Your goal here]</Text>
+        </View>
         <StartButton
           onPress={() => {
             setStartDistanceFn((currentStartDistanceFn) => {
@@ -105,8 +106,6 @@ export default function HomeScreen({ navigation }) {
             });
           }}
         />
-        </View>
-
         <Modal
           visible={isSidebarOpen}
           animationType="none"
