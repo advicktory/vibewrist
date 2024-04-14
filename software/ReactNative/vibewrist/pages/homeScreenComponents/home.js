@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Modal,
+  Dimensions,
 } from 'react-native';
 import _BackgroundTimer from 'react-native-background-timer';
 import { useUser } from '../UserContext';
@@ -76,9 +77,8 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.cycleContainer}>
           {cycleOptions}
           <CycleReport cycleOrder={cycleLengths} />
-          <SavePreset />
           <ProgressBar />
-        </View>
+            <Text style={styles.goalText}>Goal for this week: [Your goal here]</Text>
         <StartButton
           onPress={() => {
             setStartDistanceFn((currentStartDistanceFn) => {
@@ -105,6 +105,8 @@ export default function HomeScreen({ navigation }) {
             });
           }}
         />
+        </View>
+
         <Modal
           visible={isSidebarOpen}
           animationType="none"
@@ -119,10 +121,10 @@ export default function HomeScreen({ navigation }) {
               />
             </TouchableOpacity>
             <TouchableOpacity style={styles.sidebarButton}>
-              <Text style={styles.sidebarButtonText}>Account</Text>
+              <Text  onPress={() => {navigation.navigate('account', { userObj: user })}} style={styles.sidebarButtonText}>Account</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sidebarButton}>
-              <Text  onPress={() => {navigation.navigate('sBle', { userObj: user })}} style={styles.sidebarButtonText}>Settings</Text>
+              <Text onPress={() => {navigation.navigate('sBle', { userObj: user })}} style={styles.sidebarButtonText}>Settings</Text>
             </TouchableOpacity>
           </View>
         </Modal>
@@ -143,7 +145,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    bottom: 210,
+    bottom: Dimensions.get('window').height * 0.25, // Adjusted position based on screen height
     position: 'absolute',
   },
   imageButton: {
@@ -175,8 +177,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5, // Opacity of the shadow
     shadowRadius: 5, // Radius of the shadow
     elevation: 5, 
-  },
+    top: Dimensions.get('window').height * 0.1,
 
+  },
   sidebarButton: {
     marginTop: 10, 
     paddingVertical: 10,
@@ -196,7 +199,6 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     color: '#fff',
-    
   },
   imageButtonSidebar: {
     position: 'absolute',
@@ -207,4 +209,15 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
+progressContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+goalText: {
+  marginLeft: 10,
+  color: '#fff',
+  fontSize: 16,
+  marginTop:20,
+},
+
 });
