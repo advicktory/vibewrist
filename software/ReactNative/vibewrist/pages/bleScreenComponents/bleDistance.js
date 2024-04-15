@@ -13,7 +13,6 @@ function getDistance(isStarted, device, dataCharacteristic, user) {
       return;
     }
 
-
     readRSSIInterval = setInterval(async () => {
       try {
         const rssiResponse = await device.readRSSI();
@@ -64,7 +63,7 @@ function getDistance(isStarted, device, dataCharacteristic, user) {
       } catch (error) {
         console.error('Error reading RSSI:', error);
       }
-    }, 4000);
+    }, 1000);
   };
 
   const stopReading = () => {
@@ -81,7 +80,6 @@ function getDistance(isStarted, device, dataCharacteristic, user) {
 
   // Return a function to allow manual stopping of the distance reading
   return stopReading;
-
 }
 
 export default getDistance;

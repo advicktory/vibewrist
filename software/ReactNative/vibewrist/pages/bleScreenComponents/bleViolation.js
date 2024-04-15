@@ -9,7 +9,7 @@ const recordViolation = (
   actualDistance,
   startThreshold,
   endThreshold,
-  onViolation,
+  onViolation
 ) => {
   if (startRecording) {
     // Interval to check distance
@@ -26,7 +26,6 @@ const recordViolation = (
     }
   } else {
     return 'Finished';
-
   }
 };
 

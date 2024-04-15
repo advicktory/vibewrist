@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,8 +6,6 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  Modal,
-  Dimensions,
 } from 'react-native';
 import _BackgroundTimer from 'react-native-background-timer';
 import { useUser } from '../UserContext';
@@ -21,10 +19,9 @@ import ProgressBar from './progressBar';
 import SavePreset from './savePreset';
 import { atob, btoa } from 'react-native-quick-base64';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, route }) {
   const user = useUser();
   const [startDistanceFn, setStartDistanceFn] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to track if the sidebar/modal is open
   const { deviceRef: deviceCurr, data: dataCharacteristic } =
     useConnectToDevice();
   const { cycleOptions, cycleOptionResponces } = cycleLengthSelector();
@@ -60,15 +57,15 @@ export default function HomeScreen({ navigation }) {
     user.setCycleAmount(cycleLengths.cAmount);
   }, [cycleLengths.sLength, cycleLengths.bLength, cycleLengths.cAmount]);
 
-  //will change it from whatever state it is to the other allowing a toggle feature
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prevState) => !prevState);
+  const handleImagePress = () => {
+    // Your logic for handling image button press
+    console.log('Image button pressed');
   };
 
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={toggleSidebar} style={styles.imageButton}>
+        <TouchableOpacity onPress={handleImagePress} style={styles.imageButton}>
           <Image
             source={require('./../../assets/blue_bracelet.png')}
             style={styles.image}
@@ -76,9 +73,9 @@ export default function HomeScreen({ navigation }) {
         </TouchableOpacity>
         <View style={styles.cycleContainer}>
           {cycleOptions}
-          <CycleReport cycleOrder={cycleLengths} />
+          {/* <CycleReport cycleOrder={cycleLengths} /> */}
+          {/* <SavePreset/> */}
           <ProgressBar />
-            <Text style={styles.goalText}>Goal for this week: [Your goal here]</Text>
         </View>
         <StartButton
           onPress={() => {
@@ -106,27 +103,6 @@ export default function HomeScreen({ navigation }) {
             });
           }}
         />
-        <Modal
-          visible={isSidebarOpen}
-          animationType="none"
-          transparent={true}
-          onRequestClose={toggleSidebar}
-        >
-          <View style={styles.sidebar}>
-            <TouchableOpacity onPress={toggleSidebar} style={styles.imageButtonSidebar}>
-              <Image
-                source={require('./../../assets/blue_bracelet.png')}
-                style={styles.imageSidebar}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.sidebarButton}>
-              <Text  onPress={() => {navigation.navigate('account', { userObj: user })}} style={styles.sidebarButtonText}>Account</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.sidebarButton}>
-              <Text onPress={() => {navigation.navigate('sBle', { userObj: user })}} style={styles.sidebarButtonText}>Settings</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
       </View>
     </View>
   );
@@ -144,9 +120,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    bottom: Dimensions.get('window').height * 0.25, // Adjusted position based on screen height
+    bottom: 210,
     position: 'absolute',
   },
+
   imageButton: {
     position: 'absolute',
     top: 10,
@@ -156,67 +133,4 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
-  sidebar: {
-    backgroundColor: '#1c1b1d',
-    width: 80,
-    height: '100%',
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    paddingTop: 50,
-    paddingRight: 10,
-    alignItems: 'center',
-    // top:40, //this one alligns it on the white part up top
-    top:100,
-    shadowColor: '#000', //color of shadow
-    shadowOffset: {
-      width: -3, // horizontal offset
-      height: 0, // vertical offset
-    },
-    shadowOpacity: 0.5, // Opacity of the shadow
-    shadowRadius: 5, // Radius of the shadow
-    elevation: 5, 
-    top: Dimensions.get('window').height * 0.1,
-
-  },
-  sidebarButton: {
-    marginTop: 10, 
-    paddingVertical: 10,
-    width: '100%',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#fff', 
-    borderTopWidth: 1,
-    borderTopColor: '#fff', 
-  },
-  sidebarButtonText: {
-    color: '#fff', 
-    fontWeight: 'bold', 
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    color: '#fff',
-  },
-  imageButtonSidebar: {
-    position: 'absolute',
-    top: 10,
-    left: 10, 
-  },
-  imageSidebar: {
-    width: 50,
-    height: 50,
-  },
-progressContainer: {
-  flexDirection: 'row',
-  alignItems: 'center',
-},
-goalText: {
-  marginLeft: 10,
-  color: '#fff',
-  fontSize: 16,
-  marginTop:20,
-},
-
 });
