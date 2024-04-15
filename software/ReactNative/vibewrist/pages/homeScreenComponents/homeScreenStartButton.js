@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   Text,
+  Dimensions,
 } from "react-native";
 import { useUser } from "../UserContext";
 
@@ -55,12 +56,15 @@ const StartButton = ({ onPress }) => {
 //   let studyTime = user.getStudyLength();
 //   let breakTime = user.getBreakLength();
 //   // manageStudyTime(dataCharacteristic, studyTime);
-//
+
 //   // Stuff for vibration module
 //   let buzzLength = user.getBuzzDuration();
 //   let buzzFreq = user.getBuzzFrequency();
 //   // getDistance(deviceCurr, dataCharacteristic);
 // };
+
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   container: {
@@ -94,7 +98,10 @@ const styles = StyleSheet.create({
   button: {
     position: "absolute",
     left: 122,
-    bottom: 40,
+    // bottom: 40,
+    // top: 390,
+    left: windowWidth / 2 - 75, // Centered horizontally
+    bottom: (windowHeight * 0.02), // Adjusted position based on screen height
     marginTop: 30,
     width: 150,
     height: 150,
