@@ -7,22 +7,22 @@ export default function AccountScreen({route}) {
     const { userObj } = route.params;
 
   // Mock data for stats
-//   const stats = {
-//     today: '3 hours',
-//     thisWeek: '12 hours',
-//     allTime: '150 hours',
-//     cycleCount: 25,
-//     violationCount: 3,
-//     leaderboardRank: 10,
-//   };
   const stats = {
-    today: userObj.today,
-    thisWeek: userObj.thisWeek,
-    allTime: userObj.allTime,
-    cycleCount: userObj.cycleCount,
-    violationCount: userObj.violationCount,
-    leaderboardRank: userObj.leaderboardRank,
+    today: '3 hours',
+    thisWeek: '12 hours',
+    allTime: '150 hours',
+    cycleCount: 25,
+    violationCount: 3,
+    leaderboardRank: 10,
   };
+//   const stats = {
+//     today: userObj.today,
+//     thisWeek: userObj.thisWeek,
+//     allTime: userObj.allTime,
+//     cycleCount: userObj.cycleCount,
+//     violationCount: userObj.violationCount,
+//     leaderboardRank: userObj.leaderboardRank,
+//   };
 
 
   return (
@@ -32,7 +32,7 @@ export default function AccountScreen({route}) {
           source={require('./../../assets/pfp.jpg')}
           style={styles.profilePicture}
         />
-        <Text style={styles.username}>{userObj.username}</Text>
+        <Text style={styles.username}>{userObj.getUserName()}</Text>
       </View>
       <View style={styles.statsContainer}>
         <View style={styles.statRow}>
