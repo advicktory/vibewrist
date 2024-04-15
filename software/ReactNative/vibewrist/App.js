@@ -9,6 +9,10 @@ import User from "./pages/User";
 //Screens
 import HomeScreen from "./pages/homeScreenComponents/home";
 import BleDeviceSettingsScreen from "./pages/bleScreenComponents/bleBraceletSettingsScreen";
+import Login from "./pages/loginScreen/login.js"
+import Account from "./pages/accountScreen/account.js"
+
+
 
 // These are meant to get the reference to the device to be accessed anywhere
 const user = new User();
@@ -18,11 +22,13 @@ function App() {
   return (
     <NavigationContainer>
       <UserProvider user={user}>
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator initialRouteName="login">
           <Stack.Screen name="Home" component={HomeScreen} />
           {/* <Stack.Screen name="cBle" component={BleConnectedScreen}>*/}
           {/*<Stack.Screen name="dBle" component={BleDisconnectedScreen} />*/}
           <Stack.Screen name="sBle" component={BleDeviceSettingsScreen} />
+          <Stack.Screen name="login" component={Login} />
+          <Stack.Screen name="account" component={Account} />
         </Stack.Navigator>
       </UserProvider>
     </NavigationContainer>

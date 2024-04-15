@@ -50,11 +50,7 @@ export default function cycleLengthSelector() {
     // { key: 4, value: 4 },
   ];
 
-  // const handleAddPreset = () => {
-  //   const newKey = preset.length; // Generate a unique key for the new preset
-  //   setPreset([...preset, { key: newKey, value: newPresetValue }]);
-  //   setNewPresetValue(""); // Clear input after adding preset
-  // };
+
 
   const handleSelectPreset = (key) => {
     setCurrPresetKey(key);
@@ -97,7 +93,6 @@ export default function cycleLengthSelector() {
               dropdownTextStyles={styles.dropdownContainer}
               boxStyles={styles.boxContainer}
               dropdownStyles={styles.boxContainer}
-              // selected={currPresetKey} // Set selected preset key
             />
 
             <SelectList
@@ -158,10 +153,10 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     // justifyContent: "center",
     // position: "relative",
-    backgroundColor: '#0066ff', // Change the background color here
-    borderRadius: 20, // Adjust the border radius to make it more rounded
-    padding: 10, // Add padding to the container
-    margin: 20, // Add margin to the container
+    backgroundColor: '#0066ff', 
+    borderRadius: 20, 
+    padding: 10, 
+    margin: 20,
     // position: "relative",
     // bottom:90
   },
@@ -184,7 +179,7 @@ const styles = StyleSheet.create({
     // fontSize: 10,
   },
   boxContainer: {
-    borderColor: 'white', // Set background color to white
+    borderColor: 'white',
     margin: 5,
   },
 });
