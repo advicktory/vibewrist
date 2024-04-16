@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 // import { View, Text, Button } from "react-native";
 import {
   View,
@@ -7,9 +7,9 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-} from 'react-native';
-import SavePreset from './savePreset';
-import { SelectList } from 'react-native-dropdown-select-list';
+} from "react-native";
+import SavePreset from "./savePreset";
+import { SelectList } from "react-native-dropdown-select-list";
 
 export default function cycleLengthSelector() {
   const [studyLengthSelected, setStudyLengthSelected] = useState([]);
@@ -25,6 +25,8 @@ export default function cycleLengthSelector() {
     { key: 60, value: 60 },
   ];
   const breakOptions = [
+    { key: 1, value: 1 },
+    { key: 2, value: 2 },
     { key: 15, value: 15 },
     { key: 30, value: 30 },
     { key: 45, value: 45 },
@@ -40,7 +42,7 @@ export default function cycleLengthSelector() {
     // { key: 0, value: "None" },
     {
       key: 1,
-      value: 'Pomodoro Method',
+      value: "Pomodoro Method",
       studyLength: 25,
       breakLength: 5,
       cycleCount: 2,
@@ -50,11 +52,9 @@ export default function cycleLengthSelector() {
     // { key: 4, value: 4 },
   ];
 
-
-
   const handleSelectPreset = (key) => {
     setCurrPresetKey(key);
-    console.log('Received new preset:', presetSelected[key].studyLength);
+    console.log("Received new preset:", presetSelected[key].studyLength);
     // console.log("Received new presetTTTT:", newPreset[0].studyLength);
     setStudyLengthSelected(presetSelected[key].studyLength.toString());
     setBreakLengthSelected(presetSelected[key].breakLength.toString());
@@ -153,9 +153,9 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     // justifyContent: "center",
     // position: "relative",
-    backgroundColor: '#0066ff', 
-    borderRadius: 20, 
-    padding: 10, 
+    backgroundColor: "#0066ff",
+    borderRadius: 20,
+    padding: 10,
     margin: 20,
     // position: "relative",
     // bottom:90
@@ -163,23 +163,23 @@ const styles = StyleSheet.create({
 
   topPortion: {
     // flex:1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     // marginBottom: 10,
     // position: "absolute",
   },
   inputContainer: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     // fontSize: 10,
   },
   dropdownContainer: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     // fontSize: 10,
   },
   boxContainer: {
-    borderColor: 'white',
+    borderColor: "white",
     margin: 5,
   },
 });
