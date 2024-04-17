@@ -74,11 +74,17 @@ export default function HomeScreen({ navigation }) {
             style={styles.image}
           />
         </TouchableOpacity>
+
         <View style={styles.cycleContainer}>
           {cycleOptions}
           <CycleReport cycleOrder={cycleLengths} />
           <ProgressBar />
             <Text style={styles.goalText}>Goal for this week: [Your goal here]</Text>
+            <Text style={{color:"white"}}>User Current Study Value: {user.getStudyLength()}</Text>
+            <Text style={{color:"white"}}>User Current Break Value: {user.getBreakLength()}</Text>
+            <Text style={{color:"white"}}>User Current Cycle Value: {user.getCycleAmount()}</Text>
+
+
         </View>
         <StartButton
           onPress={() => {
