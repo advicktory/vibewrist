@@ -40,12 +40,13 @@ const StartButton = ({ onPress }) => {
       <Modal visible={isPaused} transparent animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text>Do you want to pause?</Text>
+            {/* <Text>Do you want to pause?</Text> */}
+            <Text>Ending session will result in progress not saved.</Text>
             <TouchableOpacity
               style={[styles.stopButton, { backgroundColor: 'red' }]}
               onPress={handlePausePress}
             >
-              <Text style={styles.stopButtonText}>Stop</Text>
+              <Text style={styles.stopButtonText}>End session</Text>
             </TouchableOpacity>
           </View>
         </View>

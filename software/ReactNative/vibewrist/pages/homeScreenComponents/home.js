@@ -120,10 +120,10 @@ export default function HomeScreen({ navigation }) {
               />
             </TouchableOpacity>
             <TouchableOpacity style={styles.sidebarButton}>
-              <Text  onPress={() => {navigation.navigate('account', { userObj: user })}} style={styles.sidebarButtonText}>Account</Text>
+              <Text  onPress={() => {navigation.navigate('account', { userObj: user }); setIsSidebarOpen(false);}} style={styles.sidebarButtonText}>Account</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sidebarButton}>
-              <Text onPress={() => {navigation.navigate('sBle', { userObj: user })}} style={styles.sidebarButtonText}>Settings</Text>
+              <Text onPress={() => {navigation.navigate('sBle', { userObj: user }); setIsSidebarOpen(false);}} style={styles.sidebarButtonText}>Settings</Text>
             </TouchableOpacity>
           </View>
         </Modal>
