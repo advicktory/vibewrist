@@ -1,5 +1,9 @@
 import { CurrentRenderContext } from "@react-navigation/native";
 import { View, Text, StyleSheet } from "react-native";
+import { useUser } from '../UserContext';
+import { useState,useEffect } from "react";
+
+
 
 function calculateTotalTime(sTime, bTime, cAmount) {
   // Convert each value to an integer
@@ -19,6 +23,20 @@ function calculateTotalTime(sTime, bTime, cAmount) {
 
 
 export default function cycleReport(props) {
+  // const user = useUser(); // Get the user object from the UserContext
+
+
+  // const [studyLengthSelected, setStudyLengthSelected] = useState([]);
+  // const [breakLengthSelected, setBreakLengthSelected] = useState([]);
+  // const [cycleAmountSelected, setCycleAmountSelected] = useState([]);
+
+
+  // useEffect(() => {
+  //   // Update the user object with the selected values
+  //   user.setStudyLength(parseInt(sLength));
+  //   user.setBreakLength(parseInt(bLength));
+  //   user.setCycleAmount(parseInt(cAmount));
+  // },[studyLengthSelected, breakLengthSelected, cycleAmountSelected, user]);
   const { sLength, bLength, cAmount, isMinutes } = props.cycleOrder;
   return (
     <>
