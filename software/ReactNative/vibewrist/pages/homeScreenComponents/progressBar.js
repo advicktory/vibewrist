@@ -16,8 +16,8 @@ export default function Loader() {
   }, []);
 
   const goalTime= 5
-  const timeStudied=2
-  range=((timeStudied / goalTime) * 100)/1.4
+  const timeStudied=5
+  range=((timeStudied / goalTime) * 100)
   const loaderWidth = progress.interpolate({
     inputRange: [0, 1],
     outputRange: ['0%', `${range}%`],
@@ -25,11 +25,11 @@ export default function Loader() {
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.loader, { width: loaderWidth }]} >
-        {/* <Text>{timeStudied} hours completed</Text> */}
-        <Text>{((timeStudied / goalTime) * 100)}%</Text>
-
-      </Animated.View>
+      <View style={styles.progressBarContainer}>
+        <Animated.View style={[styles.loader, { width: loaderWidth }]} >
+          <Text>{((timeStudied / goalTime) * 100)}%</Text>
+        </Animated.View>
+      </View>
     </View>
   );
 }
@@ -40,10 +40,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loader: {
+    height: "100%",
+    backgroundColor: "white",
+    borderRadius: 5,
+  },
+  progressBarContainer: {
     height: 17,
-    backgroundColor: 'white',
-    position: 'absolute',
-    left: -140,
-    borderRadius:5,
+    width: 300, 
+    backgroundColor: "transparent",
+    borderWidth: 1, 
+    borderColor: "white", 
+    borderRadius: 5,
+    overflow: "hidden", 
   },
 });
