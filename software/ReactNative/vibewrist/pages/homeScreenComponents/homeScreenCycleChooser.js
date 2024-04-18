@@ -16,14 +16,6 @@ import { SelectList } from "react-native-dropdown-select-list";
 export default function cycleLengthSelector() {
   const user = useUser(); // Get the user object from the UserContext
 
-  useEffect(() => {
-    // Update the user object with the selected values
-    user.setStudyLength(parseInt(studyLengthSelected));
-    user.setBreakLength(parseInt(breakLengthSelected));
-    user.setCycleAmount(parseInt(cycleAmountSelected));
-  },[studyLengthSelected, breakLengthSelected, cycleAmountSelected, user]);
-
-
 
   const [studyLengthSelected, setStudyLengthSelected] = useState([]);
   const [breakLengthSelected, setBreakLengthSelected] = useState([]);
