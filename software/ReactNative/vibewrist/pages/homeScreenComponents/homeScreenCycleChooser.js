@@ -11,7 +11,7 @@ import {
 import SavePreset from "./savePreset";
 import { SelectList } from "react-native-dropdown-select-list";
 
-export default function cycleLengthSelector() {
+export default function cycleLengthSelector(user) {
   const [studyLengthSelected, setStudyLengthSelected] = useState([]);
   const [breakLengthSelected, setBreakLengthSelected] = useState([]);
   const [cycleAmountSelected, setCycleAmountSelected] = useState([]);
@@ -137,6 +137,8 @@ export default function cycleLengthSelector() {
           breakLengthSelected={breakLengthSelected}
           cycleAmountSelected={cycleAmountSelected}
           onUpdatePreset={handleUpdatePreset} // Pass the function as prop
+          user={user}
+
         />
       </>
     ),

@@ -13,10 +13,12 @@ export default function NewPresetCycleButton(props) {
     // Handle saving the new preset cycle with the name `newPresetName`
     // and the selected options
     // const user = useUser();
+    // console.log('User Object:', user);
+
 
     
     const newPreset = {
-      // username:user.getUserName(),
+      username:props.user.getUserName(),
       key: preset.length,
       value: newPresetName,
       studyLength: props.studyLengthSelected,
