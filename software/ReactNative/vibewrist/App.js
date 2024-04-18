@@ -11,6 +11,8 @@ import HomeScreen from "./pages/homeScreenComponents/home";
 import BleDeviceSettingsScreen from "./pages/bleScreenComponents/bleBraceletSettingsScreen";
 import Login from "./pages/loginScreen/login.js"
 import Account from "./pages/accountScreen/account.js"
+import SignUp from "./pages/loginScreen/signup"
+
 
 
 
@@ -29,6 +31,7 @@ function App() {
           <Stack.Screen name="sBle" component={BleDeviceSettingsScreen} />
           <Stack.Screen name="login" component={Login} />
           <Stack.Screen name="account" component={Account} />
+          <Stack.Screen name="signup" component={SignUp}/>
         </Stack.Navigator>
       </UserProvider>
     </NavigationContainer>

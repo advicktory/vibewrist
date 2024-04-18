@@ -13,10 +13,7 @@ import { useUser } from '../UserContext'; // Import the UserContext hook
 import SavePreset from "./savePreset";
 import { SelectList } from "react-native-dropdown-select-list";
 
-export default function cycleLengthSelector() {
-  const user = useUser(); // Get the user object from the UserContext
-
-
+export default function cycleLengthSelector(user) {
   const [studyLengthSelected, setStudyLengthSelected] = useState([]);
   const [breakLengthSelected, setBreakLengthSelected] = useState([]);
   const [cycleAmountSelected, setCycleAmountSelected] = useState([]);
@@ -142,6 +139,8 @@ export default function cycleLengthSelector() {
           breakLengthSelected={breakLengthSelected}
           cycleAmountSelected={cycleAmountSelected}
           onUpdatePreset={handleUpdatePreset} // Pass the function as prop
+          user={user}
+
         />
       </>
     ),

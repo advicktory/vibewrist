@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Button, Modal, TextInput,Image,TouchableOpacity,Text } from "react-native";
+import axios from 'axios'; // Import axios for HTTP requests
 
 export default function NewPresetCycleButton(props) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -8,10 +9,16 @@ export default function NewPresetCycleButton(props) {
   // Define additional states for studyLengthSelected, breakLengthSelected, and cycleAmountSelected
 
 
-  const handleSavePreset = () => {
+  const handleSavePreset = async () => {
     // Handle saving the new preset cycle with the name `newPresetName`
     // and the selected options
+    // const user = useUser();
+    // console.log('User Object:', user);
+
+
+    
     const newPreset = {
+      username:props.user.getUserName(),
       key: preset.length,
       value: newPresetName,
       studyLength: props.studyLengthSelected,
@@ -20,8 +27,15 @@ export default function NewPresetCycleButton(props) {
     };
     // Update the preset state to include the new preset
     setPreset([...preset, newPreset]);
-    
-    
+    try {
+      const response = await axios.post('http://localhost:3000/savePreset', newPreset);
+      console.log('Preset saved successfully:', response.data);
+      // Additional logic after saving the preset
+      // For example, update UI or show a success message
+    } catch (error) {
+      console.error('Error saving preset:', error);
+      // Handle error (display message, reset form, etc.)
+    }
     // Close the modal after saving
     setModalVisible(false);
     // Reset the input field

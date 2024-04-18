@@ -29,7 +29,7 @@ export default function HomeScreen({ navigation }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to track if the sidebar/modal is open
   const { deviceRef: deviceCurr, data: dataCharacteristic } =
     useConnectToDevice();
-  const { cycleOptions, cycleOptionResponces } = cycleLengthSelector();
+  const { cycleOptions, cycleOptionResponces } = cycleLengthSelector(user);
   const cycleLengths = {
     sLength: cycleOptionResponces[0],
     bLength: cycleOptionResponces[1],
