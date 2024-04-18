@@ -115,7 +115,9 @@ const styles = StyleSheet.create({
 
   },
   customCycleButton: {
-    backgroundColor:'#0066ff',
+    // backgroundColor:'#0066ff',
+    backgroundColor:"#1c1b1d",
+
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,

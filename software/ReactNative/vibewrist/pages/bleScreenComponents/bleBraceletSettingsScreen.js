@@ -117,15 +117,21 @@ export default function BleDeviceSettingsScreen({ navigation }) {
       <View style={styles.settings}>
         <View style={styles.setting}>
           <Text style={styles.settingLabel}>Set range of detection:</Text>
-          {buzzSensitivityDropdown}
+          <View style={styles.selectorContainer}>
+            {buzzSensitivityDropdown}
+          </View>
         </View>
         <View style={styles.setting}>
           <Text style={styles.settingLabel}>Set vibration rhythm:</Text>
-          {buzzRhythmDropdown}
+          <View style={styles.selectorContainer}>
+            {buzzRhythmDropdown}
+          </View>
         </View>
         <View style={styles.setting}>
           <Text style={styles.settingLabel}>Set vibration strength:</Text>
-          {buzzStrengthDropdown}
+          <View style={styles.selectorContainer}>
+            {buzzStrengthDropdown}
+          </View>
         </View>
       </View>
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>

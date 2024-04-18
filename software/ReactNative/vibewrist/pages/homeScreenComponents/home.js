@@ -20,6 +20,8 @@ import StartButton from './homeScreenStartButton';
 import ProgressBar from './progressBar';
 import SavePreset from './savePreset';
 import { atob, btoa } from 'react-native-quick-base64';
+import GoalTimeModal from './goalTime'; // Import the GoalTimeModal component
+
 
 export default function HomeScreen({ navigation }) {
   const user = useUser();
@@ -64,6 +66,17 @@ export default function HomeScreen({ navigation }) {
   const toggleSidebar = () => {
     setIsSidebarOpen((prevState) => !prevState);
   };
+  const [isGoalModalVisible, setIsGoalModalVisible] = useState(false); // State to track the visibility of the goal time modal
+  const [goalTime, setGoalTime] = useState(""); // State to store the selected goal time
+
+  const toggleGoalModal = () => {
+    setIsGoalModalVisible((prev) => !prev); // Toggle the visibility of the goal time modal
+  };
+
+  const handleSaveGoalTime = (selectedTime) => {
+    setGoalTime(selectedTime); // Save the selected goal time
+  };
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -74,14 +87,18 @@ export default function HomeScreen({ navigation }) {
             style={styles.image}
           />
         </TouchableOpacity>
+
         <View style={styles.cycleContainer}>
           {cycleOptions}
           <CycleReport cycleOrder={cycleLengths} />
           <ProgressBar />
-            <Text style={styles.goalText}>Goal for this week: [Your goal here]</Text>
+          <Text style={styles.goalText}>Goal for this week: <Text onPress={toggleGoalModal}>{goalTime || "[Your goal here]"}</Text></Text>
+      
+               
+
         </View>
         <StartButton
-          onPress={() => {
+          onPress={() => {console.log(user)
             setStartDistanceFn((currentStartDistanceFn) => {
               // Check if already true, if so, return the same value without changing it
               if (currentStartDistanceFn) {
@@ -96,6 +113,7 @@ export default function HomeScreen({ navigation }) {
                 .then(() => {
                   //console.log('manageStudyTime completed');
                   setStartDistanceFn(false); // Stop distance tracking once manageStudyTime is finished
+
                 })
                 .catch((error) => {
                   console.error('Error in manageStudyTime:', error);
@@ -106,6 +124,12 @@ export default function HomeScreen({ navigation }) {
             });
           }}
         />
+        {/* Render the GoalTimeModal component */}
+        <GoalTimeModal 
+          isVisible={isGoalModalVisible} 
+          onClose={toggleGoalModal} 
+          onSave={handleSaveGoalTime} 
+        />   
         <Modal
           visible={isSidebarOpen}
           animationType="none"
@@ -120,10 +144,10 @@ export default function HomeScreen({ navigation }) {
               />
             </TouchableOpacity>
             <TouchableOpacity style={styles.sidebarButton}>
-              <Text  onPress={() => {navigation.navigate('account', { userObj: user })}} style={styles.sidebarButtonText}>Account</Text>
+              <Text  onPress={() => {navigation.navigate('account', { userObj: user }); setIsSidebarOpen(false);}} style={styles.sidebarButtonText}>Account</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sidebarButton}>
-              <Text onPress={() => {navigation.navigate('sBle', { userObj: user })}} style={styles.sidebarButtonText}>Settings</Text>
+              <Text onPress={() => {navigation.navigate('sBle', { userObj: user }); setIsSidebarOpen(false);}} style={styles.sidebarButtonText}>Settings</Text>
             </TouchableOpacity>
           </View>
         </Modal>
