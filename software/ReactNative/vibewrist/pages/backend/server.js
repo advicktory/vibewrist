@@ -71,6 +71,28 @@ app.post('/login', async (req, res) => {
     }
 });
 
+async function savePreset(client, presetData) {
+    try {
+        const result = await client.db("VibeWrist").collection("presets").insertOne(presetData);
+        console.log(`New preset saved with the following id: ${result.insertedId}`);
+        return result.insertedId;
+    } catch (error) {
+        console.error('Error saving preset:', error);
+        throw error; // Throw error to handle it in the calling function
+    }
+}
+
+app.post('/savePreset', async (req, res) => {
+    const presetData = req.body;
+    try {
+        const insertedId = await savePreset(client, presetData);
+        res.status(201).json({ message: 'Preset saved successfully', insertedId });
+    } catch (error) {
+        console.error('Error saving preset:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
