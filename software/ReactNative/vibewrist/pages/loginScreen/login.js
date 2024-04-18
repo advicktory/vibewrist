@@ -1,48 +1,32 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput } from "react-native";
-import * as Font from 'expo-font';
+import axios from 'axios'; // Import axios for HTTP requests
 import braceletPng from '../../assets/blue_bracelet.png';
 
-// import { NavigationContainer } from "@react-navigation/native";
-// import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-// // User Shit
-// import { UserProvider } from "./pages/UserContext";
-// import User from "./pages/User";
-
-
-// import axios from 'axios';
-
-
-export default function Login({navigation}) {
+export default function Login({ navigation }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [loginState, setState] = useState(true);
+    const [loginFailed, setLoginFailed] = useState(false);
 
-    // const handleSubmit = async () => {
-    //     try {
-    //         const response = await axios.post('http://localhost:5001/login', {
-    //             username,
-    //             password,
-    //         });
+    const handleSubmit = async () => {
+        try {
+            // Send a POST request to the server to check if the user exists
+            const response = await axios.post('http://localhost:3000/login', {
+                username,
+                password,
+            });
 
-    //         if (response.status === 200) {
-    //             console.log('Login successful!');
-    //             // Additional logic after successful login (e.g., redirect)
-    //         }
-    //     } catch (error) {
-    //         console.error('Error logging in:', error);
-    //         // Handle login error (display message, reset form, etc.)
-    //     }
-    // };
-
-    function LoginFail() {
-        return (
-            <Text style={styles.loginFailedText}>
-                This username and password combo is invalid. Please try again.
-            </Text>
-        );
-    }
+            if (response.status === 200) {
+                console.log('Login successful!');
+                navigation.navigate('Home');
+                // Additional logic after successful login (e.g., redirect)
+            }
+        } catch (error) {
+            console.error('Error logging in:', error);
+            // Handle login error (display message, reset form, etc.)
+            setLoginFailed(true);
+        }
+    };
 
     return (
         <View style={styles.background}>
@@ -69,28 +53,24 @@ export default function Login({navigation}) {
                     />
                 </View>
 
-                <TouchableOpacity onPress={() => {navigation.navigate('Home', )}} style={styles.signin}>
-                    <Text  style={{ color: '#fff' }}>Sign in</Text>
-                </TouchableOpacity>
-                {/* <TouchableOpacity style={styles.signin}>
-                    <Text style={{ color: '#fff' }}>Let's Get Started</Text>
-                </TouchableOpacity> */}
+                {loginFailed && <Text style={styles.loginFailedText}>Invalid username or password. Please try again.</Text>}
 
-                <Text style={styles.smallGreyText}>Don't have an account? <Text style={{ color:"#157AFE" }} onPress={() => {navigation.navigate('signup', )}}> Sign up here</Text></Text>
+                <TouchableOpacity onPress={handleSubmit} style={styles.signin}>
+                    <Text style={{ color: '#fff' }}>Sign in</Text>
+                </TouchableOpacity>
+
+                <Text style={styles.smallGreyText}>Don't have an account? <Text style={{ color:"#157AFE" }} onPress={() => navigation.navigate('signup')}> Sign up here</Text></Text>
             </View>
         </View>
     );
 }
 
-const styles = {
+const styles = StyleSheet.create({
     background: {
         backgroundColor: '#3d85c6',
-        // backgroundColor:"#1c1b1d",
-        opacity: 1,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        
     },
     box: {
         backgroundColor: '#fff',
@@ -146,11 +126,9 @@ const styles = {
     image:{
         width:150,
         height: 150,
-
     },
     imageContainer:{
-    // flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
     }
-};
+});

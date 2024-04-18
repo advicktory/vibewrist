@@ -3,9 +3,9 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput } from "reac
 import * as Font from 'expo-font';
 import braceletPng from '../../assets/blue_bracelet.png';
 
-const SERVER_URL = 'http://localhost:3000/register'; // Update with your server URL
+const SERVER_URL = 'http://localhost:3000/signup'; // Update with your server URL
 
-export default function Login({navigation}) {
+export default function SignUp({navigation}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -27,6 +27,7 @@ export default function Login({navigation}) {
 
             if (response.ok) {
                 console.log('User registered!');
+                navigation.navigate('Home');
                 // Redirect or perform actions after successful registration
             } else {
                 setError('Failed to register user');
