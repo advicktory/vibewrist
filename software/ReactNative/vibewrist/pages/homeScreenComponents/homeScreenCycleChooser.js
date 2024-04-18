@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 // import { View, Text, Button } from "react-native";
 import {
   View,
@@ -8,10 +8,15 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import { useUser } from '../UserContext'; // Import the UserContext hook
+
 import SavePreset from "./savePreset";
 import { SelectList } from "react-native-dropdown-select-list";
 
 export default function cycleLengthSelector() {
+  const user = useUser(); // Get the user object from the UserContext
+
+
   const [studyLengthSelected, setStudyLengthSelected] = useState([]);
   const [breakLengthSelected, setBreakLengthSelected] = useState([]);
   const [cycleAmountSelected, setCycleAmountSelected] = useState([]);
@@ -153,7 +158,8 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     // justifyContent: "center",
     // position: "relative",
-    backgroundColor: "#0066ff",
+    // backgroundColor: "#0066ff",
+    backgroundColor:"#1c1b1d",
     borderRadius: 20,
     padding: 10,
     margin: 20,
