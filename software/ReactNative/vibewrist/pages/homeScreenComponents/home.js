@@ -21,7 +21,7 @@ import ProgressBar from './progressBar';
 import SavePreset from './savePreset';
 import { atob, btoa } from 'react-native-quick-base64';
 import GoalTimeModal from './goalTime'; // Import the GoalTimeModal component
-
+import { ScrollView } from 'react-native';
 
 export default function HomeScreen({ navigation }) {
   const user = useUser();
@@ -67,7 +67,7 @@ export default function HomeScreen({ navigation }) {
     setIsSidebarOpen((prevState) => !prevState);
   };
   const [isGoalModalVisible, setIsGoalModalVisible] = useState(false); // State to track the visibility of the goal time modal
-  const [goalTime, setGoalTime] = useState(""); // State to store the selected goal time
+  const [goalTime, setGoalTime] = useState(''); // State to store the selected goal time
 
   const toggleGoalModal = () => {
     setIsGoalModalVisible((prev) => !prev); // Toggle the visibility of the goal time modal
@@ -76,7 +76,6 @@ export default function HomeScreen({ navigation }) {
   const handleSaveGoalTime = (selectedTime) => {
     setGoalTime(selectedTime); // Save the selected goal time
   };
-
 
   return (
     <View style={{ flex: 1 }}>
@@ -92,13 +91,17 @@ export default function HomeScreen({ navigation }) {
           {cycleOptions}
           <CycleReport cycleOrder={cycleLengths} />
           <ProgressBar />
-          <Text style={styles.goalText}>Goal for this week: <Text onPress={toggleGoalModal}>{goalTime || "[Your goal here]"}</Text></Text>
-      
-               
-
+          <Text style={styles.goalText}>
+            Goal for this week:{' '}
+            <Text onPress={toggleGoalModal}>
+              {goalTime || '[Your goal here]'}
+            </Text>
+          </Text>
         </View>
+
         <StartButton
-          onPress={() => {console.log(user)
+          onPress={() => {
+            console.log(user);
             setStartDistanceFn((currentStartDistanceFn) => {
               // Check if already true, if so, return the same value without changing it
               if (currentStartDistanceFn) {
@@ -113,7 +116,6 @@ export default function HomeScreen({ navigation }) {
                 .then(() => {
                   //console.log('manageStudyTime completed');
                   setStartDistanceFn(false); // Stop distance tracking once manageStudyTime is finished
-
                 })
                 .catch((error) => {
                   console.error('Error in manageStudyTime:', error);
@@ -125,11 +127,11 @@ export default function HomeScreen({ navigation }) {
           }}
         />
         {/* Render the GoalTimeModal component */}
-        <GoalTimeModal 
-          isVisible={isGoalModalVisible} 
-          onClose={toggleGoalModal} 
-          onSave={handleSaveGoalTime} 
-        />   
+        <GoalTimeModal
+          isVisible={isGoalModalVisible}
+          onClose={toggleGoalModal}
+          onSave={handleSaveGoalTime}
+        />
         <Modal
           visible={isSidebarOpen}
           animationType="none"
@@ -137,17 +139,36 @@ export default function HomeScreen({ navigation }) {
           onRequestClose={toggleSidebar}
         >
           <View style={styles.sidebar}>
-            <TouchableOpacity onPress={toggleSidebar} style={styles.imageButtonSidebar}>
+            <TouchableOpacity
+              onPress={toggleSidebar}
+              style={styles.imageButtonSidebar}
+            >
               <Image
                 source={require('./../../assets/blue_bracelet.png')}
                 style={styles.imageSidebar}
               />
             </TouchableOpacity>
             <TouchableOpacity style={styles.sidebarButton}>
-              <Text  onPress={() => {navigation.navigate('account', { userObj: user }); setIsSidebarOpen(false);}} style={styles.sidebarButtonText}>Account</Text>
+              <Text
+                onPress={() => {
+                  navigation.navigate('account', { userObj: user });
+                  setIsSidebarOpen(false);
+                }}
+                style={styles.sidebarButtonText}
+              >
+                Account
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sidebarButton}>
-              <Text onPress={() => {navigation.navigate('sBle', { userObj: user }); setIsSidebarOpen(false);}} style={styles.sidebarButtonText}>Settings</Text>
+              <Text
+                onPress={() => {
+                  navigation.navigate('sBle', { userObj: user });
+                  setIsSidebarOpen(false);
+                }}
+                style={styles.sidebarButtonText}
+              >
+                Settings
+              </Text>
             </TouchableOpacity>
           </View>
         </Modal>
@@ -191,7 +212,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     alignItems: 'center',
     // top:40, //this one alligns it on the white part up top
-    top:100,
+    top: 100,
     shadowColor: '#000', //color of shadow
     shadowOffset: {
       width: -3, // horizontal offset
@@ -199,23 +220,22 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.5, // Opacity of the shadow
     shadowRadius: 5, // Radius of the shadow
-    elevation: 5, 
+    elevation: 5,
     top: Dimensions.get('window').height * 0.1,
-
   },
   sidebarButton: {
-    marginTop: 10, 
+    marginTop: 10,
     paddingVertical: 10,
     width: '100%',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#fff', 
+    borderBottomColor: '#fff',
     borderTopWidth: 1,
-    borderTopColor: '#fff', 
+    borderTopColor: '#fff',
   },
   sidebarButtonText: {
-    color: '#fff', 
-    fontWeight: 'bold', 
+    color: '#fff',
+    fontWeight: 'bold',
   },
   closeButton: {
     position: 'absolute',
@@ -226,21 +246,20 @@ const styles = StyleSheet.create({
   imageButtonSidebar: {
     position: 'absolute',
     top: 10,
-    left: 10, 
+    left: 10,
   },
   imageSidebar: {
     width: 50,
     height: 50,
   },
-progressContainer: {
-  flexDirection: 'row',
-  alignItems: 'center',
-},
-goalText: {
-  marginLeft: 10,
-  color: '#fff',
-  fontSize: 16,
-  marginTop:20,
-},
-
+  progressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  goalText: {
+    marginLeft: 10,
+    color: '#fff',
+    fontSize: 16,
+    marginTop: 20,
+  },
 });
