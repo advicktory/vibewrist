@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
 import braceletPng from '../../assets/blue_bracelet.png';
 import { useUser } from '../UserContext';
+import axios from 'axios'; // Import axios for HTTP requests
 
 export default function BleDeviceSettingsScreen({ navigation }) {
   const user = useUser();
@@ -103,10 +104,34 @@ export default function BleDeviceSettingsScreen({ navigation }) {
     };
   }
 
-  const handleSave = () => {
-    navigation.navigate('Home', {
-      user: user,
-    });
+  const handleSave = async () => {
+    const userDetails = {
+      username: user.getUserName(), // This should be dynamically set
+      detectionRange: user.getBuzzRange(),
+      vibrationRhythm: user.getBuzzDuration(),
+      vibrationStrength: user.getBuzzFrequency(),
+    };
+
+    try {
+      const response = await fetch('http://localhost:3000/saveBleSetting', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userDetails),
+      });
+
+      if (response.ok) {
+        navigation.navigate('Home');
+      } else if (!response.ok) {
+        const errorText = await response.text();
+        console.log('Server responded with an error:', errorText);
+        throw new Error('Failed to save user settings: ' + errorText);
+      }
+      console.log('User settings updated successfully:', await response.text());
+    } catch (error) {
+      console.error('Error saving user settings:', error);
+    }
   };
 
   return (
@@ -123,15 +148,11 @@ export default function BleDeviceSettingsScreen({ navigation }) {
         </View>
         <View style={styles.setting}>
           <Text style={styles.settingLabel}>Set vibration rhythm:</Text>
-          <View style={styles.selectorContainer}>
-            {buzzRhythmDropdown}
-          </View>
+          <View style={styles.selectorContainer}>{buzzRhythmDropdown}</View>
         </View>
         <View style={styles.setting}>
           <Text style={styles.settingLabel}>Set vibration strength:</Text>
-          <View style={styles.selectorContainer}>
-            {buzzStrengthDropdown}
-          </View>
+          <View style={styles.selectorContainer}>{buzzStrengthDropdown}</View>
         </View>
       </View>
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
