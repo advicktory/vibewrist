@@ -137,6 +137,23 @@ app.post('/saveBleSetting', async (req, res) => {
   }
 });
 
+app.get('/getPresets/:username', async (req, res) => {
+  const { username } = req.params;
+  try {
+    const presets = await client
+      .db('VibeWrist')
+      .collection('presets')
+      .find({ username }) // Query presets based on the username
+      .toArray();
+    res.status(200).json({ presets });
+  } catch (error) {
+    console.error('Error fetching presets:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
