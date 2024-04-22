@@ -30,6 +30,7 @@ export default function Login({ navigation }) {
         console.log('Login successful!');
         navigation.navigate('Home');
         user.setUserName(username);
+
         // Additional logic after successful login (e.g., redirect)
       }
     } catch (error) {
