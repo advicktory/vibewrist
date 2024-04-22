@@ -114,9 +114,7 @@ app.post('/saveBleSetting', async (req, res) => {
   // Your existing code...
   const { username, detectionRange, vibrationRhythm, vibrationStrength } =
     req.body;
-  console.log('here');
   try {
-    //await client.connect();
     const database = client.db('VibeWrist');
     const userSettings = database.collection('userSettings');
     // Update the user's settings in the database
@@ -137,6 +135,4 @@ app.post('/saveBleSetting', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+app.listen(port, '0.0.0.0', () => console.log(`Listening on port ${port}`));
