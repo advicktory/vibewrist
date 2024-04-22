@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { atob, btoa } from 'react-native-quick-base64';
 import { BleManager } from 'react-native-ble-plx';
 import User from '../User';
-import { recordViolation } from './bleViolation'; // Ensure this is correctly imported
+import { getViolations, recordViolation } from './bleViolation'; // Ensure this is correctly imported
 import { useUser } from '../UserContext';
 
+const user = useUser();
 let readRSSIInterval = null;
 function getDistance(isStarted, device, dataCharacteristic, user) {
   const startReading = () => {
@@ -76,6 +77,7 @@ function getDistance(isStarted, device, dataCharacteristic, user) {
     startReading();
   } else if (!isStarted) {
     stopReading();
+    user.setViolations(getViolations());
   }
 
   // Return a function to allow manual stopping of the distance reading
