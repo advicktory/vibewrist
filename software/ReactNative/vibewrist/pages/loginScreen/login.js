@@ -9,11 +9,14 @@ import {
 } from 'react-native';
 import axios from 'axios'; // Import axios for HTTP requests
 import braceletPng from '../../assets/blue_bracelet.png';
+import User from '../User';
+import { useUser } from '../UserContext';
 
 export default function Login({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginFailed, setLoginFailed] = useState(false);
+  const user = useUser();
 
   const handleSubmit = async () => {
     try {
@@ -26,6 +29,8 @@ export default function Login({ navigation }) {
       if (response.status === 200) {
         console.log('Login successful!');
         navigation.navigate('Home');
+        user.setUserName(username);
+
         // Additional logic after successful login (e.g., redirect)
       }
     } catch (error) {

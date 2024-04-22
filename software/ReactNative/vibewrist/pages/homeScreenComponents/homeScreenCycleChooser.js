@@ -1,4 +1,5 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from 'react';
+import { ScrollView } from 'react-native';
 // import { View, Text, Button } from "react-native";
 import {
   View,
@@ -7,11 +8,11 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-} from "react-native";
+} from 'react-native';
 import { useUser } from '../UserContext'; // Import the UserContext hook
 
-import SavePreset from "./savePreset";
-import { SelectList } from "react-native-dropdown-select-list";
+import SavePreset from './savePreset';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 export default function cycleLengthSelector(user) {
   const [studyLengthSelected, setStudyLengthSelected] = useState([]);
@@ -44,7 +45,7 @@ export default function cycleLengthSelector(user) {
     // { key: 0, value: "None" },
     {
       key: 1,
-      value: "Pomodoro Method",
+      value: 'Pomodoro Method',
       studyLength: 25,
       breakLength: 5,
       cycleCount: 2,
@@ -56,7 +57,7 @@ export default function cycleLengthSelector(user) {
 
   const handleSelectPreset = (key) => {
     setCurrPresetKey(key);
-    console.log("Received new preset:", presetSelected[key].studyLength);
+    console.log('Received new preset:', presetSelected[key].studyLength);
     // console.log("Received new presetTTTT:", newPreset[0].studyLength);
     setStudyLengthSelected(presetSelected[key].studyLength.toString());
     setBreakLengthSelected(presetSelected[key].breakLength.toString());
@@ -140,7 +141,6 @@ export default function cycleLengthSelector(user) {
           cycleAmountSelected={cycleAmountSelected}
           onUpdatePreset={handleUpdatePreset} // Pass the function as prop
           user={user}
-
         />
       </>
     ),
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
     // position: "relative",
     // backgroundColor: "#0066ff",
-    backgroundColor:"#1c1b1d",
+    backgroundColor: '#1c1b1d',
     borderRadius: 20,
     padding: 10,
     margin: 20,
@@ -168,23 +168,25 @@ const styles = StyleSheet.create({
 
   topPortion: {
     // flex:1,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     // marginBottom: 10,
     // position: "absolute",
   },
   inputContainer: {
-    color: "white",
-    fontWeight: "bold",
+    color: 'white',
+    fontWeight: 'bold',
     // fontSize: 10,
   },
   dropdownContainer: {
-    color: "white",
-    fontWeight: "bold",
+    color: 'white',
+    fontWeight: 'bold',
     // fontSize: 10,
   },
   boxContainer: {
-    borderColor: "white",
+    borderColor: 'white',
     margin: 5,
+    height: 45,
+    maxHeight: 50,
   },
 });
