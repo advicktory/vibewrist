@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Modal,
   Dimensions,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import _BackgroundTimer from 'react-native-background-timer';
 import { useUser } from '../UserContext';
 import useConnectToDevice from '../bleScreenComponents/bleSettings.js';
@@ -36,6 +37,33 @@ export default function HomeScreen({ navigation }) {
     cAmount: cycleOptionResponces[2],
     isMinutes: true,
   }; // Information gathered from Cycle Selector to send to Cycle Report
+
+  // Gets the users settings beofre settings is launched so that appropriate thinkg loads.
+  const fetchUserSettings = async (username) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/getUserSettings?username=${encodeURIComponent(
+          username
+        )}`
+      );
+      if (!response.ok) {
+        throw new Error('Failed to fetch user settings');
+      }
+      const data = await response.json();
+
+      user.setBuzzRange(data.bRange);
+      user.setBuzzDuration(data.bDur);
+      user.setBuzzFrequency(data.bFreq);
+    } catch (error) {
+      console.error('Error fetching user settings:', error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserSettings(user.getUserName());
+    }, [user])
+  );
 
   // Provide ability to run a function after a set amount of time
   const executeAfterDelay = async (delay, callback) => {

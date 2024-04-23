@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { SelectList } from 'react-native-dropdown-select-list';
 import braceletPng from '../../assets/blue_bracelet.png';
 import { useUser } from '../UserContext';
@@ -7,7 +8,6 @@ import axios from 'axios'; // Import axios for HTTP requests
 
 export default function BleDeviceSettingsScreen({ navigation }) {
   const user = useUser();
-
   const { buzzSensitivityDropdown, buzzSensitivityResponse } =
     buzzSensitivitySelection(user.getBuzzRange());
   const { buzzRhythmDropdown, buzzRhythmResponse } = buzzRhythmSelection(
@@ -17,16 +17,43 @@ export default function BleDeviceSettingsScreen({ navigation }) {
     user.getBuzzFrequency()
   );
 
+  const fetchUserSettings = async (username) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/getUserSettings?username=${encodeURIComponent(
+          username
+        )}`
+      );
+      if (!response.ok) {
+        throw new Error('Failed to fetch user settings');
+      }
+      const data = await response.json();
+
+      user.setBuzzRange(data.bRange);
+      user.setBuzzDuration(data.bDur);
+      user.setBuzzFrequency(data.bFreq);
+      console.log('User right now: ', user);
+    } catch (error) {
+      console.error('Error fetching user settings:', error);
+    }
+  };
+
   useEffect(() => {
     user.setBuzzRange(buzzSensitivityResponse);
     user.setBuzzDuration(buzzRhythmResponse);
     user.setBuzzFrequency(buzzStrengthResponse);
   }, [buzzSensitivityResponse, buzzRhythmResponse, buzzStrengthResponse]);
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserSettings(user.getUserName()); // Adjust as needed
+    }, [user.getUserName()])
+  );
+
   function buzzSensitivitySelection(currentValue) {
     const [buzzSensitivity, setBuzzSensitivity] = useState(currentValue);
     const buzzSensitivityOptions = [
-      { key: 1, value: 'Default' },
+      { key: 1, value: 'Far' },
       { key: 2, value: 'Close' },
       { key: 3, value: 'Very Close' },
     ];
@@ -37,7 +64,10 @@ export default function BleDeviceSettingsScreen({ navigation }) {
           setSelected={setBuzzSensitivity}
           data={buzzSensitivityOptions}
           search={false}
-          placeholder={getValueByKey(currentValue, buzzSensitivityOptions)}
+          placeholder={getValueByKey(
+            user.getBuzzRange(),
+            buzzSensitivityOptions
+          )}
           save="key"
           inputStyles={styles.inputContainer}
           dropdownTextStyles={styles.dropdownContainer}
