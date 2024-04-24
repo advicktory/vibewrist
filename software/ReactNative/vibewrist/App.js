@@ -12,6 +12,7 @@ import BleDeviceSettingsScreen from "./pages/bleScreenComponents/bleBraceletSett
 import Login from "./pages/loginScreen/login.js"
 import Account from "./pages/accountScreen/account.js"
 import SignUp from "./pages/loginScreen/signup"
+import Leader from "./pages/leaderboardScreen/leaderboardScreen"
 
 
 
@@ -32,6 +33,8 @@ function App() {
           <Stack.Screen name="login" component={Login} />
           <Stack.Screen name="account" component={Account} />
           <Stack.Screen name="signup" component={SignUp}/>
+          <Stack.Screen name="leader" component={Leader}/>
+
         </Stack.Navigator>
       </UserProvider>
     </NavigationContainer>

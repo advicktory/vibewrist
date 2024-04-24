@@ -170,6 +170,17 @@ export default function HomeScreen({ navigation }) {
                 Settings
               </Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.sidebarButton}>
+              <Text
+                onPress={() => {
+                  navigation.navigate('leader', { userObj: user });
+                  setIsSidebarOpen(false);
+                }}
+                style={styles.sidebarButtonText}
+              >
+                Leaderboard
+              </Text>
+            </TouchableOpacity>
           </View>
         </Modal>
       </View>

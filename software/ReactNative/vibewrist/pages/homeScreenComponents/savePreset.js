@@ -6,6 +6,7 @@ export default function NewPresetCycleButton(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [newPresetName, setNewPresetName] = useState("");
   const [preset, setPreset] = useState([]);
+  const [currKey, setCurrKey]=useState()
   // Define additional states for studyLengthSelected, breakLengthSelected, and cycleAmountSelected
 
 
@@ -25,6 +26,7 @@ export default function NewPresetCycleButton(props) {
         cycleAmount: props.cycleAmountSelected,
       };
       console.log("after: " + newPreset.key);
+      setCurrKey(presetsLength)
       // Update the preset state to include the new preset
       setPreset([...preset, newPreset]);
       try {
@@ -47,6 +49,16 @@ export default function NewPresetCycleButton(props) {
 
   
 
+  const handleRemovePreset = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:3000/deletePreset/${props.user.getUserName()}/${currKey}`);
+      console.log('Preset deleted successfully:', response.data);
+      props.fetchPresets();
+    } catch (error) {
+      console.error('Error deleting preset:', error);
+    }
+  };
+  
   return (
     <View style={styles.container}>
       <Modal
@@ -77,6 +89,8 @@ export default function NewPresetCycleButton(props) {
       <TouchableOpacity style={styles.customCycleButton} onPress={() => setModalVisible(true)}>
         <Text style={styles.customCycleButtonText}>Set Custom Cycle</Text>
       </TouchableOpacity>
+      <Button title="Remove Preset" onPress={handleRemovePreset} />
+
     </View>
   );
 }
