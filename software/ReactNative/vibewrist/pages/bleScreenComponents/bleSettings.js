@@ -107,15 +107,15 @@ export default function useConnectToDevice() {
     try {
       // Sequentially send commands to turn on each LED
       for (const commandOn of commandsOn) {
-        console.log(`Sending command: ${commandOn}`);
+        //console.log(`Sending command: ${commandOn}`);
         await dataCharacteristic.writeWithResponse(btoa(commandOn));
-        console.log(`Command ${commandOn} executed successfully`);
+        //console.log(`Command ${commandOn} executed successfully`);
       }
-      console.log('All LEDs turned on successfully');
+      console.log('Connected LED sequence complete');
       for (const commandOff of commandsOff) {
-        console.log(`Sending command: ${commandOff}`);
+        //console.log(`Sending command: ${commandOff}`);
         await dataCharacteristic.writeWithResponse(btoa(commandOff));
-        console.log(`Command ${commandOff} executed successfully`);
+        //console.log(`Command ${commandOff} executed successfully`);
       }
     } catch (error) {
       console.error('Failed to turn on/off LEDs:', error);
