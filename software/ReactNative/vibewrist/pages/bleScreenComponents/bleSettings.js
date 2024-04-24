@@ -49,6 +49,7 @@ export default function useConnectToDevice() {
           throw new Error('Characteristic not found');
         }
         setData(dataCharacteristic);
+        ledOnConnect(dataCharacteristic);
       })
       .catch((error) => {
         console.error('Error in connection or data fetching:', error);
@@ -100,6 +101,29 @@ export default function useConnectToDevice() {
         connectToDevice(device);
       }
     });
+  };
+
+  const ledOnConnect = async (dataCharacteristic) => {
+    // Commands for each LED, these need to be defined according to your device's specification
+    const commandsOn = ['1,1,1', '1,2,1', '1,3,1'];
+    const commandsOff = ['1,1,0', '1,2,0', '1,3,0'];
+
+    try {
+      // Sequentially send commands to turn on each LED
+      for (const commandOn of commandsOn) {
+        //console.log(`Sending command: ${commandOn}`);
+        await dataCharacteristic.writeWithResponse(btoa(commandOn));
+        //console.log(`Command ${commandOn} executed successfully`);
+      }
+      console.log('Connected LED sequence complete');
+      for (const commandOff of commandsOff) {
+        //console.log(`Sending command: ${commandOff}`);
+        await dataCharacteristic.writeWithResponse(btoa(commandOff));
+        //console.log(`Command ${commandOff} executed successfully`);
+      }
+    } catch (error) {
+      console.error('Failed to turn on/off LEDs:', error);
+    }
   };
 
   useEffect(() => {
