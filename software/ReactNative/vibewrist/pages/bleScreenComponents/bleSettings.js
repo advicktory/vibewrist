@@ -23,17 +23,17 @@ export default function useConnectToDevice() {
 
   //console.log('User in settings: ', user);
 
-  const connectToDevice = (device) => {
+  const connectToDevice = (device, retryCount = 0) => {
     return device
       .connect()
-      .then((device) => {
-        setDeviceID(device.id);
+      .then((connectedDevice) => {
+        setDeviceID(connectedDevice.id);
         setConnectionStatus('Connected');
-        deviceRef.current = device;
-        console.log('Connected to VibeWrist, you can now begin studying!');
-        return device.discoverAllServicesAndCharacteristics();
+        deviceRef.current = connectedDevice;
+        console.log('Connected');
+        return connectedDevice.discoverAllServicesAndCharacteristics();
       })
-      .then((device) => device.services())
+      .then((connectedDevice) => connectedDevice.services())
       .then((services) => {
         let service = services.find((s) => s.uuid === SERVICE_UUID);
         if (!service) {
@@ -54,6 +54,10 @@ export default function useConnectToDevice() {
       .catch((error) => {
         console.error('Error in connection or data fetching:', error);
         setConnectionStatus('Error in Connection');
+        if (retryCount < 3) {
+          console.log(`Attempting to reconnect... Attempt #${retryCount + 1}`);
+          return connectToDevice(device, retryCount + 1);
+        }
       });
   };
 

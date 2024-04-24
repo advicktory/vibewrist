@@ -3,7 +3,9 @@ import { atob, btoa } from "react-native-quick-base64";
 import { BleManager } from "react-native-ble-plx";
 import User from "../User";
 import { getViolations, recordViolation } from "./bleViolation"; // Ensure this is correctly imported
+
 import { useUser } from "../UserContext";
+const user = useUser();
 
 let readRSSIInterval = null;
 function getDistance(isStarted, device, dataCharacteristic, user) {

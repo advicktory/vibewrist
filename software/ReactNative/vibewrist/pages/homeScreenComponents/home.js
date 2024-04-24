@@ -22,13 +22,19 @@ import SavePreset from './savePreset';
 import { atob, btoa } from 'react-native-quick-base64';
 import GoalTimeModal from './goalTime'; // Import the GoalTimeModal component
 import { ScrollView } from 'react-native';
+import redLogo from './../../assets/red_bracelet.png';
+import blueLogo from './../../assets/blue_bracelet.png';
 
 export default function HomeScreen({ navigation }) {
   const user = useUser();
   const [startDistanceFn, setStartDistanceFn] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to track if the sidebar/modal is open
-  const { deviceRef: deviceCurr, data: dataCharacteristic } =
-    useConnectToDevice();
+  const [connectedBraceletLogo, setConnectedBraceletLogo] = useState(redLogo);
+  const {
+    connectionStatus: isConnected,
+    deviceRef: deviceCurr,
+    data: dataCharacteristic,
+  } = useConnectToDevice();
   const { cycleOptions, cycleOptionResponces } = cycleLengthSelector(user);
   const cycleLengths = {
     sLength: cycleOptionResponces[0],
@@ -62,6 +68,14 @@ export default function HomeScreen({ navigation }) {
     user.setCycleAmount(cycleLengths.cAmount);
   }, [cycleLengths.sLength, cycleLengths.bLength, cycleLengths.cAmount]);
 
+  useEffect(() => {
+    if (isConnected !== 'Connected') {
+      setConnectedBraceletLogo(redLogo);
+    } else if (isConnected === 'Connected') {
+      setConnectedBraceletLogo(blueLogo);
+    }
+  }, [isConnected]);
+
   //will change it from whatever state it is to the other allowing a toggle feature
   const toggleSidebar = () => {
     setIsSidebarOpen((prevState) => !prevState);
@@ -81,10 +95,7 @@ export default function HomeScreen({ navigation }) {
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <TouchableOpacity onPress={toggleSidebar} style={styles.imageButton}>
-          <Image
-            source={require('./../../assets/blue_bracelet.png')}
-            style={styles.image}
-          />
+          <Image source={connectedBraceletLogo} style={styles.image} />
         </TouchableOpacity>
 
         <View style={styles.cycleContainer}>
