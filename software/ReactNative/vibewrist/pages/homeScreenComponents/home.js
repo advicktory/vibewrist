@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,28 +8,28 @@ import {
   StyleSheet,
   Modal,
   Dimensions,
-} from "react-native";
-import _BackgroundTimer from "react-native-background-timer";
-import { useUser } from "../UserContext";
-import useConnectToDevice from "../bleScreenComponents/bleSettings.js";
-import manageStudyTime from "../bleScreenComponents/bleLEDfunct.js";
-import getDistance from "../bleScreenComponents/bleDistance.js";
-import cycleLengthSelector from "./homeScreenCycleChooser.js";
-import CycleReport from "./homeScreenText.js";
-import StartButton from "./homeScreenStartButton";
-import ProgressBar from "./progressBar";
-import SavePreset from "./savePreset";
-import { atob, btoa } from "react-native-quick-base64";
-import GoalTimeModal from "./goalTime"; // Import the GoalTimeModal component
-import { ScrollView } from "react-native";
-import redLogo from "./../../assets/red_bracelet.png";
-import blueLogo from "./../../assets/blue_bracelet.png";
+} from 'react-native';
+import _BackgroundTimer from 'react-native-background-timer';
+import { useUser } from '../UserContext';
+import useConnectToDevice from '../bleScreenComponents/bleSettings.js';
+import manageStudyTime from '../bleScreenComponents/bleLEDfunct.js';
+import getDistance from '../bleScreenComponents/bleDistance.js';
+import cycleLengthSelector from './homeScreenCycleChooser.js';
+import CycleReport from './homeScreenText.js';
+import StartButton from './homeScreenStartButton';
+import ProgressBar from './progressBar';
+import SavePreset from './savePreset';
+import { atob, btoa } from 'react-native-quick-base64';
+import GoalTimeModal from './goalTime'; // Import the GoalTimeModal component
+import { ScrollView } from 'react-native';
+import redLogo from './../../assets/red_bracelet.png';
+import blueLogo from './../../assets/blue_bracelet.png';
 
 export default function HomeScreen({ navigation }) {
   const user = useUser();
   const [startDistanceFn, setStartDistanceFn] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to track if the sidebar/modal is open
-  const [connectedBraceletLogo, setConnectedBraceletLogo] = useState(blueLogo);
+  const [connectedBraceletLogo, setConnectedBraceletLogo] = useState(redLogo);
   const {
     connectionStatus: isConnected,
     deviceRef: deviceCurr,
@@ -56,7 +56,7 @@ export default function HomeScreen({ navigation }) {
       getDistance(false, deviceCurr.current, dataCharacteristic, user); // Stop tracking
       executeAfterDelay(10000, () => {
         dataCharacteristic.writeWithResponse(
-          btoa(`3,${user.getBreakLength()}`),
+          btoa(`3,${user.getBreakLength()}`)
         );
       });
     }
@@ -69,19 +69,19 @@ export default function HomeScreen({ navigation }) {
   }, [cycleLengths.sLength, cycleLengths.bLength, cycleLengths.cAmount]);
 
   useEffect(() => {
-    if (!isConnected) {
+    if (isConnected !== 'Connected') {
       setConnectedBraceletLogo(redLogo);
-    } else if (isConnected) {
+    } else if (isConnected === 'Connected') {
       setConnectedBraceletLogo(blueLogo);
     }
-  }, []);
+  }, [isConnected]);
 
   //will change it from whatever state it is to the other allowing a toggle feature
   const toggleSidebar = () => {
     setIsSidebarOpen((prevState) => !prevState);
   };
   const [isGoalModalVisible, setIsGoalModalVisible] = useState(false); // State to track the visibility of the goal time modal
-  const [goalTime, setGoalTime] = useState(""); // State to store the selected goal time
+  const [goalTime, setGoalTime] = useState(''); // State to store the selected goal time
 
   const toggleGoalModal = () => {
     setIsGoalModalVisible((prev) => !prev); // Toggle the visibility of the goal time modal
@@ -95,7 +95,7 @@ export default function HomeScreen({ navigation }) {
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <TouchableOpacity onPress={toggleSidebar} style={styles.imageButton}>
-          <Image source={redLogo} style={styles.image} />
+          <Image source={connectedBraceletLogo} style={styles.image} />
         </TouchableOpacity>
 
         <View style={styles.cycleContainer}>
@@ -103,9 +103,9 @@ export default function HomeScreen({ navigation }) {
           <CycleReport cycleOrder={cycleLengths} />
           <ProgressBar />
           <Text style={styles.goalText}>
-            Goal for this week:{" "}
+            Goal for this week:{' '}
             <Text onPress={toggleGoalModal}>
-              {goalTime || "[Your goal here]"}
+              {goalTime || '[Your goal here]'}
             </Text>
           </Text>
         </View>
@@ -122,14 +122,14 @@ export default function HomeScreen({ navigation }) {
               manageStudyTime(
                 dataCharacteristic,
                 user.getStudyLength(),
-                user.getBreakLength() /*this parameter not used, leaving in case */,
+                user.getBreakLength() /*this parameter not used, leaving in case */
               )
                 .then(() => {
                   //console.log('manageStudyTime completed');
                   setStartDistanceFn(false); // Stop distance tracking once manageStudyTime is finished
                 })
                 .catch((error) => {
-                  console.error("Error in manageStudyTime:", error);
+                  console.error('Error in manageStudyTime:', error);
                   setStartDistanceFn(false); // Optionally stop distance tracking on error as well
                 });
 
@@ -155,14 +155,14 @@ export default function HomeScreen({ navigation }) {
               style={styles.imageButtonSidebar}
             >
               <Image
-                source={require("./../../assets/blue_bracelet.png")}
+                source={require('./../../assets/blue_bracelet.png')}
                 style={styles.imageSidebar}
               />
             </TouchableOpacity>
             <TouchableOpacity style={styles.sidebarButton}>
               <Text
                 onPress={() => {
-                  navigation.navigate("account", { userObj: user });
+                  navigation.navigate('account', { userObj: user });
                   setIsSidebarOpen(false);
                 }}
                 style={styles.sidebarButtonText}
@@ -173,7 +173,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity style={styles.sidebarButton}>
               <Text
                 onPress={() => {
-                  navigation.navigate("sBle", { userObj: user });
+                  navigation.navigate('sBle', { userObj: user });
                   setIsSidebarOpen(false);
                 }}
                 style={styles.sidebarButtonText}
@@ -191,20 +191,20 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-    backgroundColor: "black",
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    backgroundColor: 'black',
   },
   cycleContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    bottom: Dimensions.get("window").height * 0.25, // Adjusted position based on screen height
-    position: "absolute",
+    alignItems: 'center',
+    justifyContent: 'center',
+    bottom: Dimensions.get('window').height * 0.25, // Adjusted position based on screen height
+    position: 'absolute',
   },
   imageButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 10,
     right: 10,
   },
@@ -213,18 +213,18 @@ const styles = StyleSheet.create({
     height: 50,
   },
   sidebar: {
-    backgroundColor: "#1c1b1d",
+    backgroundColor: '#1c1b1d',
     width: 80,
-    height: "100%",
-    position: "absolute",
+    height: '100%',
+    position: 'absolute',
     right: 0,
     top: 0,
     paddingTop: 50,
     paddingRight: 10,
-    alignItems: "center",
+    alignItems: 'center',
     // top:40, //this one alligns it on the white part up top
     top: 100,
-    shadowColor: "#000", //color of shadow
+    shadowColor: '#000', //color of shadow
     shadowOffset: {
       width: -3, // horizontal offset
       height: 0, // vertical offset
@@ -232,30 +232,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5, // Opacity of the shadow
     shadowRadius: 5, // Radius of the shadow
     elevation: 5,
-    top: Dimensions.get("window").height * 0.1,
+    top: Dimensions.get('window').height * 0.1,
   },
   sidebarButton: {
     marginTop: 10,
     paddingVertical: 10,
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: "#fff",
+    borderBottomColor: '#fff',
     borderTopWidth: 1,
-    borderTopColor: "#fff",
+    borderTopColor: '#fff',
   },
   sidebarButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: '#fff',
+    fontWeight: 'bold',
   },
   closeButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 10,
     right: 10,
-    color: "#fff",
+    color: '#fff',
   },
   imageButtonSidebar: {
-    position: "absolute",
+    position: 'absolute',
     top: 10,
     left: 10,
   },
@@ -264,12 +264,12 @@ const styles = StyleSheet.create({
     height: 50,
   },
   progressContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   goalText: {
     marginLeft: 10,
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
     marginTop: 20,
   },
