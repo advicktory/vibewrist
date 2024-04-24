@@ -21,7 +21,8 @@ export default function Login({ navigation }) {
   const handleSubmit = async () => {
     try {
       // Send a POST request to the server to check if the user exists
-      const response = await axios.post('http://localhost:3000/login', {
+      /* REPLACE URL WITH THE IP OF MACHINE RUNNING PROGRAM LIKE BELOW */
+      const response = await axios.post('http://192.168.1.7:3000/login', {
         username,
         password,
       });
