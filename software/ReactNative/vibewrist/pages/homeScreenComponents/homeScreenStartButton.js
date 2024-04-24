@@ -12,14 +12,15 @@ import {
 } from 'react-native';
 import { useUser } from '../UserContext';
 
-const StartButton = ({ onPress }) => {
-  const [isPaused, setIsPaused] = useState(false); // State to track if the pop-up is open
+const StartButton = ({ onPress, isPaused, setIsPaused }) => {
+  //const [isPaused, setIsPaused] = useState(false); // State to track if the pop-up is open
 
   // Function to handle the press of the start button
   const handleStartPress = () => {
     // Your logic for handling start button press
-    setIsPaused(true); // Open the pop-up
+
     if (onPress) {
+      setIsPaused(true); // Open the pop-up
       onPress(); // Call external onPress passed as a prop
     }
   };

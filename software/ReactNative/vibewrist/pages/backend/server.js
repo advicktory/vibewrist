@@ -5,6 +5,7 @@ const { MongoClient } = require('mongodb'); // Import MongoClient
 const app = express();
 const port = 3000;
 const cors = require('cors');
+const crypto = require('crypto');
 app.use(cors()); // Use CORS to allow all origins (for development)
 
 app.use(bodyParser.json());
@@ -132,6 +133,31 @@ app.post('/saveBleSetting', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send('Error updating user settings');
+  }
+});
+
+app.post('/addStudySession', async (req, res) => {
+  const { username, duration, violations, date } = req.body;
+  const sessionID = crypto.randomUUID();
+  try {
+    const database = client.db('VibeWrist');
+    const sessions = database.collection('studySessions');
+
+    const result = await sessions.insertOne({
+      username,
+      sessionID,
+      duration,
+      violations,
+      date: new Date(date), // Ensure the date is stored as a Date object in MongoDB
+    });
+
+    res.status(201).json({
+      message: 'Study session added successfully',
+      id: result.insertedId,
+    });
+  } catch (error) {
+    console.error('Failed to add study session:', error);
+    res.status(500).json({ error: 'Failed to add study session' });
   }
 });
 

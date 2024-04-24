@@ -48,13 +48,6 @@ async function manageStudyTime(dataCharacteristic, studyValue, breakValue) {
   });
 
   await executeAfterDelay(oneThirdStudyTime * msTomin, () => {
-    console.log('(1,1,1)');
-    const led1 = btoa('1,1,1');
-
-    dataCharacteristic.writeWithResponse(led1);
-  });
-
-  await executeAfterDelay(oneThirdStudyTime * msTomin, () => {
     console.log('(1,2,1)');
     const led2 = btoa('1,2,1');
 
