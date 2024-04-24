@@ -17,38 +17,11 @@ export default function BleDeviceSettingsScreen({ navigation }) {
     user.getBuzzFrequency()
   );
 
-  const fetchUserSettings = async (username) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/getUserSettings?username=${encodeURIComponent(
-          username
-        )}`
-      );
-      if (!response.ok) {
-        throw new Error('Failed to fetch user settings');
-      }
-      const data = await response.json();
-
-      user.setBuzzRange(data.bRange);
-      user.setBuzzDuration(data.bDur);
-      user.setBuzzFrequency(data.bFreq);
-      console.log('User right now: ', user);
-    } catch (error) {
-      console.error('Error fetching user settings:', error);
-    }
-  };
-
   useEffect(() => {
     user.setBuzzRange(buzzSensitivityResponse);
     user.setBuzzDuration(buzzRhythmResponse);
     user.setBuzzFrequency(buzzStrengthResponse);
   }, [buzzSensitivityResponse, buzzRhythmResponse, buzzStrengthResponse]);
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchUserSettings(user.getUserName()); // Adjust as needed
-    }, [user.getUserName()])
-  );
 
   function buzzSensitivitySelection(currentValue) {
     const [buzzSensitivity, setBuzzSensitivity] = useState(currentValue);

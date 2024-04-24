@@ -59,6 +59,7 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
+  // Runs bleSettings pull whenever on home page.
   useFocusEffect(
     useCallback(() => {
       fetchUserSettings(user.getUserName());
