@@ -135,4 +135,171 @@ app.post('/saveBleSetting', async (req, res) => {
   }
 });
 
-app.listen(port, '0.0.0.0', () => console.log(`Listening on port ${port}`));
+// Pulling user stats from db
+app.get('/getUserStats', async (req, res) => {
+  const username = req.query.username;
+  const today = new Date();
+  const startOfDay = new Date(
+    Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate())
+  );
+  const startOfWeek = new Date(
+    Date.UTC(
+      today.getUTCFullYear(),
+      today.getUTCMonth(),
+      today.getUTCDate() - today.getUTCDay()
+    )
+  );
+
+  try {
+    await client.connect();
+    const database = client.db('VibeWrist');
+
+    // Aggregate total violations for the user
+    const violationSum = await database
+      .collection('studySessions')
+      .aggregate([
+        {
+          $match: { username: username },
+        },
+        {
+          $group: {
+            _id: null,
+            totalViolations: { $sum: '$violations' },
+          },
+        },
+      ])
+      .toArray();
+
+    // Aggregate durations for today
+    const todayDuration = await database
+      .collection('studySessions')
+      .aggregate([
+        {
+          $match: {
+            username: username,
+            date: {
+              $gte: startOfDay,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalDuration: { $sum: '$duration' },
+          },
+        },
+      ])
+      .toArray();
+
+    // Aggregate durations for the current week
+    const weekDuration = await database
+      .collection('studySessions')
+      .aggregate([
+        {
+          $match: {
+            username: username,
+            date: {
+              $gte: startOfWeek,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalDuration: { $sum: '$duration' },
+          },
+        },
+      ])
+      .toArray();
+
+    const allTimeSum = await database
+      .collection('studySessions')
+      .aggregate([
+        {
+          $match: { username: username },
+        },
+        {
+          $group: {
+            _id: null,
+            totalDuration: { $sum: '$duration' },
+          },
+        },
+      ])
+      .toArray();
+
+    // Update the userStats collection with the total violations
+    let totalViolations =
+      violationSum.length > 0 && violationSum[0].totalViolations
+        ? violationSum[0].totalViolations
+        : 0;
+
+    let allTime =
+      allTimeSum.length > 0 && allTimeSum[0].totalDuration
+        ? allTimeSum[0].totalDuration
+        : 0;
+    await database
+      .collection('userStats')
+      .updateOne(
+        { username: username },
+        { $set: { timeStudied: allTime, violations: totalViolations } },
+        { upsert: true }
+      );
+
+    // Fetch updated stats including the newly calculated total violations and durations
+    const stats = await database
+      .collection('userStats')
+      .findOne({ username: username });
+    if (stats) {
+      stats.todayDuration = todayDuration[0]
+        ? todayDuration[0].totalDuration
+        : 0;
+      stats.weekDuration = weekDuration[0] ? weekDuration[0].totalDuration : 0;
+      res.status(200).json(stats);
+      console.log(stats);
+    } else {
+      res.status(404).send('User not found');
+    }
+  } catch (error) {
+    console.error('Error fetching user stats in server:', error);
+    res.status(500).send('Error fetching user stats');
+  } finally {
+    //await client.close();
+  }
+});
+
+// Get the rest of the user data from database on login
+app.get('/getUserSettings', async (req, res) => {
+  const username = req.query.username; // Obtain the username from the query parameters
+
+  if (!username) {
+    return res.status(400).send('Username is required');
+  }
+
+  try {
+    await client.connect(); // Ensure the database connection is open
+    const database = client.db('VibeWrist');
+    const userSettings = await database
+      .collection('userSettings')
+      .findOne({ username: username });
+
+    if (userSettings) {
+      // Map the database fields to the user object properties
+      const settingsResponse = {
+        bRange: userSettings.detectionRange,
+        bDur: userSettings.vibrationRhythm,
+        bFreq: userSettings.vibrationStrength,
+      };
+      res.status(200).json(settingsResponse);
+    } else {
+      res.status(404).send('User settings not found');
+    }
+  } catch (error) {
+    console.error('Error fetching user settings:', error);
+    res.status(500).send('Error fetching user settings');
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+
