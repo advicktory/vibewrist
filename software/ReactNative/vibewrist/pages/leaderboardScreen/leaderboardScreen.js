@@ -50,6 +50,7 @@ export default function LeaderboardScreen() {
           dropdownStyles={styles.boxContainer}
         />
       </View>
+      {/* <View style={styles.leaderboardBox}> */}
       <View style={styles.leaderboardContainer}>
         {leaderboardData.map((item, index) => (
           <View
@@ -66,6 +67,7 @@ export default function LeaderboardScreen() {
           </View>
         ))}
       </View>
+      {/* </View> */}
     </View>
   );
 }
@@ -77,6 +79,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 50,
   },
+//   leaderboardBox: {
+//     flex: 1,
+//     backgroundColor: '#E0E0E0', // Light grey background
+//     alignItems: 'center',
+//     justifyContent:"center",
+//     borderRadius: 20, // Rounded corners
+//     marginTop: 20, // Add margin to separate from the title
+//     paddingHorizontal: 20, // Add horizontal padding
+//     paddingBottom: 20, // Add padding to the bottom to prevent content from touching the edges
+//     width: '90%', // Adjust the width to fit the screen
+//   },
   title: {
     fontSize: 24,
     color: '#fff',
@@ -124,7 +137,7 @@ const styles = StyleSheet.create({
   },
   boxContainer: {
     borderColor: 'white',
-    margin: 5,
+    margin: 2,
     height: 45,
     maxHeight: 50,
   },

@@ -151,7 +151,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity style={styles.sidebarButton}>
               <Text
                 onPress={() => {
-                  navigation.navigate('account', { userObj: user });
+                  navigation.navigate('Account', { userObj: user });
                   setIsSidebarOpen(false);
                 }}
                 style={styles.sidebarButtonText}
@@ -173,7 +173,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity style={styles.sidebarButton}>
               <Text
                 onPress={() => {
-                  navigation.navigate('leader', { userObj: user });
+                  navigation.navigate('Leader', { userObj: user });
                   setIsSidebarOpen(false);
                 }}
                 style={styles.sidebarButtonText}

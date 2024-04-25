@@ -30,10 +30,10 @@ function App() {
           {/* <Stack.Screen name="cBle" component={BleConnectedScreen}>*/}
           {/*<Stack.Screen name="dBle" component={BleDisconnectedScreen} />*/}
           <Stack.Screen name="sBle" component={BleDeviceSettingsScreen} />
-          <Stack.Screen name="login" component={Login} />
-          <Stack.Screen name="account" component={Account} />
-          <Stack.Screen name="signup" component={SignUp}/>
-          <Stack.Screen name="leader" component={Leader}/>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Account" component={Account} />
+          <Stack.Screen name="Signup" component={SignUp}/>
+          <Stack.Screen name="Leader" component={Leader}/>
 
         </Stack.Navigator>
       </UserProvider>

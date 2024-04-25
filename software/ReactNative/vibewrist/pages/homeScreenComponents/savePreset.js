@@ -89,7 +89,7 @@ export default function NewPresetCycleButton(props) {
       <TouchableOpacity style={styles.customCycleButton} onPress={() => setModalVisible(true)}>
         <Text style={styles.customCycleButtonText}>Set Custom Cycle</Text>
       </TouchableOpacity>
-      <Button title="Remove Preset" onPress={handleRemovePreset} />
+      {/* <Button title="Remove Preset" onPress={handleRemovePreset} /> */}
 
     </View>
   );

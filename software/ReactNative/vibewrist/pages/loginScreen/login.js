@@ -82,7 +82,7 @@ export default function Login({ navigation }) {
           Don't have an account?{' '}
           <Text
             style={{ color: '#157AFE' }}
-            onPress={() => navigation.navigate('signup')}
+            onPress={() => navigation.navigate('Signup')}
           >
             {' '}
             Sign up here
