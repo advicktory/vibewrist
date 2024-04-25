@@ -1,10 +1,10 @@
 //Imports
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // User Shit
-import { UserProvider } from "./pages/UserContext";
-import User from "./pages/User";
+import { UserProvider } from './pages/UserContext';
+import User from './pages/User';
 
 //Screens
 import HomeScreen from "./pages/homeScreenComponents/home";
@@ -14,9 +14,6 @@ import Account from "./pages/accountScreen/account.js"
 import SignUp from "./pages/loginScreen/signup"
 import Leader from "./pages/leaderboardScreen/leaderboardScreen"
 
-
-
-
 // These are meant to get the reference to the device to be accessed anywhere
 const user = new User();
 
@@ -25,7 +22,7 @@ function App() {
   return (
     <NavigationContainer>
       <UserProvider user={user}>
-        <Stack.Navigator initialRouteName="login">
+        <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Home" component={HomeScreen} />
           {/* <Stack.Screen name="cBle" component={BleConnectedScreen}>*/}
           {/*<Stack.Screen name="dBle" component={BleDisconnectedScreen} />*/}
@@ -34,7 +31,6 @@ function App() {
           <Stack.Screen name="account" component={Account} />
           <Stack.Screen name="signup" component={SignUp}/>
           <Stack.Screen name="leader" component={Leader}/>
-
         </Stack.Navigator>
       </UserProvider>
     </NavigationContainer>

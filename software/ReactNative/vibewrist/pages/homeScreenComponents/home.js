@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Modal,
   Dimensions,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import _BackgroundTimer from 'react-native-background-timer';
 import { useUser } from '../UserContext';
 import useConnectToDevice from '../bleScreenComponents/bleSettings.js';
@@ -22,13 +23,19 @@ import SavePreset from './savePreset';
 import { atob, btoa } from 'react-native-quick-base64';
 import GoalTimeModal from './goalTime'; // Import the GoalTimeModal component
 import { ScrollView } from 'react-native';
+import redLogo from './../../assets/red_bracelet.png';
+import blueLogo from './../../assets/blue_bracelet.png';
 
 export default function HomeScreen({ navigation }) {
   const user = useUser();
   const [startDistanceFn, setStartDistanceFn] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to track if the sidebar/modal is open
-  const { deviceRef: deviceCurr, data: dataCharacteristic } =
-    useConnectToDevice();
+  const [connectedBraceletLogo, setConnectedBraceletLogo] = useState(redLogo);
+  const {
+    connectionStatus: isConnected,
+    deviceRef: deviceCurr,
+    data: dataCharacteristic,
+  } = useConnectToDevice();
   const { cycleOptions, cycleOptionResponces } = cycleLengthSelector(user);
   const cycleLengths = {
     sLength: cycleOptionResponces[0],
@@ -36,6 +43,34 @@ export default function HomeScreen({ navigation }) {
     cAmount: cycleOptionResponces[2],
     isMinutes: true,
   }; // Information gathered from Cycle Selector to send to Cycle Report
+
+  // Gets the users settings beofre settings is launched so that appropriate thinkg loads.
+  const fetchUserSettings = async (username) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/getUserSettings?username=${encodeURIComponent(
+          username
+        )}`
+      );
+      if (!response.ok) {
+        throw new Error('Failed to fetch user settings');
+      }
+      const data = await response.json();
+
+      user.setBuzzRange(data.bRange);
+      user.setBuzzDuration(data.bDur);
+      user.setBuzzFrequency(data.bFreq);
+    } catch (error) {
+      console.error('Error fetching user settings:', error);
+    }
+  };
+
+  // Runs bleSettings pull whenever on home page.
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserSettings(user.getUserName());
+    }, [user])
+  );
 
   // Provide ability to run a function after a set amount of time
   const executeAfterDelay = async (delay, callback) => {
@@ -62,6 +97,14 @@ export default function HomeScreen({ navigation }) {
     user.setCycleAmount(cycleLengths.cAmount);
   }, [cycleLengths.sLength, cycleLengths.bLength, cycleLengths.cAmount]);
 
+  useEffect(() => {
+    if (isConnected !== 'Connected') {
+      setConnectedBraceletLogo(redLogo);
+    } else if (isConnected === 'Connected') {
+      setConnectedBraceletLogo(blueLogo);
+    }
+  }, [isConnected]);
+
   //will change it from whatever state it is to the other allowing a toggle feature
   const toggleSidebar = () => {
     setIsSidebarOpen((prevState) => !prevState);
@@ -81,10 +124,7 @@ export default function HomeScreen({ navigation }) {
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <TouchableOpacity onPress={toggleSidebar} style={styles.imageButton}>
-          <Image
-            source={require('./../../assets/blue_bracelet.png')}
-            style={styles.image}
-          />
+          <Image source={connectedBraceletLogo} style={styles.image} />
         </TouchableOpacity>
 
         <View style={styles.cycleContainer}>
@@ -151,7 +191,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity style={styles.sidebarButton}>
               <Text
                 onPress={() => {
-                  navigation.navigate('account', { userObj: user });
+                  navigation.navigate('Account', { userObj: user });
                   setIsSidebarOpen(false);
                 }}
                 style={styles.sidebarButtonText}
@@ -162,7 +202,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity style={styles.sidebarButton}>
               <Text
                 onPress={() => {
-                  navigation.navigate('sBle', { userObj: user });
+                  navigation.navigate('Settings', { userObj: user });
                   setIsSidebarOpen(false);
                 }}
                 style={styles.sidebarButtonText}
