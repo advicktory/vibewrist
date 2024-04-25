@@ -26,7 +26,7 @@ function App() {
           <Stack.Screen name="Home" component={HomeScreen} />
           {/* <Stack.Screen name="cBle" component={BleConnectedScreen}>*/}
           {/*<Stack.Screen name="dBle" component={BleDisconnectedScreen} />*/}
-          <Stack.Screen name="sBle" component={BleDeviceSettingsScreen} />
+          <Stack.Screen name="Settings" component={BleDeviceSettingsScreen} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Account" component={Account} />
           <Stack.Screen name="Signup" component={SignUp}/>
