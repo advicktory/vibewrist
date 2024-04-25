@@ -84,8 +84,8 @@ export default function Login({ navigation }) {
         <Text style={styles.smallGreyText}>
           Don't have an account?{" "}
           <Text
-            style={{ color: "#157AFE" }}
-            onPress={() => navigation.navigate("signup")}
+            style={{ color: '#157AFE' }}
+            onPress={() => navigation.navigate('Signup')}
           >
             {" "}
             Sign up here

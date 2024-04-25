@@ -6,6 +6,7 @@ export default function NewPresetCycleButton(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [newPresetName, setNewPresetName] = useState("");
   const [preset, setPreset] = useState([]);
+  const [currKey, setCurrKey]=useState()
   // Define additional states for studyLengthSelected, breakLengthSelected, and cycleAmountSelected
 
 
@@ -15,37 +16,49 @@ export default function NewPresetCycleButton(props) {
     // const user = useUser();
     // console.log('User Object:', user);
 
-
-    
-    const newPreset = {
-      username:props.user.getUserName(),
-      key: preset.length,
-      value: newPresetName,
-      studyLength: props.studyLengthSelected,
-      breakLength: props.breakLengthSelected,
-      cycleAmount: props.cycleAmountSelected,
-    };
-    // Update the preset state to include the new preset
-    setPreset([...preset, newPreset]);
-    try {
-      const response = await axios.post('http://localhost:3000/savePreset', newPreset);
-      console.log('Preset saved successfully:', response.data);
-      // Additional logic after saving the preset
-      // For example, update UI or show a success message
-    } catch (error) {
-      console.error('Error saving preset:', error);
-      // Handle error (display message, reset form, etc.)
-    }
-    // Close the modal after saving
-    setModalVisible(false);
-    // Reset the input field
-    setNewPresetName("");
-    console.log("New preset data:", newPreset);
-    props.onUpdatePreset(newPreset);
-
+    props.fetchPresets().then(async (presetsLength) => {
+      const newPreset = {
+        username: props.user.getUserName(),
+        key: presetsLength,
+        value: newPresetName,
+        studyLength: props.studyLengthSelected,
+        breakLength: props.breakLengthSelected,
+        cycleAmount: props.cycleAmountSelected,
+      };
+      console.log("after: " + newPreset.key);
+      setCurrKey(presetsLength)
+      // Update the preset state to include the new preset
+      setPreset([...preset, newPreset]);
+      try {
+        const response = await axios.post('http://localhost:3000/savePreset', newPreset);
+        console.log('Preset saved successfully:', response.data);
+        // Additional logic after saving the preset
+        // For example, update UI or show a success message
+      } catch (error) {
+        console.error('Error saving preset:', error);
+        // Handle error (display message, reset form, etc.)
+      }
+      // Close the modal after saving
+      setModalVisible(false);
+      // Reset the input field
+      setNewPresetName("");
+      console.log("New preset data:", newPreset);
+      props.onUpdatePreset(newPreset);
+    });
   };
+
   
 
+  const handleRemovePreset = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:3000/deletePreset/${props.user.getUserName()}/${currKey}`);
+      console.log('Preset deleted successfully:', response.data);
+      props.fetchPresets();
+    } catch (error) {
+      console.error('Error deleting preset:', error);
+    }
+  };
+  
   return (
     <View style={styles.container}>
       <Modal
@@ -76,6 +89,8 @@ export default function NewPresetCycleButton(props) {
       <TouchableOpacity style={styles.customCycleButton} onPress={() => setModalVisible(true)}>
         <Text style={styles.customCycleButtonText}>Set Custom Cycle</Text>
       </TouchableOpacity>
+      {/* <Button title="Remove Preset" onPress={handleRemovePreset} /> */}
+
     </View>
   );
 }

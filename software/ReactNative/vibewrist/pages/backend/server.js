@@ -135,6 +135,70 @@ app.post('/saveBleSetting', async (req, res) => {
   }
 });
 
+app.get('/getPresets/:username', async (req, res) => {
+  const { username } = req.params;
+  try {
+    const presets = await client
+      .db('VibeWrist')
+      .collection('presets')
+      .find({ username }) // Query presets based on the username
+      .toArray();
+    res.status(200).json({ presets });
+  } catch (error) {
+    console.error('Error fetching presets:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+async function deletePreset(client, presetId, username) {
+  try {
+    const result = await client
+      .db('VibeWrist')
+      .collection('presets')
+      .deleteOne({ presetId, username }); // Add username to filter criteria
+    console.log(`Preset deleted with the following id: ${presetId}`);
+    return result.deletedCount;
+  } catch (error) {
+    console.error('Error deleting preset:', error);
+    throw error; // Throw error to handle it in the calling function
+  }
+}
+
+// Route to handle deleting presets
+app.delete('/deletePreset/:username/:presetId', async (req, res) => {
+  const { username, presetId } = req.params;
+  try {
+    const deletedCount = await deletePreset(client, presetId, username);
+    if (deletedCount === 1) {
+      res.status(200).json({ message: 'Preset deleted successfully' });
+    } else {
+      res.status(404).json({ error: 'Preset not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting preset:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.get('/leaderboard', async (req, res) => {
+  try {
+    const leaderboardData = await client.db('VibeWrist').collection('userStats')
+      .find({}, { projection: { username: 1, timeStudied: 1, violations:1 } }) //Empty filter means fetch all documents; Include username, timeStudied, and violations fields
+      .sort({ timeStudied: -1,violations:-1 }) // Sort by timeStudied and violations in descending order
+      .toArray();
+    console.log(leaderboardData);
+
+    res.status(200).json(leaderboardData);
+  } catch (error) {
+    console.error('Error fetching leaderboard data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+
+
+
 // Pulling user stats from db
 app.get('/getUserStats', async (req, res) => {
   const username = req.query.username;
