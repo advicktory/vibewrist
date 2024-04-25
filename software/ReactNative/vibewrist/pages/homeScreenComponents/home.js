@@ -44,6 +44,9 @@ export default function HomeScreen({ navigation }) {
     isMinutes: true,
   }; // Information gathered from Cycle Selector to send to Cycle Report
 
+  const [isPaused, setIsPaused] = useState(false);
+
+
   // Gets the users settings beofre settings is launched so that appropriate thinkg loads.
   const fetchUserSettings = async (username) => {
     try {
@@ -72,12 +75,14 @@ export default function HomeScreen({ navigation }) {
     }, [user])
   );
 
+
   // Provide ability to run a function after a set amount of time
   const executeAfterDelay = async (delay, callback) => {
     await new Promise((resolve) => setTimeout(resolve, delay));
     callback();
   };
 
+  // For when a cycle has started, start tracking distance
   useEffect(() => {
     if (startDistanceFn && deviceCurr.current) {
       getDistance(true, deviceCurr.current, dataCharacteristic, user);
@@ -91,6 +96,7 @@ export default function HomeScreen({ navigation }) {
     }
   }, [startDistanceFn]);
 
+  // Set users study, break, and cycle lengths
   useEffect(() => {
     user.setStudyLength(cycleLengths.sLength);
     user.setBreakLength(cycleLengths.bLength);
@@ -118,6 +124,28 @@ export default function HomeScreen({ navigation }) {
 
   const handleSaveGoalTime = (selectedTime) => {
     setGoalTime(selectedTime); // Save the selected goal time
+  };
+
+  // Function to send session data to db
+  const addStudySession = async (sessionData) => {
+    try {
+      const response = await fetch('http://192.168.1.7:3000/addStudySession', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sessionData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send study session data');
+      }
+
+      const responseData = await response.json();
+      console.log('Study session added:', responseData);
+    } catch (error) {
+      console.error('Error adding study session:', error);
+    }
   };
 
   return (
@@ -156,6 +184,15 @@ export default function HomeScreen({ navigation }) {
                 .then(() => {
                   //console.log('manageStudyTime completed');
                   setStartDistanceFn(false); // Stop distance tracking once manageStudyTime is finished
+                  const sessionData = {
+                    username: user.getUserName(),
+                    duration: user.getStudyLength(),
+                    violations: user.getViolations(),
+                    date: new Date().toISOString(),
+                  };
+                  setIsPaused(false);
+                  console.log(sessionData);
+                  addStudySession(sessionData);
                 })
                 .catch((error) => {
                   console.error('Error in manageStudyTime:', error);
@@ -165,6 +202,8 @@ export default function HomeScreen({ navigation }) {
               return true;
             });
           }}
+          isPaused={isPaused}
+          setIsPaused={setIsPaused}
         />
         {/* Render the GoalTimeModal component */}
         <GoalTimeModal

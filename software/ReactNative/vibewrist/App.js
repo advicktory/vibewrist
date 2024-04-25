@@ -7,6 +7,7 @@ import { UserProvider } from './pages/UserContext';
 import User from './pages/User';
 
 //Screens
+
 import HomeScreen from "./pages/homeScreenComponents/home";
 import BleDeviceSettingsScreen from "./pages/bleScreenComponents/bleBraceletSettingsScreen";
 import Login from "./pages/loginScreen/login.js"
