@@ -23,17 +23,31 @@ export default function cycleLengthSelector(user) {
   const [presetSelected, setPreset] = useState([]);
   const [currPresetKey, setCurrPresetKey] = useState([]);
   const studyOptions = [
+    { key: 5, value: 5 },
+    { key: 10, value: 10 },
     { key: 15, value: 15 },
+    { key: 20, value: 20 },
+    { key: 25, value: 25 },
     { key: 30, value: 30 },
+    { key: 35, value: 35 },
+    { key: 40, value: 40 },
     { key: 45, value: 45 },
+    { key: 50, value: 50 },
+    { key: 55, value: 55 },
     { key: 60, value: 60 },
   ];
   const breakOptions = [
-    { key: 1, value: 1 },
-    { key: 2, value: 2 },
+    { key: 5, value: 5 },
+    { key: 10, value: 10 },
     { key: 15, value: 15 },
+    { key: 20, value: 20 },
+    { key: 25, value: 25 },
     { key: 30, value: 30 },
+    { key: 35, value: 35 },
+    { key: 40, value: 40 },
     { key: 45, value: 45 },
+    { key: 50, value: 50 },
+    { key: 55, value: 55 },
     { key: 60, value: 60 },
   ];
   const cycleOptions = [
@@ -41,6 +55,9 @@ export default function cycleLengthSelector(user) {
     { key: 2, value: 2 },
     { key: 3, value: 3 },
     { key: 4, value: 4 },
+    { key: 5, value: 5 },
+    { key: 6, value: 6 },
+    { key: 7, value: 7 },
   ];
   const preset = [
     // { key: 0, value: "None" },

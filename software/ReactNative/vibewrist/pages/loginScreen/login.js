@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,35 +6,38 @@ import {
   Image,
   StyleSheet,
   TextInput,
-} from 'react-native';
-import axios from 'axios'; // Import axios for HTTP requests
-import braceletPng from '../../assets/blue_bracelet.png';
-import User from '../User';
-import { useUser } from '../UserContext';
+} from "react-native";
+import axios from "axios"; // Import axios for HTTP requests
+import braceletPng from "../../assets/blue_bracelet.png";
+import User from "../User";
+import { useUser } from "../UserContext";
+
+const SERVER_URL = "http://localhost:3000/login"; // Update with your server URL
 
 export default function Login({ navigation }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loginFailed, setLoginFailed] = useState(false);
   const user = useUser();
 
   const handleSubmit = async () => {
     try {
       // Send a POST request to the server to check if the user exists
-      const response = await axios.post('http://localhost:3000/login', {
+      /* REPLACE URL WITH THE IP OF MACHINE RUNNING PROGRAM LIKE BELOW */
+      const response = await axios.post(SERVER_URL, {
         username,
         password,
       });
 
       if (response.status === 200) {
-        console.log('Login successful!');
-        navigation.navigate('Home');
+        console.log("Login successful!");
+        navigation.navigate("Home");
         user.setUserName(username);
 
         // Additional logic after successful login (e.g., redirect)
       }
     } catch (error) {
-      console.error('Error logging in:', error);
+      console.error("Error logging in:", error);
       // Handle login error (display message, reset form, etc.)
       setLoginFailed(true);
     }
@@ -48,7 +51,7 @@ export default function Login({ navigation }) {
         </View>
         <Text style={styles.h1}> Log In</Text>
         <Text style={styles.smallGreyText}>
-          {' '}
+          {" "}
           Welcome to Vibewrist. Please Sign in.
         </Text>
 
@@ -75,16 +78,16 @@ export default function Login({ navigation }) {
         )}
 
         <TouchableOpacity onPress={handleSubmit} style={styles.signin}>
-          <Text style={{ color: '#fff' }}>Sign in</Text>
+          <Text style={{ color: "#fff" }}>Sign in</Text>
         </TouchableOpacity>
 
         <Text style={styles.smallGreyText}>
-          Don't have an account?{' '}
+          Don't have an account?{" "}
           <Text
             style={{ color: '#157AFE' }}
             onPress={() => navigation.navigate('Signup')}
           >
-            {' '}
+            {" "}
             Sign up here
           </Text>
         </Text>
@@ -95,60 +98,60 @@ export default function Login({ navigation }) {
 
 const styles = StyleSheet.create({
   background: {
-    backgroundColor: '#3d85c6',
+    backgroundColor: "#3d85c6",
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   box: {
-    backgroundColor: '#fff',
-    shadowColor: '#959FA5',
+    backgroundColor: "#fff",
+    shadowColor: "#959FA5",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.2,
     elevation: 8,
-    width: '90%',
+    width: "90%",
     padding: 20,
     borderRadius: 10,
   },
   h1: {
-    fontFamily: 'Nunito',
-    fontWeight: '200',
+    fontFamily: "Nunito",
+    fontWeight: "200",
     fontSize: 50,
-    textAlign: 'center',
-    color: 'transparent',
-    textShadowColor: 'rgba(45, 97, 241, 0.3)',
+    textAlign: "center",
+    color: "transparent",
+    textShadowColor: "rgba(45, 97, 241, 0.3)",
     textShadowOffset: { width: 0, height: 4 },
     textShadowRadius: 10,
   },
   smallGreyText: {
-    color: '#808080',
+    color: "#808080",
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 10,
   },
   inputField: {
-    position: 'relative',
+    position: "relative",
     marginBottom: 10,
   },
   input: {
-    backgroundColor: '#eeeeee',
+    backgroundColor: "#eeeeee",
     paddingVertical: 15,
     paddingHorizontal: 10,
-    width: '100%',
+    width: "100%",
     borderRadius: 10,
   },
   signin: {
-    backgroundColor: '#157AFE',
+    backgroundColor: "#157AFE",
     paddingVertical: 15,
     borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 10,
   },
   loginFailedText: {
     fontSize: 15,
-    color: '#FA3D3D',
-    textAlign: 'center',
+    color: "#FA3D3D",
+    textAlign: "center",
     marginTop: 10,
   },
   image: {
@@ -156,7 +159,7 @@ const styles = StyleSheet.create({
     height: 150,
   },
   imageContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

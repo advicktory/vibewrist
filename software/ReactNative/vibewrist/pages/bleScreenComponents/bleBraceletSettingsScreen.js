@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { SelectList } from 'react-native-dropdown-select-list';
 import braceletPng from '../../assets/blue_bracelet.png';
 import { useUser } from '../UserContext';
@@ -7,7 +8,6 @@ import axios from 'axios'; // Import axios for HTTP requests
 
 export default function BleDeviceSettingsScreen({ navigation }) {
   const user = useUser();
-
   const { buzzSensitivityDropdown, buzzSensitivityResponse } =
     buzzSensitivitySelection(user.getBuzzRange());
   const { buzzRhythmDropdown, buzzRhythmResponse } = buzzRhythmSelection(
@@ -26,7 +26,7 @@ export default function BleDeviceSettingsScreen({ navigation }) {
   function buzzSensitivitySelection(currentValue) {
     const [buzzSensitivity, setBuzzSensitivity] = useState(currentValue);
     const buzzSensitivityOptions = [
-      { key: 1, value: 'Default' },
+      { key: 1, value: 'Far' },
       { key: 2, value: 'Close' },
       { key: 3, value: 'Very Close' },
     ];
@@ -37,7 +37,10 @@ export default function BleDeviceSettingsScreen({ navigation }) {
           setSelected={setBuzzSensitivity}
           data={buzzSensitivityOptions}
           search={false}
-          placeholder={getValueByKey(currentValue, buzzSensitivityOptions)}
+          placeholder={getValueByKey(
+            user.getBuzzRange(),
+            buzzSensitivityOptions
+          )}
           save="key"
           inputStyles={styles.inputContainer}
           dropdownTextStyles={styles.dropdownContainer}
