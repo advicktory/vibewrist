@@ -43,6 +43,28 @@ async function addUser(client, body) {
   console.log(`New user created with the following id: ${result.insertedId}`);
 }
 
+async function createEmptyUserStats(client, username) {
+  try {
+    // Create an empty user stats document
+    const result = await client
+      .db('VibeWrist')
+      .collection('userStats')
+      .insertOne({
+        username,
+        cyclesCompleted: 0,
+        violations: 0,
+        timeStudied: 0,
+        currentTimeToGoal: 0,
+        timeBreak: 0,
+        currentGoal: 0,
+      });
+    console.log(`Empty user stats created for ${username}`);
+  } catch (error) {
+    console.error('Error creating empty user stats:', error);
+    throw error;
+  }
+}
+
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -54,6 +76,8 @@ app.post('/signup', async (req, res) => {
       res.status(400).json({ error: 'User already exists' });
     } else {
       await addUser(client, { username, password });
+      await createEmptyUserStats(client, username);
+
       res.status(201).json({ message: 'User registered successfully' });
     }
   } catch (error) {
