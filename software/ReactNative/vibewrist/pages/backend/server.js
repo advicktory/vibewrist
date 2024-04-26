@@ -249,7 +249,7 @@ app.get('/leaderboard', async (req, res) => {
   }
 });
 
-// Pulling user stats from db
+// Pulling user stats from db for account
 app.get('/getUserStats', async (req, res) => {
   const username = req.query.username;
   const today = new Date();
@@ -434,6 +434,31 @@ app.get('/getUserSettings', async (req, res) => {
   } catch (error) {
     console.error('Error fetching user settings:', error);
     res.status(500).send('Error fetching user settings');
+  }
+});
+
+app.post('/updateGoal', async (req, res) => {
+  const { username, newGoal } = req.body;
+
+  try {
+    const database = client.db('VibeWrist');
+    const userStats = database.collection('userStats');
+
+    const result = await userStats.updateOne(
+      { username: username },
+      { $set: { currentGoal: newGoal } }
+    );
+
+    if (result.modifiedCount === 1) {
+      res.status(200).send('Goal updated successfully');
+    } else if (result.matchedCount === 0) {
+      res.status(404).send('User not found');
+    } else {
+      res.status(304).send('No changes made');
+    }
+  } catch (error) {
+    console.error('Error updating goal:', error);
+    res.status(500).send('Internal server error');
   }
 });
 

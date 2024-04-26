@@ -114,7 +114,7 @@ export default function HomeScreen({ navigation }) {
     setIsSidebarOpen((prevState) => !prevState);
   };
   const [isGoalModalVisible, setIsGoalModalVisible] = useState(false); // State to track the visibility of the goal time modal
-  const [goalTime, setGoalTime] = useState(''); // State to store the selected goal time
+  const [goalTime, setGoalTime] = useState(user.getUserGoalTime()); // State to store the selected goal time
 
   const toggleGoalModal = () => {
     setIsGoalModalVisible((prev) => !prev); // Toggle the visibility of the goal time modal
@@ -160,7 +160,7 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.goalText}>
             Goal for this week:{' '}
             <Text onPress={toggleGoalModal}>
-              {goalTime || '[Your goal here]'}
+              {goalTime || user.getUserGoalTime()}
             </Text>
           </Text>
         </View>

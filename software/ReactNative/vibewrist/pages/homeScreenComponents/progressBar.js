@@ -5,7 +5,8 @@ import { useUser } from '../UserContext';
 export default function Loader() {
   const [goalTime, setGoalTime] = useState(0);
   const [timeStudied, setTimeStudied] = useState(0);
-  const progressAnim = useRef(new Animated.Value(0)).current;
+  const [progressPercent, setProgressPercent] = useState('0%');
+  //const progressAnim = useRef(new Animated.Value(0)).current;
   const user = useUser();
 
   useEffect(() => {
@@ -17,12 +18,19 @@ export default function Loader() {
       .then((response) => response.json())
       .then((data) => {
         setGoalTime(Number(data.currentGoal) || 1); // Ensure it's numeric and avoid division by zero
-        setTimeStudied(Number(data.currentTimeToGoal) || 1); // Ensure it's numeric
+        setTimeStudied(Number(data.currentTimeToGoal) || 1); // Ensure it's numeric\
+        user.setUserGoalTime(goalTime);
+
+        console.log(goalTime);
       })
       .catch((error) => console.error('Failed to fetch user goals:', error));
-  }, [user.getUserName(), goalTime, timeStudied]);
+  }, [user.getUserName(), user.getUserGoalTime()]);
 
-  const progressPercent = (timeStudied / goalTime) * 100; // Calculate percentage and format to 2 decimal places
+  // var progressPercent;
+  useEffect(() => {
+    const percent = ((timeStudied / goalTime) * 100).toFixed(1) + '%';
+    setProgressPercent(percent);
+  }, [user.getUserGoalTime()]);
 
   // useEffect(() => {
   //   Animated.loop(
