@@ -46,7 +46,6 @@ export default function HomeScreen({ navigation }) {
 
   const [isPaused, setIsPaused] = useState(false);
 
-
   // Gets the users settings beofre settings is launched so that appropriate thinkg loads.
   const fetchUserSettings = async (username) => {
     try {
@@ -74,7 +73,6 @@ export default function HomeScreen({ navigation }) {
       fetchUserSettings(user.getUserName());
     }, [user])
   );
-
 
   // Provide ability to run a function after a set amount of time
   const executeAfterDelay = async (delay, callback) => {
@@ -129,7 +127,7 @@ export default function HomeScreen({ navigation }) {
   // Function to send session data to db
   const addStudySession = async (sessionData) => {
     try {
-      const response = await fetch('http://192.168.1.7:3000/addStudySession', {
+      const response = await fetch('http://localhost:3000/addStudySession', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

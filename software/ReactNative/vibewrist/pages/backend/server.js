@@ -136,7 +136,6 @@ app.post('/saveBleSetting', async (req, res) => {
   }
 });
 
-
 app.post('/addStudySession', async (req, res) => {
   const { username, duration, violations, date } = req.body;
   const sessionID = crypto.randomUUID();
@@ -210,9 +209,11 @@ app.delete('/deletePreset/:username/:presetId', async (req, res) => {
 
 app.get('/leaderboard', async (req, res) => {
   try {
-    const leaderboardData = await client.db('VibeWrist').collection('userStats')
-      .find({}, { projection: { username: 1, timeStudied: 1, violations:1 } }) //Empty filter means fetch all documents; Include username, timeStudied, and violations fields
-      .sort({ timeStudied: -1,violations:-1 }) // Sort by timeStudied and violations in descending order
+    const leaderboardData = await client
+      .db('VibeWrist')
+      .collection('userStats')
+      .find({}, { projection: { username: 1, timeStudied: 1, violations: 1 } }) //Empty filter means fetch all documents; Include username, timeStudied, and violations fields
+      .sort({ timeStudied: -1, violations: -1 }) // Sort by timeStudied and violations in descending order
       .toArray();
     console.log(leaderboardData);
 
@@ -222,10 +223,6 @@ app.get('/leaderboard', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-
-
-
 
 // Pulling user stats from db
 app.get('/getUserStats', async (req, res) => {
@@ -391,6 +388,6 @@ app.get('/getUserSettings', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Server running at http://localhost:${port}`);
+// });
