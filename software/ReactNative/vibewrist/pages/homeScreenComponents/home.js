@@ -221,7 +221,8 @@ export default function HomeScreen({ navigation }) {
               style={styles.imageButtonSidebar}
             >
               <Image
-                source={require('./../../assets/blue_bracelet.png')}
+                // source={require('./../../assets/blue_bracelet.png')}
+                source={connectedBraceletLogo}
                 style={styles.imageSidebar}
               />
             </TouchableOpacity>
