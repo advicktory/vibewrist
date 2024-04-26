@@ -356,6 +356,30 @@ app.get('/getUserStats', async (req, res) => {
   }
 });
 
+app.get('/pullUserStats', async (req, res) => {
+  const { username } = req.query;
+
+  try {
+    //await client.connect();
+    const database = client.db('VibeWrist');
+    const userStats = await database
+      .collection('userStats')
+      .findOne({ username: username });
+
+    if (userStats) {
+      const { currentTimeToGoal, currentGoal } = userStats;
+      res.status(200).json({ currentTimeToGoal, currentGoal });
+    } else {
+      res.status(404).send('User stats not found');
+    }
+  } catch (error) {
+    console.error('Error fetching user stats:', error);
+    res.status(500).send('Error fetching user stats');
+  } finally {
+    //await client.close();
+  }
+});
+
 // Get the rest of the user data from database on login
 app.get('/getUserSettings', async (req, res) => {
   const username = req.query.username; // Obtain the username from the query parameters
