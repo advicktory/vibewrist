@@ -61,7 +61,7 @@ export default function LeaderboardScreen() {
             <Text style={styles.username}>{item.username}</Text>
             <Text style={styles.score}>
               {filterSelected === 'totalTime'
-                ? `${item.timeStudied} hours`
+                ? `${(item.timeStudied / 60) % 1 === 0 ? (item.timeStudied / 60) : (item.timeStudied / 60).toFixed(1)} hours`
                 : `${item.violations} violations`}
             </Text>
           </View>
