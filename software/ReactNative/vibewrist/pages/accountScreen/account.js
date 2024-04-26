@@ -64,19 +64,25 @@ export default function AccountScreen() {
       <View style={styles.statsContainer}>
         <View style={styles.statRow}>
           <Text style={styles.statLabel}>Today:</Text>
-          <Text style={styles.statValue}>{userStats.today} Hours</Text>
+          <Text style={styles.statValue}>
+            {(userStats.today / 60).toFixed(1)} Hours
+          </Text>
         </View>
         <View style={styles.line}></View>
 
         <View style={styles.statRow}>
           <Text style={styles.statLabel}>This Week:</Text>
-          <Text style={styles.statValue}>{userStats.thisWeek} Hours</Text>
+          <Text style={styles.statValue}>
+            {(userStats.thisWeek / 60).toFixed(1)} Hours
+          </Text>
         </View>
         <View style={styles.line}></View>
 
         <View style={styles.statRow}>
           <Text style={styles.statLabel}>All Time:</Text>
-          <Text style={styles.statValue}>{userStats.allTime} Hours</Text>
+          <Text style={styles.statValue}>
+            {(userStats.allTime / 60).toFixed(1)} Hours
+          </Text>
         </View>
         <View style={styles.line}></View>
 
