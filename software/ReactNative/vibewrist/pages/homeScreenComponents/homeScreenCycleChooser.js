@@ -23,6 +23,7 @@ export default function cycleLengthSelector(user) {
   const [presetSelected, setPreset] = useState([]);
   const [currPresetKey, setCurrPresetKey] = useState([]);
   const studyOptions = [
+    { key: 1, value: 1 },
     { key: 5, value: 5 },
     { key: 10, value: 10 },
     { key: 15, value: 15 },
@@ -37,6 +38,7 @@ export default function cycleLengthSelector(user) {
     { key: 60, value: 60 },
   ];
   const breakOptions = [
+    { key: 1, value: 1 },
     { key: 5, value: 5 },
     { key: 10, value: 10 },
     { key: 15, value: 15 },
@@ -73,28 +75,27 @@ export default function cycleLengthSelector(user) {
     // { key: 4, value: 4 },
   ];
 
-
   const fetchPresets = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/getPresets/${user.getUserName()}`);
+      const response = await axios.get(
+        `http://10.228.22.175:3000/getPresets/${user.getUserName()}`
+      );
       setPreset(response.data.presets);
       const presetsLength = response.data.presets.length; // Get the length of the presets array
       setCurrPresetKey(presetsLength); // Set the current preset key to the length of the presets array
-      console.log("length: " + presetsLength);
+      console.log('length: ' + presetsLength);
       return presetsLength; // Return the length of the presets array
     } catch (error) {
       console.error('Error fetching presets:', error);
       return 0; // Return 0 in case of an error
     }
   };
-  
+
   useEffect(() => {
     // Fetch presets for the logged-in user
-    
-  
+
     fetchPresets(); // Call the function to fetch presets when the component mounts
   }, [user]);
-
 
   const handleSelectPreset = (key) => {
     // setCurrPresetKey(key);

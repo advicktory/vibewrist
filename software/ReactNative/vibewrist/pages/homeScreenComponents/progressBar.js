@@ -11,14 +11,14 @@ export default function Loader() {
 
   useEffect(() => {
     fetch(
-      `http://localhost:3000/pullUserStats?username=${encodeURIComponent(
+      `http://192.168.1.7:3000/pullUserStats?username=${encodeURIComponent(
         user.getUserName()
       )}`
     )
       .then((response) => response.json())
       .then((data) => {
-        setGoalTime(Number(data.currentGoal) || 1); // Ensure it's numeric and avoid division by zero
-        setTimeStudied(Number(data.currentTimeToGoal) || 1); // Ensure it's numeric\
+        //setGoalTime(Number(data.currentGoal) || 1); // Ensure it's numeric and avoid division by zero
+        // setTimeStudied(Number(data.currentTimeToGoal) || 1); // Ensure it's numeric\
         user.setUserGoalTime(goalTime);
 
         console.log(goalTime);
@@ -29,7 +29,7 @@ export default function Loader() {
   // var progressPercent;
   useEffect(() => {
     const percent = ((timeStudied / goalTime) * 100).toFixed(1) + '%';
-    setProgressPercent(percent);
+    //setProgressPercent(percent);
   }, [user.getUserGoalTime()]);
 
   // useEffect(() => {

@@ -50,7 +50,7 @@ export default function HomeScreen({ navigation }) {
   const fetchUserSettings = async (username) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/getUserSettings?username=${encodeURIComponent(
+        `http://192.168.1.7:3000/getUserSettings?username=${encodeURIComponent(
           username
         )}`
       );
@@ -127,7 +127,7 @@ export default function HomeScreen({ navigation }) {
   // Function to send session data to db
   const addStudySession = async (sessionData) => {
     try {
-      const response = await fetch('http://localhost:3000/addStudySession', {
+      const response = await fetch('http://192.168.1.7:3000/addStudySession', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
