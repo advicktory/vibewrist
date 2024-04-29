@@ -13,16 +13,16 @@ export default function LeaderboardScreen() {
 
   const fetchLeaderboardData = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/leaderboard');
+      const response = await axios.get('http://192.168.1.7:3000/leaderboard');
       let sortedData = response.data;
-      
+
       // Sort the data based on the selected filter
       if (filterSelected === 'totalTime') {
         sortedData.sort((a, b) => b.timeStudied - a.timeStudied);
       } else if (filterSelected === 'totalViolations') {
         sortedData.sort((a, b) => b.violations - a.violations);
       }
-      
+
       setLeaderboardData(sortedData);
     } catch (error) {
       console.error('Error fetching leaderboard data:', error);
@@ -54,14 +54,21 @@ export default function LeaderboardScreen() {
       <View style={styles.leaderboardContainer}>
         {leaderboardData.map((item, index) => (
           <View
-            style={[styles.leaderboardItem,index % 2 === 0 ? styles.evenRow : styles.oddRow,]}
+            style={[
+              styles.leaderboardItem,
+              index % 2 === 0 ? styles.evenRow : styles.oddRow,
+            ]}
             key={index}
           >
             <Text style={styles.rank}>{index + 1}</Text>
             <Text style={styles.username}>{item.username}</Text>
             <Text style={styles.score}>
               {filterSelected === 'totalTime'
-                ? `${(item.timeStudied / 60) % 1 === 0 ? (item.timeStudied / 60) : (item.timeStudied / 60).toFixed(1)} hours`
+                ? `${
+                    (item.timeStudied / 60) % 1 === 0
+                      ? item.timeStudied / 60
+                      : (item.timeStudied / 60).toFixed(1)
+                  } hours`
                 : `${item.violations} violations`}
             </Text>
           </View>
@@ -79,17 +86,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 50,
   },
-//   leaderboardBox: {
-//     flex: 1,
-//     backgroundColor: '#E0E0E0', // Light grey background
-//     alignItems: 'center',
-//     justifyContent:"center",
-//     borderRadius: 20, // Rounded corners
-//     marginTop: 20, // Add margin to separate from the title
-//     paddingHorizontal: 20, // Add horizontal padding
-//     paddingBottom: 20, // Add padding to the bottom to prevent content from touching the edges
-//     width: '90%', // Adjust the width to fit the screen
-//   },
+  //   leaderboardBox: {
+  //     flex: 1,
+  //     backgroundColor: '#E0E0E0', // Light grey background
+  //     alignItems: 'center',
+  //     justifyContent:"center",
+  //     borderRadius: 20, // Rounded corners
+  //     marginTop: 20, // Add margin to separate from the title
+  //     paddingHorizontal: 20, // Add horizontal padding
+  //     paddingBottom: 20, // Add padding to the bottom to prevent content from touching the edges
+  //     width: '90%', // Adjust the width to fit the screen
+  //   },
   title: {
     fontSize: 24,
     color: '#fff',

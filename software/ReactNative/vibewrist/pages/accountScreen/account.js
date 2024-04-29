@@ -20,7 +20,7 @@ export default function AccountScreen() {
       const fetchData = async () => {
         try {
           const response = await fetch(
-            `http://localhost:3000/getUserStats?username=${encodeURIComponent(
+            `http://192.168.1.7:3000/getUserStats?username=${encodeURIComponent(
               user.getUserName()
             )}`
           );

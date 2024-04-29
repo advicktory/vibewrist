@@ -152,7 +152,7 @@ app.post('/saveBleSetting', async (req, res) => {
     if (result.modifiedCount === 1 || result.upsertedCount === 1) {
       res.status(200).send('User settings updated successfully');
     } else {
-      res.status(404).send('User not found');
+      res.status(404).send('Settings did not change!');
     }
   } catch (error) {
     console.error(error);
@@ -249,7 +249,7 @@ app.get('/leaderboard', async (req, res) => {
   }
 });
 
-// Pulling user stats from db
+// Pulling user stats from db for account
 app.get('/getUserStats', async (req, res) => {
   const username = req.query.username;
   const today = new Date();
@@ -392,8 +392,8 @@ app.get('/pullUserStats', async (req, res) => {
       .findOne({ username: username });
 
     if (userStats) {
-      const { currentTimeToGoal, currentGoal } = userStats;
-      res.status(200).json({ currentTimeToGoal, currentGoal });
+      const { timeStudied, currentGoal, violations } = userStats;
+      res.status(200).json({ timeStudied, currentGoal, violations });
     } else {
       res.status(404).send('User stats not found');
     }
@@ -434,6 +434,31 @@ app.get('/getUserSettings', async (req, res) => {
   } catch (error) {
     console.error('Error fetching user settings:', error);
     res.status(500).send('Error fetching user settings');
+  }
+});
+
+app.post('/updateGoal', async (req, res) => {
+  const { username, newGoal } = req.body;
+
+  try {
+    const database = client.db('VibeWrist');
+    const userStats = database.collection('userStats');
+
+    const result = await userStats.updateOne(
+      { username: username },
+      { $set: { currentGoal: newGoal } }
+    );
+
+    if (result.modifiedCount === 1) {
+      res.status(200).send('Goal updated successfully');
+    } else if (result.matchedCount === 0) {
+      res.status(404).send('User not found');
+    } else {
+      res.status(304).send('No changes made');
+    }
+  } catch (error) {
+    console.error('Error updating goal:', error);
+    res.status(500).send('Internal server error');
   }
 });
 

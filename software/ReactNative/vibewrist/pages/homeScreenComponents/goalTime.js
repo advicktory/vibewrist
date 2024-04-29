@@ -13,12 +13,40 @@ import {
 import { useUser } from '../UserContext';
 
 const GoalTimeModal = ({ isVisible, onClose, onSave }) => {
-  const [selectedTime, setSelectedTime] = useState(""); // State to store selected goal time
+  const [selectedTime, setSelectedTime] = useState(''); // State to store selected goal time
+  const user = useUser();
+
+  const updateGoal = async (username, newGoal) => {
+    try {
+      const response = await fetch('http://192.168.1.7:3000/updateGoal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username,
+          newGoal: newGoal,
+        }),
+      });
+
+      if (response.ok) {
+        console.log('Goal updated successfully');
+      } else {
+        const errorText = await response.text();
+        console.error('Failed to update goal:', errorText);
+      }
+    } catch (error) {
+      console.error('Network or other error:', error);
+    }
+  };
 
   const handleSaveGoalTime = () => {
     // Save the selected goal time and call the onSave function passed as prop
     onSave(selectedTime);
-    setSelectedTime(""); // Clear the selected time
+    //setSelectedTime(''); // Clear the selected time
+    updateGoal(user.getUserName(), Number(selectedTime));
+    user.setUserGoalTime(selectedTime);
+    //user.setUserGoalTime(selectedTime);
     onClose(); // Close the modal
   };
 

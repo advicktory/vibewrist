@@ -45,12 +45,34 @@ export default function HomeScreen({ navigation }) {
   }; // Information gathered from Cycle Selector to send to Cycle Report
 
   const [isPaused, setIsPaused] = useState(false);
+  const [goalTime, setGoalTime] = useState(user.getUserGoalTime()); // State to store the selected goal time
+  const [timeStudied, setTimeStudied] = useState(user.getUserCurrTime());
+
+  useEffect(() => {
+    fetch(
+      `http://192.168.1.7:3000/pullUserStats?username=${encodeURIComponent(
+        user.getUserName()
+      )}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setGoalTime(Number(data.currentGoal) || 1); // Ensure it's numeric and avoid division by zero
+        setTimeStudied(Number(data.timeStudied) || 1); // Ensure it's numeric\
+        user.setUserGoalTime(data.currentGoal);
+        user.setUserCurrTime(data.timeStudied);
+        user.setViolations(data.violations);
+        //console.log('Goal time: ', goalTime);
+        console.log('user in progressBar: ', user);
+      })
+      .catch((error) => console.error('Failed to fetch user goals:', error));
+  }, [user]);
 
   // Gets the users settings beofre settings is launched so that appropriate thinkg loads.
   const fetchUserSettings = async (username) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/getUserSettings?username=${encodeURIComponent(
+        `http://192.168.1.7:3000/getUserSettings?username=${encodeURIComponent(
           username
         )}`
       );
@@ -114,7 +136,6 @@ export default function HomeScreen({ navigation }) {
     setIsSidebarOpen((prevState) => !prevState);
   };
   const [isGoalModalVisible, setIsGoalModalVisible] = useState(false); // State to track the visibility of the goal time modal
-  const [goalTime, setGoalTime] = useState(''); // State to store the selected goal time
 
   const toggleGoalModal = () => {
     setIsGoalModalVisible((prev) => !prev); // Toggle the visibility of the goal time modal
@@ -127,7 +148,7 @@ export default function HomeScreen({ navigation }) {
   // Function to send session data to db
   const addStudySession = async (sessionData) => {
     try {
-      const response = await fetch('http://localhost:3000/addStudySession', {
+      const response = await fetch('http://192.168.1.7:3000/addStudySession', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -156,11 +177,11 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.cycleContainer}>
           {cycleOptions}
           <CycleReport cycleOrder={cycleLengths} />
-          <ProgressBar />
+          <ProgressBar progress={user} />
           <Text style={styles.goalText}>
             Goal for this week:{' '}
             <Text onPress={toggleGoalModal}>
-              {goalTime || '[Your goal here]'}
+              {goalTime || user.getUserGoalTime()}
             </Text>
           </Text>
         </View>
@@ -189,7 +210,7 @@ export default function HomeScreen({ navigation }) {
                     date: new Date().toISOString(),
                   };
                   setIsPaused(false);
-                  console.log(sessionData);
+                  console.log('Session data:', sessionData);
                   addStudySession(sessionData);
                 })
                 .catch((error) => {

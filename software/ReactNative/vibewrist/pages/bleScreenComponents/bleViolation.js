@@ -13,7 +13,7 @@ const recordViolation = (
   if (startRecording) {
     // Interval to check distance
     //console.log('In violationFunction');
-    violations = 0; // should reset when the loop restarts
+    //violations = 0; // should reset when the loop restarts
     if (actualDistance >= startThreshold && !isViolationRecorded) {
       violations++;
       isViolationRecorded = true;
@@ -29,7 +29,8 @@ const recordViolation = (
 };
 
 const getViolations = () => {
-  violations;
+  return violations;
+  //console.log('Violations in bleViolations: ', violations);
 };
 
 export { recordViolation, getViolations };
