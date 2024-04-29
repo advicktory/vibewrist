@@ -152,7 +152,7 @@ app.post('/saveBleSetting', async (req, res) => {
     if (result.modifiedCount === 1 || result.upsertedCount === 1) {
       res.status(200).send('User settings updated successfully');
     } else {
-      res.status(404).send('User not found');
+      res.status(404).send('Settings did not change!');
     }
   } catch (error) {
     console.error(error);
@@ -392,8 +392,8 @@ app.get('/pullUserStats', async (req, res) => {
       .findOne({ username: username });
 
     if (userStats) {
-      const { currentTimeToGoal, currentGoal } = userStats;
-      res.status(200).json({ currentTimeToGoal, currentGoal });
+      const { timeStudied, currentGoal, violations } = userStats;
+      res.status(200).json({ timeStudied, currentGoal, violations });
     } else {
       res.status(404).send('User stats not found');
     }

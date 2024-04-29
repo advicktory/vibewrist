@@ -78,6 +78,7 @@ function getDistance(isStarted, device, dataCharacteristic, user) {
   } else if (!isStarted) {
     stopReading();
     user.setViolations(getViolations());
+    console.log(getViolations());
   }
 
   // Return a function to allow manual stopping of the distance reading

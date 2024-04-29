@@ -12,7 +12,8 @@ export default class User {
     bDur = 0, // Buzz Duration
     bFreq = 0, // Buzz Frequency
     violations = 0,
-    userGoalTime = 0
+    userGoalTime = 0,
+    userCurrentTime = 0
   ) {
     this.userName = userName;
     this.devName = devName;
@@ -63,6 +64,9 @@ export default class User {
   getUserGoalTime() {
     return this.userGoalTime;
   }
+  getUserCurrTime() {
+    return this.userCurrentTime;
+  }
 
   setUserName(newUserName) {
     this.userName = newUserName;
@@ -99,5 +103,8 @@ export default class User {
   }
   setUserGoalTime(userGoalTime) {
     this.userGoalTime = userGoalTime;
+  }
+  setUserCurrTime(userCurrentTime) {
+    this.userCurrentTime = userCurrentTime;
   }
 }

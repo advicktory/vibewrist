@@ -33,7 +33,7 @@ export default function Login({ navigation }) {
         console.log('Login successful!');
         navigation.navigate('Home');
         user.setUserName(username);
-
+        //console.log(user);
         // Additional logic after successful login (e.g., redirect)
       }
     } catch (error) {
