@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { ScrollView } from 'react-native';
+import { useState, useEffect } from "react";
+import { ScrollView } from "react-native";
 // import { View, Text, Button } from "react-native";
 import {
   View,
@@ -8,13 +8,19 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-} from 'react-native';
-import axios from 'axios'; // Import axios for HTTP requests
-import { useUser } from '../UserContext'; // Import the UserContext hook
+} from "react-native";
+import axios from "axios"; // Import axios for HTTP requests
+import { useUser } from "../UserContext"; // Import the UserContext hook
 
-import SavePreset from './savePreset';
-import { SelectList } from 'react-native-dropdown-select-list';
+import SavePreset from "./savePreset";
+import { SelectList } from "react-native-dropdown-select-list";
 
+/**
+ * A function that allows the user to select the Study Length, Break Length, and how many Cycles they would like to complete.
+ * @function cycleLengthSelector
+ * @param {User} user - The user object associated with the person using the application.
+ * @returns {JSX} Returns the study, break, cycle, and preset drop downs as well as a save preset button.
+ * */
 export default function cycleLengthSelector(user) {
   const [studyLengthSelected, setStudyLengthSelected] = useState([]);
   const [breakLengthSelected, setBreakLengthSelected] = useState([]);
@@ -65,7 +71,7 @@ export default function cycleLengthSelector(user) {
     // { key: 0, value: "None" },
     {
       key: 1,
-      value: 'Pomodoro Method',
+      value: "Pomodoro Method",
       studyLength: 25,
       breakLength: 5,
       cycleCount: 2,
@@ -75,18 +81,24 @@ export default function cycleLengthSelector(user) {
     // { key: 4, value: 4 },
   ];
 
+  /**
+   * A function that grabs the presets the user has stored in the database.
+   * @function fetchPresets
+   * @param {None} - There is not parameters for this function.
+   * @returns {number} presetsLength - Returns the length of the presets array in the database, else on error, 0. Updates user presets as needed.
+   * */
   const fetchPresets = async () => {
     try {
       const response = await axios.get(
-        `http://10.228.22.175:3000/getPresets/${user.getUserName()}`
+        `http://10.228.22.175:3000/getPresets/${user.getUserName()}`,
       );
       setPreset(response.data.presets);
       const presetsLength = response.data.presets.length; // Get the length of the presets array
       setCurrPresetKey(presetsLength); // Set the current preset key to the length of the presets array
-      console.log('length: ' + presetsLength);
+      console.log("length: " + presetsLength);
       return presetsLength; // Return the length of the presets array
     } catch (error) {
-      console.error('Error fetching presets:', error);
+      console.error("Error fetching presets:", error);
       return 0; // Return 0 in case of an error
     }
   };
@@ -97,6 +109,12 @@ export default function cycleLengthSelector(user) {
     fetchPresets(); // Call the function to fetch presets when the component mounts
   }, [user]);
 
+  /**
+   * A function that updates the users study options based on the preset.
+   * @function handleSelectPreset
+   * @param {number} key - The index from the select list which determines where in the drop down the item appears
+   * @returns {None} - Updates cycles current study, break, and cyce amounts when selected.
+   * */
   const handleSelectPreset = (key) => {
     // setCurrPresetKey(key);
     // console.log('Received new preset:', presetSelected[key]);
@@ -114,6 +132,13 @@ export default function cycleLengthSelector(user) {
   // console.log("current cycle time: " + cycleAmountSelected);
 
   // Function to update preset state
+
+  /**
+   * A function to update a preset when the user changes the settings within a preset.
+   * @function handleUpdatePreset
+   * @param {JavascriptObject?} newPreset- This is an update preset function meant to be sent to 'SavePreset'.
+   * @returns {None} - Updates selected Study Length, Break Length, and Cycle Amount based on newPreset.
+   */
   const handleUpdatePreset = (newPreset) => {
     // console.log("Received new preset:", newPreset);
     setPreset([...presetSelected, newPreset]);
@@ -204,7 +229,7 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
     // position: "relative",
     // backgroundColor: "#0066ff",
-    backgroundColor: '#1c1b1d',
+    backgroundColor: "#1c1b1d",
     borderRadius: 20,
     padding: 10,
     margin: 20,
@@ -214,23 +239,23 @@ const styles = StyleSheet.create({
 
   topPortion: {
     // flex:1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     // marginBottom: 10,
     // position: "absolute",
   },
   inputContainer: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     // fontSize: 10,
   },
   dropdownContainer: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     // fontSize: 10,
   },
   boxContainer: {
-    borderColor: 'white',
+    borderColor: "white",
     margin: 5,
     height: 45,
     maxHeight: 50,

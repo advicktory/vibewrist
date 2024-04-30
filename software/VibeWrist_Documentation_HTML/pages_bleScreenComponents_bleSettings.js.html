@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/bleScreenComponents/bleSettings.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/bleScreenComponents/bleSettings.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, FlatList, Button } from "react-native";
+import { BleManager } from "react-native-ble-plx";
+import { useState, useEffect, useRef } from "react";
+import { atob, btoa } from "react-native-quick-base64";
+import User from "../User";
+import { useUser } from "../UserContext";
+
+const bleManager = new BleManager();
+const SERVICE_UUID = "7a0247e7-8e88-409b-a959-ab5092ddb03e";
+const CHAR_UUID = "82258baa-df72-47e8-99bc-b73d7ecd08a5";
+
+/**
+ * A fucntion to handle the connecting, disconnecting, and connection LED Cycle for the device connecting to the bracelet.
+ * @function useConnectToDevice
+ * @param {None} - There are not parameters for this function.
+ * @returns {Object} - Javascript object containing the following values: deviceID, devices, connectionStatus, characteristicValue, data, deviceRef, connectToDevice.
+ * */
+export default function useConnectToDevice() {
+  const [deviceID, setDeviceID] = useState(null);
+  const [devices, setDevices] = useState([]);
+  const [connectionStatus, setConnectionStatus] = useState("Searching...");
+  const deviceRef = useRef(null);
+  const [characteristicValue, setCharacteristicValue] = useState("");
+  const [data, setData] = useState(null);
+  const [distance, setDistance] = useState(null);
+
+  const user = useUser();
+
+  //console.log('User in settings: ', user);
+
+  /**
+   * A function that connects the device to the bracelet.
+   * @function connectToDevice
+   * @param {} device - BLE Devices in the area.
+   * @param {number} retryCount - Number of times to retry connecting to the device. Defaulted to 0.
+   * @returns {} device - The BLE device of the VibeWrist bracelet.
+   * @inner
+   * */
+  const connectToDevice = (device, retryCount = 0) => {
+    return device
+      .connect()
+      .then((connectedDevice) => {
+        setDeviceID(connectedDevice.id);
+        setConnectionStatus("Connected");
+        deviceRef.current = connectedDevice;
+        console.log("Connected");
+        return connectedDevice.discoverAllServicesAndCharacteristics();
+      })
+      .then((connectedDevice) => connectedDevice.services())
+      .then((services) => {
+        let service = services.find((s) => s.uuid === SERVICE_UUID);
+        if (!service) {
+          throw new Error("Service not found");
+        }
+        return service.characteristics();
+      })
+      .then((characteristics) => {
+        let dataCharacteristic = characteristics.find(
+          (c) => c.uuid === CHAR_UUID,
+        );
+        if (!dataCharacteristic) {
+          throw new Error("Characteristic not found");
+        }
+        setData(dataCharacteristic);
+        ledOnConnect(dataCharacteristic);
+      })
+      .catch((error) => {
+        console.error("Error in connection or data fetching:", error);
+        setConnectionStatus("Error in Connection");
+        if (retryCount &lt; 3) {
+          console.log(`Attempting to reconnect... Attempt #${retryCount + 1}`);
+          return connectToDevice(device, retryCount + 1);
+        }
+      });
+  };
+
+  useEffect(() => {
+    const subscription = bleManager.onDeviceDisconnected(
+      deviceID,
+      (error, device) => {
+        if (error) {
+          console.log("Disconnected with error:", error);
+        }
+        setConnectionStatus("Disconnected");
+        console.log("Disconnected device");
+        //setStepCount(0); // Reset the step count
+        if (deviceRef.current) {
+          setConnectionStatus("Reconnecting...");
+          connectToDevice(deviceRef.current)
+            .then(() => setConnectionStatus("Connected"))
+            .catch((error) => {
+              console.log("Reconnection failed: ", error);
+              setConnectionStatus("Reconnection failed");
+            });
+        }
+      },
+    );
+    return () => subscription.remove();
+  }, [deviceID]);
+
+  /**
+   * A function to serach for bluetooth devices in the area of the user's device.
+   * @function searchForDevices
+   * @param {None} - There are no parameters for this function.
+   * @returns {None} - Either returns on error or starts the 'connectToDevice' when the device is 'VibeWrist'.
+   * @inner
+   * */
+
+  const searchForDevices = () => {
+    setDevices([]); // Clear the current list
+    bleManager.startDeviceScan(null, null, (error, device) => {
+      if (error) {
+        console.error(error);
+        setConnectionStatus("Error searching for devices");
+        return;
+      }
+
+      setDevices((prevDevices) => [...prevDevices, device]);
+      if (device.name == "VibeWrist") {
+        bleManager.stopDeviceScan();
+        setConnectionStatus("Connecting...");
+        connectToDevice(device);
+      }
+    });
+  };
+
+  /**
+   * A function to send the bracelet a startup LED Sequence.
+   * @function ledOnConnect
+   * @param {} dataCharacteristic - The server UUID and characteristic UUID of the bluetooth bracelet.
+   * @returns {None} - This function only sends data to the bracelet based on the communication protocal.
+   * @inner
+   * */
+  const ledOnConnect = async (dataCharacteristic) => {
+    // Commands for each LED, these need to be defined according to your device's specification
+    const commandsOn = ["1,1,1", "1,2,1", "1,3,1"];
+    const commandsOff = ["1,1,0", "1,2,0", "1,3,0"];
+
+    try {
+      // Sequentially send commands to turn on each LED
+      for (const commandOn of commandsOn) {
+        //console.log(`Sending command: ${commandOn}`);
+        await dataCharacteristic.writeWithResponse(btoa(commandOn));
+        //console.log(`Command ${commandOn} executed successfully`);
+      }
+      console.log("Connected LED sequence complete");
+      for (const commandOff of commandsOff) {
+        //console.log(`Sending command: ${commandOff}`);
+        await dataCharacteristic.writeWithResponse(btoa(commandOff));
+        //console.log(`Command ${commandOff} executed successfully`);
+      }
+    } catch (error) {
+      console.error("Failed to turn on/off LEDs:", error);
+    }
+  };
+
+  useEffect(() => {
+    searchForDevices();
+    return () => bleManager.stopDeviceScan(); // Ensure scanning is stopped when the component unmounts
+  }, []);
+
+  return {
+    deviceID,
+    devices,
+    connectionStatus,
+    characteristicValue,
+    data,
+    deviceRef,
+    connectToDevice, // Make sure this is defined in your hook
+  };
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Account%2520Screen.html">Account Screen</a></li><li><a href="module-App%2520Screen.html">App Screen</a></li><li><a href="module-Bracelet%2520Settings%2520Screen.html">Bracelet Settings Screen</a></li><li><a href="module-Leaderboard%2520Screen.html">Leaderboard Screen</a></li><li><a href="module-Login%2520Screen.html">Login Screen</a></li><li><a href="module-Signup%2520Screen.html">Signup Screen</a></li></ul><h3>Namespaces</h3><ul><li><a href="global.html#HomeScreen">HomeScreen</a></li></ul><h3>Classes</h3><ul><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#GoalTimeModal">GoalTimeModal</a></li><li><a href="global.html">NewPresetCycleButton</a></li><li><a href="global.html#ProgressBar">ProgressBar</a></li><li><a href="global.html#ScanScreen">ScanScreen</a></li><li><a href="global.html#StartButton">StartButton</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#calculateTotalTime">calculateTotalTime</a></li><li><a href="global.html">connectToDevice</a></li><li><a href="global.html#createEmptyUserStats">createEmptyUserStats</a></li><li><a href="global.html#cycleLengthSelector">cycleLengthSelector</a></li><li><a href="global.html#cycleReport">cycleReport</a></li><li><a href="global.html#deletePreset">deletePreset</a></li><li><a href="global.html#fetchPresets">fetchPresets</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getViolations">getViolations</a></li><li><a href="global.html">handleRemovePreset</a></li><li><a href="global.html">handleSaveGoalTime</a></li><li><a href="global.html#handleSelectPreset">handleSelectPreset</a></li><li><a href="global.html#handleStartPress">handleStartPress</a></li><li><a href="global.html#handleUpdatePreset">handleUpdatePreset</a></li><li><a href="global.html">ledOnConnect</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#manageStudyTime">manageStudyTime</a></li><li><a href="global.html#recordViolation">recordViolation</a></li><li><a href="global.html#savePreset">savePreset</a></li><li><a href="global.html#scanForDevices">scanForDevices</a></li><li><a href="global.html">searchForDevices</a></li><li><a href="global.html">setInterval</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html">updateGoal</a></li><li><a href="global.html#useConnectToDevice">useConnectToDevice</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Apr 30 2024 13:56:18 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

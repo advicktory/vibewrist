@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/leaderboardScreen/leaderboardScreen.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/leaderboardScreen/leaderboardScreen.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import axios from "axios";
+import { SelectList } from "react-native-dropdown-select-list";
+
+/**
+ * Leaderboard Screen
+ * @module Leaderboard Screen
+ * */
+
+export default function LeaderboardScreen() {
+  /**
+   * A function that defines that account screen of the VibeWrist application.
+   * @function AccountScreen
+   * @param {None} No Parameters are needed for this function.
+   * @returns {JSX} Returns the leaderboard with data pulled from the database and a filter option.
+   * @inner
+   * */
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [filterSelected, setFilterSelected] = useState("totalTime");
+
+  useEffect(() => {
+    fetchLeaderboardData();
+  }, [filterSelected]);
+
+  /**
+   * Used to fetch leaderboard stats from the database.
+   * @function fetchLeaderboardData
+   * @returns {None} - Fills in leaderboard with the data requested from the database and sorts it
+   * @inner
+   * */
+  const fetchLeaderboardData = async () => {
+    try {
+      const response = await axios.get("http://192.168.1.7:3000/leaderboard");
+      let sortedData = response.data;
+
+      // Sort the data based on the selected filter
+      if (filterSelected === "totalTime") {
+        sortedData.sort((a, b) => b.timeStudied - a.timeStudied);
+      } else if (filterSelected === "totalViolations") {
+        sortedData.sort((a, b) => b.violations - a.violations);
+      }
+
+      setLeaderboardData(sortedData);
+    } catch (error) {
+      console.error("Error fetching leaderboard data:", error);
+    }
+  };
+
+  const Filter = [
+    { key: "totalTime", value: "Filter: Total Time Studied" },
+    { key: "totalViolations", value: "Filter: Total Violations" },
+  ];
+
+  return (
+    &lt;View style={styles.container}>
+      &lt;Text style={styles.title}>Leaderboard&lt;/Text>
+      &lt;View style={styles.containerDrop}>
+        &lt;SelectList
+          setSelected={(val) => setFilterSelected(val)}
+          data={Filter}
+          search={false}
+          placeholder="Default Filter: Total Time Studied"
+          save="key"
+          inputStyles={styles.inputContainer}
+          dropdownTextStyles={styles.dropdownContainer}
+          boxStyles={styles.boxContainer}
+          dropdownStyles={styles.boxContainer}
+        />
+      &lt;/View>
+      {/* &lt;View style={styles.leaderboardBox}> */}
+      &lt;View style={styles.leaderboardContainer}>
+        {leaderboardData.map((item, index) => (
+          &lt;View
+            style={[
+              styles.leaderboardItem,
+              index % 2 === 0 ? styles.evenRow : styles.oddRow,
+            ]}
+            key={index}
+          >
+            &lt;Text style={styles.rank}>{index + 1}&lt;/Text>
+            &lt;Text style={styles.username}>{item.username}&lt;/Text>
+            &lt;Text style={styles.score}>
+              {filterSelected === "totalTime"
+                ? `${
+                    (item.timeStudied / 60) % 1 === 0
+                      ? item.timeStudied / 60
+                      : (item.timeStudied / 60).toFixed(1)
+                  } hours`
+                : `${item.violations} violations`}
+            &lt;/Text>
+          &lt;/View>
+        ))}
+      &lt;/View>
+      {/* &lt;/View> */}
+    &lt;/View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+    alignItems: "center",
+    paddingTop: 50,
+  },
+  //   leaderboardBox: {
+  //     flex: 1,
+  //     backgroundColor: '#E0E0E0', // Light grey background
+  //     alignItems: 'center',
+  //     justifyContent:"center",
+  //     borderRadius: 20, // Rounded corners
+  //     marginTop: 20, // Add margin to separate from the title
+  //     paddingHorizontal: 20, // Add horizontal padding
+  //     paddingBottom: 20, // Add padding to the bottom to prevent content from touching the edges
+  //     width: '90%', // Adjust the width to fit the screen
+  //   },
+  title: {
+    fontSize: 24,
+    color: "#fff",
+    marginBottom: 20,
+  },
+  leaderboardContainer: {
+    width: "80%",
+    alignItems: "center",
+  },
+  leaderboardItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginBottom: 10,
+    backgroundColor: "#1c1b1d",
+    padding: 10,
+    borderRadius: 10,
+  },
+  evenRow: {
+    backgroundColor: "#333",
+  },
+  oddRow: {
+    backgroundColor: "#1c1b1d",
+  },
+  rank: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  username: {
+    color: "#fff",
+    flex: 1,
+    marginLeft: 10,
+  },
+  score: {
+    color: "#fff",
+  },
+  inputContainer: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  dropdownContainer: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  boxContainer: {
+    borderColor: "white",
+    margin: 2,
+    height: 45,
+    maxHeight: 50,
+  },
+  containerDrop: {
+    backgroundColor: "#1c1b1d",
+    borderRadius: 20,
+    margin: 20,
+  },
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Account%2520Screen.html">Account Screen</a></li><li><a href="module-App%2520Screen.html">App Screen</a></li><li><a href="module-Bracelet%2520Settings%2520Screen.html">Bracelet Settings Screen</a></li><li><a href="module-Leaderboard%2520Screen.html">Leaderboard Screen</a></li><li><a href="module-Login%2520Screen.html">Login Screen</a></li><li><a href="module-Signup%2520Screen.html">Signup Screen</a></li></ul><h3>Namespaces</h3><ul><li><a href="global.html#HomeScreen">HomeScreen</a></li></ul><h3>Classes</h3><ul><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#GoalTimeModal">GoalTimeModal</a></li><li><a href="global.html">NewPresetCycleButton</a></li><li><a href="global.html#ProgressBar">ProgressBar</a></li><li><a href="global.html#ScanScreen">ScanScreen</a></li><li><a href="global.html#StartButton">StartButton</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#calculateTotalTime">calculateTotalTime</a></li><li><a href="global.html">connectToDevice</a></li><li><a href="global.html#createEmptyUserStats">createEmptyUserStats</a></li><li><a href="global.html#cycleLengthSelector">cycleLengthSelector</a></li><li><a href="global.html#cycleReport">cycleReport</a></li><li><a href="global.html#deletePreset">deletePreset</a></li><li><a href="global.html#fetchPresets">fetchPresets</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getViolations">getViolations</a></li><li><a href="global.html">handleRemovePreset</a></li><li><a href="global.html">handleSaveGoalTime</a></li><li><a href="global.html#handleSelectPreset">handleSelectPreset</a></li><li><a href="global.html#handleStartPress">handleStartPress</a></li><li><a href="global.html#handleUpdatePreset">handleUpdatePreset</a></li><li><a href="global.html">ledOnConnect</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#manageStudyTime">manageStudyTime</a></li><li><a href="global.html#recordViolation">recordViolation</a></li><li><a href="global.html#savePreset">savePreset</a></li><li><a href="global.html#scanForDevices">scanForDevices</a></li><li><a href="global.html">searchForDevices</a></li><li><a href="global.html">setInterval</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html">updateGoal</a></li><li><a href="global.html#useConnectToDevice">useConnectToDevice</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Apr 30 2024 13:56:18 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

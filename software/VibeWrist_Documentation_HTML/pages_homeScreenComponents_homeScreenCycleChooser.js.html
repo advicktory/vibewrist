@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/homeScreenComponents/homeScreenCycleChooser.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/homeScreenComponents/homeScreenCycleChooser.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState, useEffect } from "react";
+import { ScrollView } from "react-native";
+// import { View, Text, Button } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import axios from "axios"; // Import axios for HTTP requests
+import { useUser } from "../UserContext"; // Import the UserContext hook
+
+import SavePreset from "./savePreset";
+import { SelectList } from "react-native-dropdown-select-list";
+
+/**
+ * A function that allows the user to select the Study Length, Break Length, and how many Cycles they would like to complete.
+ * @function cycleLengthSelector
+ * @param {User} user - The user object associated with the person using the application.
+ * @returns {JSX} Returns the study, break, cycle, and preset drop downs as well as a save preset button.
+ * */
+export default function cycleLengthSelector(user) {
+  const [studyLengthSelected, setStudyLengthSelected] = useState([]);
+  const [breakLengthSelected, setBreakLengthSelected] = useState([]);
+  const [cycleAmountSelected, setCycleAmountSelected] = useState([]);
+
+  const [presetSelected, setPreset] = useState([]);
+  const [currPresetKey, setCurrPresetKey] = useState([]);
+  const studyOptions = [
+    { key: 1, value: 1 },
+    { key: 5, value: 5 },
+    { key: 10, value: 10 },
+    { key: 15, value: 15 },
+    { key: 20, value: 20 },
+    { key: 25, value: 25 },
+    { key: 30, value: 30 },
+    { key: 35, value: 35 },
+    { key: 40, value: 40 },
+    { key: 45, value: 45 },
+    { key: 50, value: 50 },
+    { key: 55, value: 55 },
+    { key: 60, value: 60 },
+  ];
+  const breakOptions = [
+    { key: 1, value: 1 },
+    { key: 5, value: 5 },
+    { key: 10, value: 10 },
+    { key: 15, value: 15 },
+    { key: 20, value: 20 },
+    { key: 25, value: 25 },
+    { key: 30, value: 30 },
+    { key: 35, value: 35 },
+    { key: 40, value: 40 },
+    { key: 45, value: 45 },
+    { key: 50, value: 50 },
+    { key: 55, value: 55 },
+    { key: 60, value: 60 },
+  ];
+  const cycleOptions = [
+    { key: 1, value: 1 },
+    { key: 2, value: 2 },
+    { key: 3, value: 3 },
+    { key: 4, value: 4 },
+    { key: 5, value: 5 },
+    { key: 6, value: 6 },
+    { key: 7, value: 7 },
+  ];
+  const preset = [
+    // { key: 0, value: "None" },
+    {
+      key: 1,
+      value: "Pomodoro Method",
+      studyLength: 25,
+      breakLength: 5,
+      cycleCount: 2,
+    },
+    // { key: 2, value: 2 },
+    // { key: 3, value: 3 },
+    // { key: 4, value: 4 },
+  ];
+
+  /**
+   * A function that grabs the presets the user has stored in the database.
+   * @function fetchPresets
+   * @param {None} - There is not parameters for this function.
+   * @returns {number} presetsLength - Returns the length of the presets array in the database, else on error, 0. Updates user presets as needed.
+   * */
+  const fetchPresets = async () => {
+    try {
+      const response = await axios.get(
+        `http://10.228.22.175:3000/getPresets/${user.getUserName()}`,
+      );
+      setPreset(response.data.presets);
+      const presetsLength = response.data.presets.length; // Get the length of the presets array
+      setCurrPresetKey(presetsLength); // Set the current preset key to the length of the presets array
+      console.log("length: " + presetsLength);
+      return presetsLength; // Return the length of the presets array
+    } catch (error) {
+      console.error("Error fetching presets:", error);
+      return 0; // Return 0 in case of an error
+    }
+  };
+
+  useEffect(() => {
+    // Fetch presets for the logged-in user
+
+    fetchPresets(); // Call the function to fetch presets when the component mounts
+  }, [user]);
+
+  /**
+   * A function that updates the users study options based on the preset.
+   * @function handleSelectPreset
+   * @param {number} key - The index from the select list which determines where in the drop down the item appears
+   * @returns {None} - Updates cycles current study, break, and cyce amounts when selected.
+   * */
+  const handleSelectPreset = (key) => {
+    // setCurrPresetKey(key);
+    // console.log('Received new preset:', presetSelected[key]);
+    // console.log("Received new presetTTTT:", newPreset[0].studyLength);
+    setStudyLengthSelected(presetSelected[key].studyLength.toString());
+    // console.log("preset study length" + studyLengthSelected);
+
+    setBreakLengthSelected(presetSelected[key].breakLength.toString());
+    setCycleAmountSelected(presetSelected[key].cycleAmount.toString());
+  };
+  // console.log("preset:" + presetSelected[currPresetKey].studyLength.toString());
+  // console.log("current KEY: " + currPresetKey);
+  // console.log("current Study time: " + studyLengthSelected);
+  // console.log("current break time: " + breakLengthSelected);
+  // console.log("current cycle time: " + cycleAmountSelected);
+
+  // Function to update preset state
+
+  /**
+   * A function to update a preset when the user changes the settings within a preset.
+   * @function handleUpdatePreset
+   * @param {JavascriptObject?} newPreset- This is an update preset function meant to be sent to 'SavePreset'.
+   * @returns {None} - Updates selected Study Length, Break Length, and Cycle Amount based on newPreset.
+   */
+  const handleUpdatePreset = (newPreset) => {
+    // console.log("Received new preset:", newPreset);
+    setPreset([...presetSelected, newPreset]);
+    setStudyLengthSelected(newPreset.studyLength.toString());
+    setBreakLengthSelected(newPreset.breakLength.toString());
+    setCycleAmountSelected(newPreset.cycleAmount.toString());
+
+    // console.log(newPreset.studyLength.toString())
+  };
+  // console.log("AHH",studyLengthSelectedPRE)
+
+  return {
+    cycleOptions: (
+      &lt;>
+        &lt;View style={styles.container}>
+          &lt;View style={styles.topPortion}>
+            &lt;SelectList
+              setSelected={(val) => setStudyLengthSelected(val)}
+              data={studyOptions}
+              search={false}
+              placeholder="Study Length"
+              save="key"
+              inputStyles={styles.inputContainer}
+              dropdownTextStyles={styles.dropdownContainer}
+              boxStyles={styles.boxContainer}
+              dropdownStyles={styles.boxContainer}
+            />
+
+            &lt;SelectList
+              setSelected={(val) => setBreakLengthSelected(val)}
+              data={breakOptions}
+              search={false}
+              placeholder="Break Length"
+              save="key"
+              inputStyles={styles.inputContainer}
+              dropdownTextStyles={styles.dropdownContainer}
+              boxStyles={styles.boxContainer}
+              dropdownStyles={styles.boxContainer}
+            />
+          &lt;/View>
+
+          &lt;SelectList
+            setSelected={(val) => setCycleAmountSelected(val)}
+            data={cycleOptions}
+            search={false}
+            placeholder="How many Cycles?"
+            save="key"
+            inputStyles={styles.inputContainer}
+            dropdownTextStyles={styles.dropdownContainer}
+            boxStyles={styles.boxContainer}
+            dropdownStyles={styles.boxContainer}
+          />
+
+          &lt;SelectList
+            setSelected={(val) => handleSelectPreset(val)}
+            data={presetSelected}
+            search={false}
+            placeholder="Custom"
+            save="key"
+            inputStyles={styles.inputContainer}
+            dropdownTextStyles={styles.dropdownContainer}
+            boxStyles={styles.boxContainer}
+            dropdownStyles={styles.boxContainer}
+          />
+        &lt;/View>
+        &lt;SavePreset
+          studyLengthSelected={studyLengthSelected}
+          breakLengthSelected={breakLengthSelected}
+          cycleAmountSelected={cycleAmountSelected}
+          onUpdatePreset={handleUpdatePreset} // Pass the function as prop
+          user={user}
+          currPresetKey={currPresetKey}
+          fetchPresets={fetchPresets}
+        />
+      &lt;/>
+    ),
+    cycleOptionResponces: [
+      studyLengthSelected,
+      breakLengthSelected,
+      cycleAmountSelected,
+    ],
+  };
+}
+const styles = StyleSheet.create({
+  container: {
+    // flex: 1,
+    // alignItems: "center",
+    // justifyContent: "center",
+    // position: "relative",
+    // backgroundColor: "#0066ff",
+    backgroundColor: "#1c1b1d",
+    borderRadius: 20,
+    padding: 10,
+    margin: 20,
+    // position: "relative",
+    // bottom:90
+  },
+
+  topPortion: {
+    // flex:1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    // marginBottom: 10,
+    // position: "absolute",
+  },
+  inputContainer: {
+    color: "white",
+    fontWeight: "bold",
+    // fontSize: 10,
+  },
+  dropdownContainer: {
+    color: "white",
+    fontWeight: "bold",
+    // fontSize: 10,
+  },
+  boxContainer: {
+    borderColor: "white",
+    margin: 5,
+    height: 45,
+    maxHeight: 50,
+  },
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Account%2520Screen.html">Account Screen</a></li><li><a href="module-App%2520Screen.html">App Screen</a></li><li><a href="module-Bracelet%2520Settings%2520Screen.html">Bracelet Settings Screen</a></li><li><a href="module-Leaderboard%2520Screen.html">Leaderboard Screen</a></li><li><a href="module-Login%2520Screen.html">Login Screen</a></li><li><a href="module-Signup%2520Screen.html">Signup Screen</a></li></ul><h3>Namespaces</h3><ul><li><a href="global.html#HomeScreen">HomeScreen</a></li></ul><h3>Classes</h3><ul><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#GoalTimeModal">GoalTimeModal</a></li><li><a href="global.html">NewPresetCycleButton</a></li><li><a href="global.html#ProgressBar">ProgressBar</a></li><li><a href="global.html#ScanScreen">ScanScreen</a></li><li><a href="global.html#StartButton">StartButton</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#calculateTotalTime">calculateTotalTime</a></li><li><a href="global.html">connectToDevice</a></li><li><a href="global.html#createEmptyUserStats">createEmptyUserStats</a></li><li><a href="global.html#cycleLengthSelector">cycleLengthSelector</a></li><li><a href="global.html#cycleReport">cycleReport</a></li><li><a href="global.html#deletePreset">deletePreset</a></li><li><a href="global.html#fetchPresets">fetchPresets</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getViolations">getViolations</a></li><li><a href="global.html">handleRemovePreset</a></li><li><a href="global.html">handleSaveGoalTime</a></li><li><a href="global.html#handleSelectPreset">handleSelectPreset</a></li><li><a href="global.html#handleStartPress">handleStartPress</a></li><li><a href="global.html#handleUpdatePreset">handleUpdatePreset</a></li><li><a href="global.html">ledOnConnect</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#manageStudyTime">manageStudyTime</a></li><li><a href="global.html#recordViolation">recordViolation</a></li><li><a href="global.html#savePreset">savePreset</a></li><li><a href="global.html#scanForDevices">scanForDevices</a></li><li><a href="global.html">searchForDevices</a></li><li><a href="global.html">setInterval</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html">updateGoal</a></li><li><a href="global.html#useConnectToDevice">useConnectToDevice</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Apr 30 2024 13:56:18 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

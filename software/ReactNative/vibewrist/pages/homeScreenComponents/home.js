@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,25 +8,34 @@ import {
   StyleSheet,
   Modal,
   Dimensions,
-} from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import _BackgroundTimer from 'react-native-background-timer';
-import { useUser } from '../UserContext';
-import useConnectToDevice from '../bleScreenComponents/bleSettings.js';
-import manageStudyTime from '../bleScreenComponents/bleLEDfunct.js';
-import getDistance from '../bleScreenComponents/bleDistance.js';
-import cycleLengthSelector from './homeScreenCycleChooser.js';
-import CycleReport from './homeScreenText.js';
-import StartButton from './homeScreenStartButton';
-import ProgressBar from './progressBar';
-import SavePreset from './savePreset';
-import { atob, btoa } from 'react-native-quick-base64';
-import GoalTimeModal from './goalTime'; // Import the GoalTimeModal component
-import { ScrollView } from 'react-native';
-import redLogo from './../../assets/red_bracelet.png';
-import blueLogo from './../../assets/blue_bracelet.png';
+} from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import _BackgroundTimer from "react-native-background-timer";
+import { useUser } from "../UserContext";
+import useConnectToDevice from "../bleScreenComponents/bleSettings.js";
+import manageStudyTime from "../bleScreenComponents/bleLEDfunct.js";
+import getDistance from "../bleScreenComponents/bleDistance.js";
+import cycleLengthSelector from "./homeScreenCycleChooser.js";
+import CycleReport from "./homeScreenText.js";
+import StartButton from "./homeScreenStartButton";
+import ProgressBar from "./progressBar";
+import SavePreset from "./savePreset";
+import { atob, btoa } from "react-native-quick-base64";
+import GoalTimeModal from "./goalTime"; // Import the GoalTimeModal component
+import { ScrollView } from "react-native";
+import redLogo from "./../../assets/red_bracelet.png";
+import blueLogo from "./../../assets/blue_bracelet.png";
+
+/**
+ * @namespace HomeScreen
+ * */
 
 export default function HomeScreen({ navigation }) {
+  /**
+   * @function HomeScreen
+   * @param {navigation} - This function takes a navigation prop to allow data to be passed to and from the different screens.
+   * @returns {JSX} - Returns the JSX and CSS needed to display the screen.
+   * */
   const user = useUser();
   const [startDistanceFn, setStartDistanceFn] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to track if the sidebar/modal is open
@@ -51,8 +60,8 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     fetch(
       `http://192.168.1.7:3000/pullUserStats?username=${encodeURIComponent(
-        user.getUserName()
-      )}`
+        user.getUserName(),
+      )}`,
     )
       .then((response) => response.json())
       .then((data) => {
@@ -63,9 +72,9 @@ export default function HomeScreen({ navigation }) {
         user.setUserCurrTime(data.timeStudied);
         user.setViolations(data.violations);
         //console.log('Goal time: ', goalTime);
-        console.log('user in progressBar: ', user);
+        console.log("user in progressBar: ", user);
       })
-      .catch((error) => console.error('Failed to fetch user goals:', error));
+      .catch((error) => console.error("Failed to fetch user goals:", error));
   }, [user]);
 
   // Gets the users settings beofre settings is launched so that appropriate thinkg loads.
@@ -73,11 +82,11 @@ export default function HomeScreen({ navigation }) {
     try {
       const response = await fetch(
         `http://192.168.1.7:3000/getUserSettings?username=${encodeURIComponent(
-          username
-        )}`
+          username,
+        )}`,
       );
       if (!response.ok) {
-        throw new Error('Failed to fetch user settings');
+        throw new Error("Failed to fetch user settings");
       }
       const data = await response.json();
 
@@ -85,7 +94,7 @@ export default function HomeScreen({ navigation }) {
       user.setBuzzDuration(data.bDur);
       user.setBuzzFrequency(data.bFreq);
     } catch (error) {
-      console.error('Error fetching user settings:', error);
+      console.error("Error fetching user settings:", error);
     }
   };
 
@@ -93,7 +102,7 @@ export default function HomeScreen({ navigation }) {
   useFocusEffect(
     useCallback(() => {
       fetchUserSettings(user.getUserName());
-    }, [user])
+    }, [user]),
   );
 
   // Provide ability to run a function after a set amount of time
@@ -110,7 +119,7 @@ export default function HomeScreen({ navigation }) {
       getDistance(false, deviceCurr.current, dataCharacteristic, user); // Stop tracking
       executeAfterDelay(10000, () => {
         dataCharacteristic.writeWithResponse(
-          btoa(`3,${user.getBreakLength()}`)
+          btoa(`3,${user.getBreakLength()}`),
         );
       });
     }
@@ -124,9 +133,9 @@ export default function HomeScreen({ navigation }) {
   }, [cycleLengths.sLength, cycleLengths.bLength, cycleLengths.cAmount]);
 
   useEffect(() => {
-    if (isConnected !== 'Connected') {
+    if (isConnected !== "Connected") {
       setConnectedBraceletLogo(redLogo);
-    } else if (isConnected === 'Connected') {
+    } else if (isConnected === "Connected") {
       setConnectedBraceletLogo(blueLogo);
     }
   }, [isConnected]);
@@ -148,22 +157,22 @@ export default function HomeScreen({ navigation }) {
   // Function to send session data to db
   const addStudySession = async (sessionData) => {
     try {
-      const response = await fetch('http://192.168.1.7:3000/addStudySession', {
-        method: 'POST',
+      const response = await fetch("http://192.168.1.7:3000/addStudySession", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(sessionData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send study session data');
+        throw new Error("Failed to send study session data");
       }
 
       const responseData = await response.json();
-      console.log('Study session added:', responseData);
+      console.log("Study session added:", responseData);
     } catch (error) {
-      console.error('Error adding study session:', error);
+      console.error("Error adding study session:", error);
     }
   };
 
@@ -179,7 +188,7 @@ export default function HomeScreen({ navigation }) {
           <CycleReport cycleOrder={cycleLengths} />
           <ProgressBar progress={user} />
           <Text style={styles.goalText}>
-            Goal for this week:{' '}
+            Goal for this week:{" "}
             <Text onPress={toggleGoalModal}>
               {goalTime || user.getUserGoalTime()}
             </Text>
@@ -198,7 +207,7 @@ export default function HomeScreen({ navigation }) {
               manageStudyTime(
                 dataCharacteristic,
                 user.getStudyLength(),
-                user.getBreakLength() /*this parameter not used, leaving in case */
+                user.getBreakLength() /*this parameter not used, leaving in case */,
               )
                 .then(() => {
                   //console.log('manageStudyTime completed');
@@ -210,11 +219,11 @@ export default function HomeScreen({ navigation }) {
                     date: new Date().toISOString(),
                   };
                   setIsPaused(false);
-                  console.log('Session data:', sessionData);
+                  console.log("Session data:", sessionData);
                   addStudySession(sessionData);
                 })
                 .catch((error) => {
-                  console.error('Error in manageStudyTime:', error);
+                  console.error("Error in manageStudyTime:", error);
                   setStartDistanceFn(false); // Optionally stop distance tracking on error as well
                 });
 
@@ -250,7 +259,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity style={styles.sidebarButton}>
               <Text
                 onPress={() => {
-                  navigation.navigate('Account', { userObj: user });
+                  navigation.navigate("Account", { userObj: user });
                   setIsSidebarOpen(false);
                 }}
                 style={styles.sidebarButtonText}
@@ -261,7 +270,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity style={styles.sidebarButton}>
               <Text
                 onPress={() => {
-                  navigation.navigate('Settings', { userObj: user });
+                  navigation.navigate("Settings", { userObj: user });
                   setIsSidebarOpen(false);
                 }}
                 style={styles.sidebarButtonText}
@@ -272,7 +281,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity style={styles.sidebarButton}>
               <Text
                 onPress={() => {
-                  navigation.navigate('Leader', { userObj: user });
+                  navigation.navigate("Leader", { userObj: user });
                   setIsSidebarOpen(false);
                 }}
                 style={styles.sidebarButtonText}
@@ -290,20 +299,20 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-    backgroundColor: 'black',
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    backgroundColor: "black",
   },
   cycleContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    bottom: Dimensions.get('window').height * 0.25, // Adjusted position based on screen height
-    position: 'absolute',
+    alignItems: "center",
+    justifyContent: "center",
+    bottom: Dimensions.get("window").height * 0.25, // Adjusted position based on screen height
+    position: "absolute",
   },
   imageButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 10,
   },
@@ -312,18 +321,18 @@ const styles = StyleSheet.create({
     height: 50,
   },
   sidebar: {
-    backgroundColor: '#1c1b1d',
+    backgroundColor: "#1c1b1d",
     width: 80,
-    height: '100%',
-    position: 'absolute',
+    height: "100%",
+    position: "absolute",
     right: 0,
     top: 0,
     paddingTop: 50,
     paddingRight: 10,
-    alignItems: 'center',
+    alignItems: "center",
     // top:40, //this one alligns it on the white part up top
     top: 100,
-    shadowColor: '#000', //color of shadow
+    shadowColor: "#000", //color of shadow
     shadowOffset: {
       width: -3, // horizontal offset
       height: 0, // vertical offset
@@ -331,30 +340,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5, // Opacity of the shadow
     shadowRadius: 5, // Radius of the shadow
     elevation: 5,
-    top: Dimensions.get('window').height * 0.1,
+    top: Dimensions.get("window").height * 0.1,
   },
   sidebarButton: {
     marginTop: 10,
     paddingVertical: 10,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: '#fff',
+    borderBottomColor: "#fff",
     borderTopWidth: 1,
-    borderTopColor: '#fff',
+    borderTopColor: "#fff",
   },
   sidebarButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 10,
-    color: '#fff',
+    color: "#fff",
   },
   imageButtonSidebar: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     left: 10,
   },
@@ -363,12 +372,12 @@ const styles = StyleSheet.create({
     height: 50,
   },
   progressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   goalText: {
     marginLeft: 10,
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
     marginTop: 20,
   },

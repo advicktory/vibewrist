@@ -3,6 +3,12 @@ import { View, Text, Button, FlatList } from "react-native";
 import { BleManager } from "react-native-ble-plx";
 
 const ScanScreen = () => {
+  /**
+   * ScanScreen
+   * @function ScanScreen
+   * @param {None}
+   * @returns {JSX} - Contains the JSC and CSS and needed to display the component.
+   * */
   const [devices, setDevices] = useState([]);
   const manager = new BleManager();
 
@@ -16,6 +22,12 @@ const ScanScreen = () => {
     };
   }, []);
 
+  /**
+   * Scans the devices in the area and
+   * @function scanForDevices
+   * @param {None} - This function does not take any parameters.
+   * @returns {None} - Updates the 'devices' array.
+   * */
   const scanForDevices = () => {
     manager.startDeviceScan(null, null, (error, scannedDevice) => {
       if (error) {

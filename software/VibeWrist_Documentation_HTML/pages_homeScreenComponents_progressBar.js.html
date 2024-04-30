@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/homeScreenComponents/progressBar.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/homeScreenComponents/progressBar.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useRef, useEffect, useCallback, useState } from "react";
+import { View, StyleSheet, Animated, Easing, Text } from "react-native";
+import { useUser } from "../UserContext";
+
+/**
+ * A component to handle the progression of filling up a progress bar based on the amount of cycles a user has completed.
+ * @function ProgressBar
+ * @param {None} - No parameters were given for this function.
+ * @returns {JSX} Returns progress bar with its associated values. 
+ * */
+export default function ProgressBar() {
+  //const [goalTime, setGoalTime] = useState(0);
+  //const [timeStudied, setTimeStudied] = useState(0);
+  const [progressPercent, setProgressPercent] = useState("0%");
+  //const progressAnim = useRef(new Animated.Value(0)).current;
+  const user = useUser();
+
+  useEffect(() => {
+    async function fetchData() {
+      const currentTimeToGoal = await user.getUserCurrTime(); // Assume this is an async call
+      const currentGoal = await user.getUserGoalTime(); // Assume this is an async call
+      if (currentGoal > 0 &amp;&amp; currentTimeToGoal >= 0) {
+        const percent =
+          ((currentTimeToGoal / currentGoal) * 100).toFixed(1) + "%";
+        setProgressPercent(percent);
+      }
+    }
+
+    if (user.getUserName()) {
+      // Ensures fetchData runs after user is set
+      fetchData();
+    }
+  }, [user.getUserName(), user.getUserGoalTime(), user.getUserCurrTime()]); // Add dependencies that trigger re-fetch
+
+  if (!user.getUserGoalTime() || !user.getUserCurrTime()) {
+    return &lt;Text>Loading...&lt;/Text>; // Or any other loading component
+  }
+
+  // useEffect(() => {
+  //   Animated.loop(
+  //     Animated.timing(progress, {
+  //       toValue: 1,
+  //       duration: 5000,
+  //       easing: Easing.inOut(Easing.ease),
+  //       useNativeDriver: false,
+  //     })
+  //   ).start();
+  // }, []);
+
+  // range=((timeStudied / goalTime) * 100)
+  // const loaderWidth = progress.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: ['0%', `${range}%`],
+  // });
+
+  return (
+    &lt;View style={styles.container}>
+      &lt;View style={styles.progressBarContainer}>
+        &lt;View style={[styles.loader, { width: `${progressPercent}%` }]}>
+          {/* &lt;Animated.View style={[styles.loader, { width: loaderWidth }]} > */}
+          &lt;Text>{progressPercent}%&lt;/Text>
+        &lt;/View>
+      &lt;/View>
+    &lt;/View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loader: {
+    height: "100%",
+    backgroundColor: "white",
+    borderRadius: 5,
+  },
+  progressBarContainer: {
+    height: 17,
+    width: 300,
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "white",
+    borderRadius: 5,
+    overflow: "hidden",
+  },
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Account%2520Screen.html">Account Screen</a></li><li><a href="module-App%2520Screen.html">App Screen</a></li><li><a href="module-Bracelet%2520Settings%2520Screen.html">Bracelet Settings Screen</a></li><li><a href="module-Leaderboard%2520Screen.html">Leaderboard Screen</a></li><li><a href="module-Login%2520Screen.html">Login Screen</a></li><li><a href="module-Signup%2520Screen.html">Signup Screen</a></li></ul><h3>Namespaces</h3><ul><li><a href="global.html#HomeScreen">HomeScreen</a></li></ul><h3>Classes</h3><ul><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#GoalTimeModal">GoalTimeModal</a></li><li><a href="global.html">NewPresetCycleButton</a></li><li><a href="global.html#ProgressBar">ProgressBar</a></li><li><a href="global.html#ScanScreen">ScanScreen</a></li><li><a href="global.html#StartButton">StartButton</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#calculateTotalTime">calculateTotalTime</a></li><li><a href="global.html">connectToDevice</a></li><li><a href="global.html#createEmptyUserStats">createEmptyUserStats</a></li><li><a href="global.html#cycleLengthSelector">cycleLengthSelector</a></li><li><a href="global.html#cycleReport">cycleReport</a></li><li><a href="global.html#deletePreset">deletePreset</a></li><li><a href="global.html#fetchPresets">fetchPresets</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getViolations">getViolations</a></li><li><a href="global.html">handleRemovePreset</a></li><li><a href="global.html">handleSaveGoalTime</a></li><li><a href="global.html#handleSelectPreset">handleSelectPreset</a></li><li><a href="global.html#handleStartPress">handleStartPress</a></li><li><a href="global.html#handleUpdatePreset">handleUpdatePreset</a></li><li><a href="global.html">ledOnConnect</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#manageStudyTime">manageStudyTime</a></li><li><a href="global.html#recordViolation">recordViolation</a></li><li><a href="global.html#savePreset">savePreset</a></li><li><a href="global.html#scanForDevices">scanForDevices</a></li><li><a href="global.html">searchForDevices</a></li><li><a href="global.html">setInterval</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html">updateGoal</a></li><li><a href="global.html#useConnectToDevice">useConnectToDevice</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Apr 30 2024 13:56:18 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

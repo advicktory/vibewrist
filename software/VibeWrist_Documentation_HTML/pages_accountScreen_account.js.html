@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/accountScreen/account.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/accountScreen/account.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { View, Text, Image, StyleSheet } from "react-native";
+import { useUser } from "../UserContext";
+
+/**
+ * Account Screen
+ * @module Account Screen
+ * */
+
+export default function AccountScreen() {
+  /**
+   * A function that defines that account screen of the VibeWrist application.
+   * @function AccountScreen
+   * @param {None} No Parameters are needed for this function.
+   * @returns {JSX} Returns the account page 
+   * @inner
+   * */
+  const user = useUser();
+  const [userStats, setUserStats] = useState({
+    today: "",
+    thisWeek: "",
+    allTime: "",
+    cycleCount: 0,
+    violationCount: 0,
+    leaderboardRank: 0,
+  });
+
+  /**
+   * Used to communicate with the database.
+   * @function useFocusEffect
+   * @returns {None} - Pulls data from the database to set stats. 
+   * @inner
+   * */
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(
+            `http://192.168.1.7:3000/getUserStats?username=${encodeURIComponent(
+              user.getUserName(),
+            )}`,
+          );
+          const text = await response.text(); // First get the text
+          console.log("Server response:", text); // Log the raw text
+          const data = JSON.parse(text); // Then attempt to parse it as JSON
+          // const data = await response.json();
+          if (response.ok) {
+            setUserStats((prevStats) => ({
+              ...prevStats,
+              today: data.todayDuration,
+              thisWeek: data.weekDuration,
+              allTime: data.timeStudied,
+              cycleCount: data.cyclesCompleted,
+              violationCount: data.violations,
+            }));
+          } else {
+            throw new Error(data.message || "Unable to fetch data");
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+
+      fetchData();
+
+      // Optional: Return a cleanup function if necessary
+      // return () => setUserStats(null);
+    }, []),
+  );
+
+  return (
+    &lt;View style={styles.container}>
+      &lt;View style={styles.header}>
+        &lt;Image
+          source={require("./../../assets/pfp.jpg")}
+          style={styles.profilePicture}
+        />
+        &lt;Text style={styles.username}>{user.getUserName()}&lt;/Text>
+      &lt;/View>
+      &lt;View style={styles.statsContainer}>
+        &lt;View style={styles.statRow}>
+          &lt;Text style={styles.statLabel}>Today:&lt;/Text>
+          &lt;Text style={styles.statValue}>
+            {(userStats.today / 60).toFixed(1)} Hours
+          &lt;/Text>
+        &lt;/View>
+        &lt;View style={styles.line}>&lt;/View>
+
+        &lt;View style={styles.statRow}>
+          &lt;Text style={styles.statLabel}>This Week:&lt;/Text>
+          &lt;Text style={styles.statValue}>
+            {(userStats.thisWeek / 60).toFixed(1)} Hours
+          &lt;/Text>
+        &lt;/View>
+        &lt;View style={styles.line}>&lt;/View>
+
+        &lt;View style={styles.statRow}>
+          &lt;Text style={styles.statLabel}>All Time:&lt;/Text>
+          &lt;Text style={styles.statValue}>
+            {(userStats.allTime / 60).toFixed(1)} Hours
+          &lt;/Text>
+        &lt;/View>
+        &lt;View style={styles.line}>&lt;/View>
+
+        &lt;View style={styles.statRow}>
+          &lt;Text style={styles.statLabel}>Cycle Count:&lt;/Text>
+          &lt;Text style={styles.statValue}>{userStats.cycleCount}&lt;/Text>
+        &lt;/View>
+        &lt;View style={styles.line}>&lt;/View>
+
+        &lt;View style={styles.statRow}>
+          &lt;Text style={styles.statLabel}>Violation Count:&lt;/Text>
+          &lt;Text style={styles.statValue}>{userStats.violationCount}&lt;/Text>
+        &lt;/View>
+        &lt;View style={styles.line}>&lt;/View>
+
+        &lt;View style={styles.statRow}>
+          &lt;Text style={styles.statLabel}>Leaderboard Rank:&lt;/Text>
+          &lt;Text style={styles.statValue}>{userStats.leaderboardRank}&lt;/Text>
+        &lt;/View>
+      &lt;/View>
+    &lt;/View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingTop: 50,
+  },
+  header: {
+    alignItems: "center",
+  },
+  profilePicture: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  username: {
+    color: "#fff",
+    marginTop: 10,
+    fontWeight: "bold",
+  },
+  statsContainer: {
+    marginTop: 30,
+    width: "75%",
+    borderRadius: 15,
+    alignItems: "flex-start",
+    backgroundColor: "#1c1b1d",
+  },
+  statRow: {
+    margin: 20,
+    borderTopColor: "#9798a0",
+    flexDirection: "row",
+    marginBottom: 10,
+    padding: 7,
+  },
+  statLabel: {
+    color: "#fff",
+    marginRight: 10,
+    fontWeight: "bold",
+  },
+  statValue: {
+    color: "#fff",
+  },
+  line: {
+    width: "90%",
+    height: 1,
+    backgroundColor: "#9798a0",
+    alignSelf: "center", // Aligns the line horizontally to the center
+  },
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Account%2520Screen.html">Account Screen</a></li><li><a href="module-App%2520Screen.html">App Screen</a></li><li><a href="module-Bracelet%2520Settings%2520Screen.html">Bracelet Settings Screen</a></li><li><a href="module-Leaderboard%2520Screen.html">Leaderboard Screen</a></li><li><a href="module-Login%2520Screen.html">Login Screen</a></li><li><a href="module-Signup%2520Screen.html">Signup Screen</a></li></ul><h3>Namespaces</h3><ul><li><a href="global.html#HomeScreen">HomeScreen</a></li></ul><h3>Classes</h3><ul><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#GoalTimeModal">GoalTimeModal</a></li><li><a href="global.html">NewPresetCycleButton</a></li><li><a href="global.html#ProgressBar">ProgressBar</a></li><li><a href="global.html#ScanScreen">ScanScreen</a></li><li><a href="global.html#StartButton">StartButton</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#calculateTotalTime">calculateTotalTime</a></li><li><a href="global.html">connectToDevice</a></li><li><a href="global.html#createEmptyUserStats">createEmptyUserStats</a></li><li><a href="global.html#cycleLengthSelector">cycleLengthSelector</a></li><li><a href="global.html#cycleReport">cycleReport</a></li><li><a href="global.html#deletePreset">deletePreset</a></li><li><a href="global.html#fetchPresets">fetchPresets</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getViolations">getViolations</a></li><li><a href="global.html">handleRemovePreset</a></li><li><a href="global.html">handleSaveGoalTime</a></li><li><a href="global.html#handleSelectPreset">handleSelectPreset</a></li><li><a href="global.html#handleStartPress">handleStartPress</a></li><li><a href="global.html#handleUpdatePreset">handleUpdatePreset</a></li><li><a href="global.html">ledOnConnect</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#manageStudyTime">manageStudyTime</a></li><li><a href="global.html#recordViolation">recordViolation</a></li><li><a href="global.html#savePreset">savePreset</a></li><li><a href="global.html#scanForDevices">scanForDevices</a></li><li><a href="global.html">searchForDevices</a></li><li><a href="global.html">setInterval</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html">updateGoal</a></li><li><a href="global.html#useConnectToDevice">useConnectToDevice</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Apr 30 2024 13:56:18 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

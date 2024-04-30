@@ -1,11 +1,17 @@
-import React, { useRef, useEffect, useCallback, useState } from 'react';
-import { View, StyleSheet, Animated, Easing, Text } from 'react-native';
-import { useUser } from '../UserContext';
+import React, { useRef, useEffect, useCallback, useState } from "react";
+import { View, StyleSheet, Animated, Easing, Text } from "react-native";
+import { useUser } from "../UserContext";
 
+/**
+ * A component to handle the progression of filling up a progress bar based on the amount of cycles a user has completed.
+ * @function ProgressBar
+ * @param {None} - No parameters were given for this function.
+ * @returns {JSX} Returns progress bar with its associated values. 
+ * */
 export default function ProgressBar() {
   //const [goalTime, setGoalTime] = useState(0);
   //const [timeStudied, setTimeStudied] = useState(0);
-  const [progressPercent, setProgressPercent] = useState('0%');
+  const [progressPercent, setProgressPercent] = useState("0%");
   //const progressAnim = useRef(new Animated.Value(0)).current;
   const user = useUser();
 
@@ -15,7 +21,7 @@ export default function ProgressBar() {
       const currentGoal = await user.getUserGoalTime(); // Assume this is an async call
       if (currentGoal > 0 && currentTimeToGoal >= 0) {
         const percent =
-          ((currentTimeToGoal / currentGoal) * 100).toFixed(1) + '%';
+          ((currentTimeToGoal / currentGoal) * 100).toFixed(1) + "%";
         setProgressPercent(percent);
       }
     }
@@ -61,21 +67,21 @@ export default function ProgressBar() {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   loader: {
-    height: '100%',
-    backgroundColor: 'white',
+    height: "100%",
+    backgroundColor: "white",
     borderRadius: 5,
   },
   progressBarContainer: {
     height: 17,
     width: 300,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: 'white',
+    borderColor: "white",
     borderRadius: 5,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
 });

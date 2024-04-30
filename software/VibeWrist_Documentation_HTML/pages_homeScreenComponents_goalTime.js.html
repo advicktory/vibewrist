@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/homeScreenComponents/goalTime.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/homeScreenComponents/goalTime.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  Button,
+  Modal,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Text,
+  Dimensions,
+} from "react-native";
+import { useUser } from "../UserContext";
+
+/**
+ * Modal that aims to to allow the user to set a goal time.
+ * @function GoalTimeModal
+ * @param {boolean} isVisible - Determines if the modal is toggled or not.
+ * @param {function} onClose - Calls a function to close the modal
+ * @param {function} onSave - Calls a function to handle save actions.
+ * @returns {JSX} Returns the JSX and CSS needed to display the necessary components.
+ * */
+const GoalTimeModal = ({ isVisible, onClose, onSave }) => {
+  const [selectedTime, setSelectedTime] = useState(""); // State to store selected goal time
+  const user = useUser();
+
+  /**
+   * Modal that aims to to allow the user to set a goal time.
+   * @function updateGoal
+   * @param {string} username - Username string associated with the user.
+   * @param {number} newGoal - A number that the user selects as the new goal time.
+   * @returns {JSX} Sends the username and newGoal to database 
+   * @inner
+   * */
+  const updateGoal = async (username, newGoal) => {
+    try {
+      const response = await fetch("http://192.168.1.7:3000/updateGoal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          newGoal: newGoal,
+        }),
+      });
+
+      if (response.ok) {
+        console.log("Goal updated successfully");
+      } else {
+        const errorText = await response.text();
+        console.error("Failed to update goal:", errorText);
+      }
+    } catch (error) {
+      console.error("Network or other error:", error);
+    }
+  };
+
+  /**
+   * A function to handle when a user saves a goal time.
+   * @function handleSaveGoalTime
+   * @returns {None} - onSave and onClose passed as Parameters in the 'GoalTimeModal' are utilized to save the data locally.
+   * @inner
+   * */
+  const handleSaveGoalTime = () => {
+    // Save the selected goal time and call the onSave function passed as prop
+    onSave(selectedTime);
+    //setSelectedTime(''); // Clear the selected time
+    updateGoal(user.getUserName(), Number(selectedTime));
+    user.setUserGoalTime(selectedTime);
+    //user.setUserGoalTime(selectedTime);
+    onClose(); // Close the modal
+  };
+
+  return (
+    &lt;Modal visible={isVisible} transparent animationType="fade">
+      &lt;View style={styles.modalContainer}>
+        &lt;View style={styles.modalContent}>
+          &lt;Text>Select your goal time:&lt;/Text>
+          {/* Example: TextInput to allow users to input their goal time */}
+          &lt;TextInput
+            style={styles.input}
+            placeholder="Enter your goal time (e.g., 60 minutes)"
+            value={selectedTime}
+            onChangeText={setSelectedTime}
+          />
+          {/* Button to save the selected goal time */}
+          &lt;TouchableOpacity
+            style={styles.saveButton}
+            onPress={handleSaveGoalTime}
+          >
+            &lt;Text style={styles.saveButtonText}>Save&lt;/Text>
+          &lt;/TouchableOpacity>
+        &lt;/View>
+      &lt;/View>
+    &lt;/Modal>
+  );
+};
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    width: "80%",
+  },
+  saveButton: {
+    backgroundColor: "#007AFF", // Default color
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  saveButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+});
+
+export default GoalTimeModal;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Account%2520Screen.html">Account Screen</a></li><li><a href="module-App%2520Screen.html">App Screen</a></li><li><a href="module-Bracelet%2520Settings%2520Screen.html">Bracelet Settings Screen</a></li><li><a href="module-Leaderboard%2520Screen.html">Leaderboard Screen</a></li><li><a href="module-Login%2520Screen.html">Login Screen</a></li><li><a href="module-Signup%2520Screen.html">Signup Screen</a></li></ul><h3>Namespaces</h3><ul><li><a href="global.html#HomeScreen">HomeScreen</a></li></ul><h3>Classes</h3><ul><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#GoalTimeModal">GoalTimeModal</a></li><li><a href="global.html">NewPresetCycleButton</a></li><li><a href="global.html#ProgressBar">ProgressBar</a></li><li><a href="global.html#ScanScreen">ScanScreen</a></li><li><a href="global.html#StartButton">StartButton</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#calculateTotalTime">calculateTotalTime</a></li><li><a href="global.html">connectToDevice</a></li><li><a href="global.html#createEmptyUserStats">createEmptyUserStats</a></li><li><a href="global.html#cycleLengthSelector">cycleLengthSelector</a></li><li><a href="global.html#cycleReport">cycleReport</a></li><li><a href="global.html#deletePreset">deletePreset</a></li><li><a href="global.html#fetchPresets">fetchPresets</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getViolations">getViolations</a></li><li><a href="global.html">handleRemovePreset</a></li><li><a href="global.html">handleSaveGoalTime</a></li><li><a href="global.html#handleSelectPreset">handleSelectPreset</a></li><li><a href="global.html#handleStartPress">handleStartPress</a></li><li><a href="global.html#handleUpdatePreset">handleUpdatePreset</a></li><li><a href="global.html">ledOnConnect</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#manageStudyTime">manageStudyTime</a></li><li><a href="global.html#recordViolation">recordViolation</a></li><li><a href="global.html#savePreset">savePreset</a></li><li><a href="global.html#scanForDevices">scanForDevices</a></li><li><a href="global.html">searchForDevices</a></li><li><a href="global.html">setInterval</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html">updateGoal</a></li><li><a href="global.html#useConnectToDevice">useConnectToDevice</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Apr 30 2024 13:56:18 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

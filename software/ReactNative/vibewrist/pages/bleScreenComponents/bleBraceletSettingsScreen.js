@@ -1,20 +1,31 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import { SelectList } from 'react-native-dropdown-select-list';
-import braceletPng from '../../assets/blue_bracelet.png';
-import { useUser } from '../UserContext';
-import axios from 'axios'; // Import axios for HTTP requests
+import React, { useState, useEffect, useCallback } from "react";
+import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { SelectList } from "react-native-dropdown-select-list";
+import braceletPng from "../../assets/blue_bracelet.png";
+import { useUser } from "../UserContext";
+import axios from "axios"; // Import axios for HTTP requests
+
+/**
+ * Bracelet Settings Screen
+ * @module Bracelet Settings Screen
+ * */
 
 export default function BleDeviceSettingsScreen({ navigation }) {
+  /**
+   * A function that defines that bracelet settings screen of the VibeWrist application.
+   * @function BleDeviceSettingsScreen
+   * @param {None} No Parameters are needed for this function.
+   * @returns {JSX} Returns the JSX and CSS needed to display the necessary components.
+   * */
   const user = useUser();
   const { buzzSensitivityDropdown, buzzSensitivityResponse } =
     buzzSensitivitySelection(user.getBuzzRange());
   const { buzzRhythmDropdown, buzzRhythmResponse } = buzzRhythmSelection(
-    user.getBuzzDuration()
+    user.getBuzzDuration(),
   );
   const { buzzStrengthDropdown, buzzStrengthResponse } = buzzFrequencySelection(
-    user.getBuzzFrequency()
+    user.getBuzzFrequency(),
   );
 
   useEffect(() => {
@@ -26,9 +37,9 @@ export default function BleDeviceSettingsScreen({ navigation }) {
   function buzzSensitivitySelection(currentValue) {
     const [buzzSensitivity, setBuzzSensitivity] = useState(currentValue);
     const buzzSensitivityOptions = [
-      { key: 1, value: 'Far' },
-      { key: 2, value: 'Close' },
-      { key: 3, value: 'Very Close' },
+      { key: 1, value: "Far" },
+      { key: 2, value: "Close" },
+      { key: 3, value: "Very Close" },
     ];
 
     return {
@@ -39,7 +50,7 @@ export default function BleDeviceSettingsScreen({ navigation }) {
           search={false}
           placeholder={getValueByKey(
             user.getBuzzRange(),
-            buzzSensitivityOptions
+            buzzSensitivityOptions,
           )}
           save="key"
           inputStyles={styles.inputContainer}
@@ -55,11 +66,11 @@ export default function BleDeviceSettingsScreen({ navigation }) {
   function buzzRhythmSelection(currentValue) {
     const [buzzRhythm, setBuzzRhythm] = useState(currentValue);
     const buzzRhythmOptions = [
-      { key: '1', value: 'Short Quick Buzz' },
-      { key: '2', value: 'Three Quick Buzzes' },
-      { key: '3', value: 'Aggie Special' },
-      { key: '4', value: 'Five Short Pulses' },
-      { key: '5', value: 'Three Long Pulses' },
+      { key: "1", value: "Short Quick Buzz" },
+      { key: "2", value: "Three Quick Buzzes" },
+      { key: "3", value: "Aggie Special" },
+      { key: "4", value: "Five Short Pulses" },
+      { key: "5", value: "Three Long Pulses" },
     ];
 
     return {
@@ -83,10 +94,10 @@ export default function BleDeviceSettingsScreen({ navigation }) {
   function buzzFrequencySelection(currentValue) {
     const [buzzStrength, setBuzzStrength] = useState(currentValue);
     const buzzStrengthOptions = [
-      { key: '1', value: 'Low' },
-      { key: '2', value: 'Medium Low' },
-      { key: '3', value: 'Medium High' },
-      { key: '4', value: 'High' },
+      { key: "1", value: "Low" },
+      { key: "2", value: "Medium Low" },
+      { key: "3", value: "Medium High" },
+      { key: "4", value: "High" },
     ];
 
     return {
@@ -116,24 +127,24 @@ export default function BleDeviceSettingsScreen({ navigation }) {
     };
 
     try {
-      const response = await fetch('http://192.168.1.7:3000/saveBleSetting', {
-        method: 'POST',
+      const response = await fetch("http://192.168.1.7:3000/saveBleSetting", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(userDetails),
       });
 
       if (response.ok) {
-        navigation.navigate('Home');
+        navigation.navigate("Home");
       } else if (!response.ok) {
         const errorText = await response.text();
-        console.log('Server responded with an error:', errorText);
-        throw new Error('Failed to save user settings: ' + errorText);
+        console.log("Server responded with an error:", errorText);
+        throw new Error("Failed to save user settings: " + errorText);
       }
-      console.log('User settings updated successfully:', await response.text());
+      console.log("User settings updated successfully:", await response.text());
     } catch (error) {
-      console.error('Error saving user settings:', error);
+      console.error("Error saving user settings:", error);
     }
   };
 
@@ -168,56 +179,56 @@ export default function BleDeviceSettingsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#000000',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#000000",
   },
   title: {
-    color: 'white',
+    color: "white",
     fontSize: 24,
     marginVertical: 10,
   },
   subtitle: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
     marginBottom: 20,
   },
   setting: {
     marginBottom: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
   },
   settings: {
-    width: '100%',
+    width: "100%",
   },
   settingLabel: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     marginBottom: 5,
   },
   inputContainer: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   dropdownContainer: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   boxContainer: {
-    borderColor: 'white',
+    borderColor: "white",
     margin: 5,
-    backgroundColor: '#1c1b1d',
+    backgroundColor: "#1c1b1d",
   },
   image: {
     width: 100,
     height: 100,
   },
   selectorContainer: {
-    width: '90%',
+    width: "90%",
   },
   saveButton: {
-    backgroundColor: '#3d85c6',
+    backgroundColor: "#3d85c6",
     // backgroundColor: "#0066ff",
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -225,9 +236,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   saveButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginHorizontal: 40,
   },
 });
