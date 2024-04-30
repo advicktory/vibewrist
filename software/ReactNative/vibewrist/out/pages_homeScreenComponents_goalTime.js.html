@@ -44,7 +44,7 @@ import { useUser } from "../UserContext";
  * Modal that aims to to allow the user to set a goal time.
  * @function GoalTimeModal
  * @param {boolean} isVisible - Determines if the modal is toggled or not.
- * @param {function} onClose - Calls a function to handle the save actions.
+ * @param {function} onClose - Calls a function to close the modal
  * @param {function} onSave - Calls a function to handle save actions.
  * @returns {JSX} Returns the JSX and CSS needed to display the necessary components.
  * */
@@ -57,7 +57,7 @@ const GoalTimeModal = ({ isVisible, onClose, onSave }) => {
    * @function updateGoal
    * @param {string} username - Username string associated with the user.
    * @param {number} newGoal - A number that the user selects as the new goal time.
-   * @returns {JSX} Returns the JSX and CSS needed to display the necessary components.
+   * @returns {JSX} Sends the username and newGoal to database 
    * @inner
    * */
   const updateGoal = async (username, newGoal) => {
@@ -87,7 +87,7 @@ const GoalTimeModal = ({ isVisible, onClose, onSave }) => {
   /**
    * A function to handle when a user saves a goal time.
    * @function handleSaveGoalTime
-   * @returns {None} - onSave and onClose passed as Parameters in the 'GoalTimeModal' are utilized to save the data.
+   * @returns {None} - onSave and onClose passed as Parameters in the 'GoalTimeModal' are utilized to save the data locally.
    * @inner
    * */
   const handleSaveGoalTime = () => {
@@ -170,13 +170,13 @@ export default GoalTimeModal;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Account%2520Screen.html">Account Screen</a></li><li><a href="module-App%2520Screen.html">App Screen</a></li><li><a href="module-Bracelet%2520Settings%2520Screen.html">Bracelet Settings Screen</a></li><li><a href="module-Leaderboard%2520Screen.html">Leaderboard Screen</a></li><li><a href="module-Login%2520Screen.html">Login Screen</a></li><li><a href="module-Signup%2520Screen.html">Signup Screen</a></li></ul><h3>Namespaces</h3><ul><li><a href="global.html#HomeScreen">HomeScreen</a></li></ul><h3>Classes</h3><ul><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#GoalTimeModal">GoalTimeModal</a></li><li><a href="global.html">NewPresetCycleButton</a></li><li><a href="global.html#ProgressBar">ProgressBar</a></li><li><a href="global.html#ScanScreen">ScanScreen</a></li><li><a href="global.html#StartButton">StartButton</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#calculateTotalTime">calculateTotalTime</a></li><li><a href="global.html#cycleLengthSelector">cycleLengthSelector</a></li><li><a href="global.html#cycleReport">cycleReport</a></li><li><a href="global.html#fetchPresets">fetchPresets</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getViolations">getViolations</a></li><li><a href="global.html">handleRemovePreset</a></li><li><a href="global.html">handleSaveGoalTime</a></li><li><a href="global.html#handleSelectPreset">handleSelectPreset</a></li><li><a href="global.html#handleStartPress">handleStartPress</a></li><li><a href="global.html#handleUpdatePreset">handleUpdatePreset</a></li><li><a href="global.html#manageStudyTime">manageStudyTime</a></li><li><a href="global.html#recordViolation">recordViolation</a></li><li><a href="global.html#scanForDevices">scanForDevices</a></li><li><a href="global.html">setInterval</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html">updateGoal</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Account%2520Screen.html">Account Screen</a></li><li><a href="module-App%2520Screen.html">App Screen</a></li><li><a href="module-Bracelet%2520Settings%2520Screen.html">Bracelet Settings Screen</a></li><li><a href="module-Leaderboard%2520Screen.html">Leaderboard Screen</a></li><li><a href="module-Login%2520Screen.html">Login Screen</a></li><li><a href="module-Signup%2520Screen.html">Signup Screen</a></li></ul><h3>Namespaces</h3><ul><li><a href="global.html#HomeScreen">HomeScreen</a></li></ul><h3>Classes</h3><ul><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#GoalTimeModal">GoalTimeModal</a></li><li><a href="global.html">NewPresetCycleButton</a></li><li><a href="global.html#ProgressBar">ProgressBar</a></li><li><a href="global.html#ScanScreen">ScanScreen</a></li><li><a href="global.html#StartButton">StartButton</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#calculateTotalTime">calculateTotalTime</a></li><li><a href="global.html">connectToDevice</a></li><li><a href="global.html#createEmptyUserStats">createEmptyUserStats</a></li><li><a href="global.html#cycleLengthSelector">cycleLengthSelector</a></li><li><a href="global.html#cycleReport">cycleReport</a></li><li><a href="global.html#deletePreset">deletePreset</a></li><li><a href="global.html#fetchPresets">fetchPresets</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getViolations">getViolations</a></li><li><a href="global.html">handleRemovePreset</a></li><li><a href="global.html">handleSaveGoalTime</a></li><li><a href="global.html#handleSelectPreset">handleSelectPreset</a></li><li><a href="global.html#handleStartPress">handleStartPress</a></li><li><a href="global.html#handleUpdatePreset">handleUpdatePreset</a></li><li><a href="global.html">ledOnConnect</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#manageStudyTime">manageStudyTime</a></li><li><a href="global.html#recordViolation">recordViolation</a></li><li><a href="global.html#savePreset">savePreset</a></li><li><a href="global.html#scanForDevices">scanForDevices</a></li><li><a href="global.html">searchForDevices</a></li><li><a href="global.html">setInterval</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html">updateGoal</a></li><li><a href="global.html#useConnectToDevice">useConnectToDevice</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Apr 30 2024 01:44:02 GMT-0500 (Central Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Apr 30 2024 11:10:29 GMT-0500 (Central Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
