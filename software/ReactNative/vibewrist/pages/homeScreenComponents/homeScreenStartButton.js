@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -9,13 +9,26 @@ import {
   TouchableOpacity,
   Text,
   Dimensions,
-} from 'react-native';
-import { useUser } from '../UserContext';
+} from "react-native";
+import { useUser } from "../UserContext";
 
+/**
+ * Component for the StartButton on the Home Screen of the application.
+ * @function StartButton
+ * @param {function} onPress - A function defined in 'home.js' to handle the done the button is pressed.
+ * @param {boolean} isPaused - A boolean to determine is the start process should be paused or not.
+ * @param {function} setIsPaused - Handler for the 'isPaused Variable'.
+ * @returns {JSX} - Returns the JSX and CSS needed to display the screen.
+ * */
 const StartButton = ({ onPress, isPaused, setIsPaused }) => {
   //const [isPaused, setIsPaused] = useState(false); // State to track if the pop-up is open
 
-  // Function to handle the press of the start button
+  /**
+   * Function to handle the press of the start button
+   * @function handleStartPress
+   * @param {None} - There is not return for this function.
+   * @returns {None} - Function to handle on press functionality as well as tell the application that the cycle is paused.
+   * */
   const handleStartPress = () => {
     // Your logic for handling start button press
 
@@ -44,7 +57,7 @@ const StartButton = ({ onPress, isPaused, setIsPaused }) => {
             {/* <Text>Do you want to pause?</Text> */}
             <Text>Ending session will result in progress not saved.</Text>
             <TouchableOpacity
-              style={[styles.stopButton, { backgroundColor: 'red' }]}
+              style={[styles.stopButton, { backgroundColor: "red" }]}
               onPress={handlePausePress}
             >
               <Text style={styles.stopButtonText}>End session</Text>
@@ -68,40 +81,40 @@ const StartButton = ({ onPress, isPaused, setIsPaused }) => {
 //   // getDistance(deviceCurr, dataCharacteristic);
 // };
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   stopButton: {
-    backgroundColor: '#007AFF', // Default color
+    backgroundColor: "#007AFF", // Default color
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
   },
   stopButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     fontSize: 16,
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   button: {
-    position: 'absolute',
+    position: "absolute",
     left: 122,
     // bottom: 40,
     // top: 390,
@@ -111,17 +124,17 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 75,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 3,
-    borderColor: 'rgba(0, 102, 255, 0.5)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderColor: "rgba(0, 102, 255, 0.5)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
     fontSize: 20,
-    color: '#0066ff',
+    color: "#0066ff",
     letterSpacing: 2,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     // fontFamily: "sans-serif",
   },
 });

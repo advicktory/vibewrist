@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/homeScreenComponents/homeScreenText.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/homeScreenComponents/homeScreenText.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { CurrentRenderContext } from "@react-navigation/native";
+import { View, Text, StyleSheet } from "react-native";
+import { useUser } from "../UserContext";
+import { useState, useEffect } from "react";
+
+/**
+ * Function to calculate the total amount of time a user will be studying for.
+ * @function calculateTotalTime
+ * @param {number} sTime - amount of time as an integer the user will be studying for.
+ * @param {number} bTime - amount of time as an integer the user will be studying for.
+ * @param {number} cAmount - amount of time as an integer the user will be studying for.
+ * @returns {number} - Calculated number that the user will be studying for.
+ * */
+function calculateTotalTime(sTime, bTime, cAmount) {
+  // Convert each value to an integer
+  const studyTime = parseInt(sTime);
+  const breakTime = parseInt(bTime);
+  const cycleAmount = parseInt(cAmount);
+
+  // // Check if any of the values are NaN
+  // if (isNaN(studyTime) || isNaN(breakTime) || isNaN(cycleAmount)) {
+  //   // Handle the case where any value is not a number
+  //   return "Invalid input. Please provide valid numbers.";
+  // }
+
+  // Perform the calculation
+  return (studyTime + breakTime) * cycleAmount;
+}
+
+/**
+ * Function to calculate the total amount of time a user will be studying for.
+ * @function cycleReport
+ * @param {JavascriptObject} props - Contains the 'cycleLengths' from the 'home.js' screen generated in 'cycleLengthSelector'.
+ * @returns {JSX} - Returns the JSX and CSS needed to display the screen.
+ * */
+export default function cycleReport(props) {
+  // const user = useUser(); // Get the user object from the UserContext
+
+  // const [studyLengthSelected, setStudyLengthSelected] = useState([]);
+  // const [breakLengthSelected, setBreakLengthSelected] = useState([]);
+  // const [cycleAmountSelected, setCycleAmountSelected] = useState([]);
+
+  // useEffect(() => {
+  //   // Update the user object with the selected values
+  //   user.setStudyLength(parseInt(sLength));
+  //   user.setBreakLength(parseInt(bLength));
+  //   user.setCycleAmount(parseInt(cAmount));
+  // },[studyLengthSelected, breakLengthSelected, cycleAmountSelected, user]);
+  const { sLength, bLength, cAmount, isMinutes } = props.cycleOrder;
+  return (
+    &lt;>
+      &lt;View style={styles.container}>
+        &lt;Text style={styles.text}>
+          You will be studying for:{" "}
+          &lt;Text style={styles.text}>
+            {sLength} {isMinutes ? &lt;Text>Minutes&lt;/Text> : &lt;Text>Hours&lt;/Text>}
+          &lt;/Text>
+        &lt;/Text>
+
+        &lt;Text style={styles.text}>
+          Your break will be:{" "}
+          &lt;Text style={styles.text}>
+            {bLength} {isMinutes ? &lt;Text>Minutes&lt;/Text> : &lt;Text>Hours&lt;/Text>}
+          &lt;/Text>
+        &lt;/Text>
+
+        &lt;Text style={styles.text}>
+          You have chosen to do this:{" "}
+          &lt;Text style={styles.text}>{cAmount} times&lt;/Text>
+        &lt;/Text>
+
+        &lt;Text style={styles.text}>
+          Total time calculation:{" "}
+          {calculateTotalTime(sLength, bLength, cAmount)}{" "}
+          {isMinutes ? "Minutes" : "Hours"}
+        &lt;/Text>
+      &lt;/View>
+    &lt;/>
+  );
+}
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 20,
+    // justifyContent:"center",
+  },
+  text: {
+    color: "white", // Set text color to white
+  },
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Account%2520Screen.html">Account Screen</a></li><li><a href="module-App%2520Screen.html">App Screen</a></li><li><a href="module-Bracelet%2520Settings%2520Screen.html">Bracelet Settings Screen</a></li><li><a href="module-Leaderboard%2520Screen.html">Leaderboard Screen</a></li><li><a href="module-Login%2520Screen.html">Login Screen</a></li><li><a href="module-Signup%2520Screen.html">Signup Screen</a></li></ul><h3>Namespaces</h3><ul><li><a href="global.html#HomeScreen">HomeScreen</a></li></ul><h3>Classes</h3><ul><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#GoalTimeModal">GoalTimeModal</a></li><li><a href="global.html">NewPresetCycleButton</a></li><li><a href="global.html#ProgressBar">ProgressBar</a></li><li><a href="global.html#ScanScreen">ScanScreen</a></li><li><a href="global.html#StartButton">StartButton</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#calculateTotalTime">calculateTotalTime</a></li><li><a href="global.html#cycleLengthSelector">cycleLengthSelector</a></li><li><a href="global.html#cycleReport">cycleReport</a></li><li><a href="global.html#fetchPresets">fetchPresets</a></li><li><a href="global.html#getDistance">getDistance</a></li><li><a href="global.html#getViolations">getViolations</a></li><li><a href="global.html">handleRemovePreset</a></li><li><a href="global.html">handleSaveGoalTime</a></li><li><a href="global.html#handleSelectPreset">handleSelectPreset</a></li><li><a href="global.html#handleStartPress">handleStartPress</a></li><li><a href="global.html#handleUpdatePreset">handleUpdatePreset</a></li><li><a href="global.html#manageStudyTime">manageStudyTime</a></li><li><a href="global.html#recordViolation">recordViolation</a></li><li><a href="global.html#scanForDevices">scanForDevices</a></li><li><a href="global.html">setInterval</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html">updateGoal</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue Apr 30 2024 01:44:02 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

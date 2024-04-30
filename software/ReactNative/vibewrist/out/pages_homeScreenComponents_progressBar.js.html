@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: pages/bleScreenComponents/bleDisconnectedScreen.js</title>
+    <title>JSDoc: Source: pages/homeScreenComponents/progressBar.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: pages/bleScreenComponents/bleDisconnectedScreen.js</h1>
+    <h1 class="page-title">Source: pages/homeScreenComponents/progressBar.js</h1>
 
     
 
@@ -26,79 +26,93 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from "react";
-import { View, Text, Button, FlatList } from "react-native";
-import { BleManager } from "react-native-ble-plx";
+            <pre class="prettyprint source linenums"><code>import React, { useRef, useEffect, useCallback, useState } from "react";
+import { View, StyleSheet, Animated, Easing, Text } from "react-native";
+import { useUser } from "../UserContext";
 
-const ScanScreen = () => {
-  /**
-   * ScanScreen
-   * @function ScanScreen
-   * @param {None}
-   * @returns {JSX} - Contains the JSC and CSS and needed to display the component.
-   * */
-  const [devices, setDevices] = useState([]);
-  const manager = new BleManager();
+/**
+ * A component to handle the progression of filling up a progress bar based on the amount of cycles a user has completed.
+ * @function ProgressBar
+ * @param {None} - No parameters were given for this function.
+ * @returns {JSX} Returns the JSX and CSS needed to display the necessary components.
+ * */
+export default function ProgressBar() {
+  //const [goalTime, setGoalTime] = useState(0);
+  //const [timeStudied, setTimeStudied] = useState(0);
+  const [progressPercent, setProgressPercent] = useState("0%");
+  //const progressAnim = useRef(new Animated.Value(0)).current;
+  const user = useUser();
 
   useEffect(() => {
-    scanForDevices();
-
-    //     // Clean up function
-    return () => {
-      manager.stopDeviceScan();
-      // manager.destroy();
-    };
-  }, []);
-
-  /**
-   * Scans the devices in the area and
-   * @function scanForDevices
-   * @param {None} - This function does not take any parameters.
-   * @returns {None} - Updates the 'devices' array.
-   * */
-  const scanForDevices = () => {
-    manager.startDeviceScan(null, null, (error, scannedDevice) => {
-      if (error) {
-        console.error("Error scanning for devices:", error);
-        return;
+    async function fetchData() {
+      const currentTimeToGoal = await user.getUserCurrTime(); // Assume this is an async call
+      const currentGoal = await user.getUserGoalTime(); // Assume this is an async call
+      if (currentGoal > 0 &amp;&amp; currentTimeToGoal >= 0) {
+        const percent =
+          ((currentTimeToGoal / currentGoal) * 100).toFixed(1) + "%";
+        setProgressPercent(percent);
       }
-      console.log(scannedDevice.id, scannedDevice.name);
+    }
 
-      const foundDevice = devices.find(
-        (device) => device.id === scannedDevice.id,
-      ); // Determines whether or not a device was seen before.
-      if (!foundDevice) {
-        setDevices((prevDevices) => [...prevDevices, scannedDevice]);
-      } // If it hasn't add it to the devices list
-    });
-  };
+    if (user.getUserName()) {
+      // Ensures fetchData runs after user is set
+      fetchData();
+    }
+  }, [user.getUserName(), user.getUserGoalTime(), user.getUserCurrTime()]); // Add dependencies that trigger re-fetch
 
-  const renderItem = ({ item }) => (
-    &lt;View style={{ marginVertical: 10 }}>
-      &lt;Text>{item.name || "Unknown"}&lt;/Text>
-      &lt;Text>UUID: {item.id}&lt;/Text>
-      &lt;Button title="Connect" onPress={() => connectToDevice(item.id)} />
-    &lt;/View>
-  );
+  if (!user.getUserGoalTime() || !user.getUserCurrTime()) {
+    return &lt;Text>Loading...&lt;/Text>; // Or any other loading component
+  }
 
-  const connectToDevice = (deviceId) => {
-    // Implement your logic to connect to the device
-    console.log("Connecting to device with ID:", deviceId);
-  };
+  // useEffect(() => {
+  //   Animated.loop(
+  //     Animated.timing(progress, {
+  //       toValue: 1,
+  //       duration: 5000,
+  //       easing: Easing.inOut(Easing.ease),
+  //       useNativeDriver: false,
+  //     })
+  //   ).start();
+  // }, []);
+
+  // range=((timeStudied / goalTime) * 100)
+  // const loaderWidth = progress.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: ['0%', `${range}%`],
+  // });
 
   return (
-    &lt;View style={{ flex: 1, padding: 20 }}>
-      &lt;FlatList
-        data={devices}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        ListEmptyComponent={&lt;Text>No BLE devices found&lt;/Text>}
-      />
+    &lt;View style={styles.container}>
+      &lt;View style={styles.progressBarContainer}>
+        &lt;View style={[styles.loader, { width: `${progressPercent}%` }]}>
+          {/* &lt;Animated.View style={[styles.loader, { width: loaderWidth }]} > */}
+          &lt;Text>{progressPercent}%&lt;/Text>
+        &lt;/View>
+      &lt;/View>
     &lt;/View>
   );
-};
+}
 
-export default ScanScreen;
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loader: {
+    height: "100%",
+    backgroundColor: "white",
+    borderRadius: 5,
+  },
+  progressBarContainer: {
+    height: 17,
+    width: 300,
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "white",
+    borderRadius: 5,
+    overflow: "hidden",
+  },
+});
 </code></pre>
         </article>
     </section>
