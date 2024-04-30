@@ -27,8 +27,8 @@ export default function NewPresetCycleButton(props) {
   /**
    * A component to save a preset made by the user.
    * @function NewPresetCycleButton
-   * @param {None} - No parameters were given for this function.
-   * @returns {None} -  Updates the presets array with the new preset that was created.
+   * @param {props} - props
+   * @returns {None} -  Adds a new preset to the database and locally
    * @inner
    * */
 

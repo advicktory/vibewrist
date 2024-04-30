@@ -6,7 +6,7 @@ import { useUser } from "../UserContext";
  * A component to handle the progression of filling up a progress bar based on the amount of cycles a user has completed.
  * @function ProgressBar
  * @param {None} - No parameters were given for this function.
- * @returns {JSX} Returns the JSX and CSS needed to display the necessary components.
+ * @returns {JSX} Returns progress bar with its associated values. 
  * */
 export default function ProgressBar() {
   //const [goalTime, setGoalTime] = useState(0);
