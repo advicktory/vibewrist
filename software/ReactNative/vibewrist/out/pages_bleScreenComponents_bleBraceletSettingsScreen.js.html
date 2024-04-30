@@ -1,4 +1,32 @@
-import React, { useState, useEffect, useCallback } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/bleScreenComponents/bleBraceletSettingsScreen.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/bleScreenComponents/bleBraceletSettingsScreen.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { SelectList } from "react-native-dropdown-select-list";
@@ -44,7 +72,7 @@ export default function BleDeviceSettingsScreen({ navigation }) {
 
     return {
       buzzSensitivityDropdown: (
-        <SelectList
+        &lt;SelectList
           setSelected={setBuzzSensitivity}
           data={buzzSensitivityOptions}
           search={false}
@@ -75,7 +103,7 @@ export default function BleDeviceSettingsScreen({ navigation }) {
 
     return {
       buzzRhythmDropdown: (
-        <SelectList
+        &lt;SelectList
           setSelected={setBuzzRhythm}
           data={buzzRhythmOptions}
           search={false}
@@ -102,7 +130,7 @@ export default function BleDeviceSettingsScreen({ navigation }) {
 
     return {
       buzzStrengthDropdown: (
-        <SelectList
+        &lt;SelectList
           setSelected={setBuzzStrength}
           data={buzzStrengthOptions}
           search={false}
@@ -149,30 +177,30 @@ export default function BleDeviceSettingsScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Image source={braceletPng} style={styles.image} />
-      <Text style={styles.title}>Your Device</Text>
-      <Text style={styles.subtitle}>VibeWrist</Text>
-      <View style={styles.settings}>
-        <View style={styles.setting}>
-          <Text style={styles.settingLabel}>Set range of detection:</Text>
-          <View style={styles.selectorContainer}>
+    &lt;View style={styles.container}>
+      &lt;Image source={braceletPng} style={styles.image} />
+      &lt;Text style={styles.title}>Your Device&lt;/Text>
+      &lt;Text style={styles.subtitle}>VibeWrist&lt;/Text>
+      &lt;View style={styles.settings}>
+        &lt;View style={styles.setting}>
+          &lt;Text style={styles.settingLabel}>Set range of detection:&lt;/Text>
+          &lt;View style={styles.selectorContainer}>
             {buzzSensitivityDropdown}
-          </View>
-        </View>
-        <View style={styles.setting}>
-          <Text style={styles.settingLabel}>Set vibration rhythm:</Text>
-          <View style={styles.selectorContainer}>{buzzRhythmDropdown}</View>
-        </View>
-        <View style={styles.setting}>
-          <Text style={styles.settingLabel}>Set vibration strength:</Text>
-          <View style={styles.selectorContainer}>{buzzStrengthDropdown}</View>
-        </View>
-      </View>
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Save</Text>
-      </TouchableOpacity>
-    </View>
+          &lt;/View>
+        &lt;/View>
+        &lt;View style={styles.setting}>
+          &lt;Text style={styles.settingLabel}>Set vibration rhythm:&lt;/Text>
+          &lt;View style={styles.selectorContainer}>{buzzRhythmDropdown}&lt;/View>
+        &lt;/View>
+        &lt;View style={styles.setting}>
+          &lt;Text style={styles.settingLabel}>Set vibration strength:&lt;/Text>
+          &lt;View style={styles.selectorContainer}>{buzzStrengthDropdown}&lt;/View>
+        &lt;/View>
+      &lt;/View>
+      &lt;TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        &lt;Text style={styles.saveButtonText}>Save&lt;/Text>
+      &lt;/TouchableOpacity>
+    &lt;/View>
   );
 }
 
@@ -247,3 +275,26 @@ function getValueByKey(key, options) {
   const option = options.find((o) => o.key === key);
   return option ? option.value : null;
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Account%2520Screen.html">Account Screen</a></li><li><a href="module-App%2520Screen.html">App Screen</a></li><li><a href="module-Bracelet%2520Settings%2520Screen.html">Bracelet Settings Screen</a></li><li><a href="module-Leaderboard%2520Screen.html">Leaderboard Screen</a></li><li><a href="module-Login%2520Screen.html">Login Screen</a></li><li><a href="module-Signup%2520Screen.html">Signup Screen</a></li></ul><h3>Namespaces</h3><ul><li><a href="global.html#HomeScreen">HomeScreen</a></li></ul><h3>Classes</h3><ul><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#UserProvider">UserProvider</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Apr 29 2024 19:54:54 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
