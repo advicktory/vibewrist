@@ -10,7 +10,7 @@ import {
 import * as Font from 'expo-font';
 import braceletPng from '../../assets/blue_bracelet.png';
 
-const SERVER_URL = 'http://192.168.1.7:3000/signup'; // Update with your server URL
+const SERVER_URL = 'http://10.229.10.189:3000/signup'; // Update with your server URL
 
 export default function SignUp({ navigation }) {
   const [username, setUsername] = useState('');

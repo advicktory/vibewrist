@@ -13,7 +13,7 @@ export default function LeaderboardScreen() {
 
   const fetchLeaderboardData = async () => {
     try {
-      const response = await axios.get('http://192.168.1.7:3000/leaderboard');
+      const response = await axios.get('http://10.229.10.189:3000/leaderboard');
       let sortedData = response.data;
 
       // Sort the data based on the selected filter

@@ -18,7 +18,7 @@ const GoalTimeModal = ({ isVisible, onClose, onSave }) => {
 
   const updateGoal = async (username, newGoal) => {
     try {
-      const response = await fetch('http://192.168.1.7:3000/updateGoal', {
+      const response = await fetch('http://10.229.10.189:3000/updateGoal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

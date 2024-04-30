@@ -116,7 +116,7 @@ export default function BleDeviceSettingsScreen({ navigation }) {
     };
 
     try {
-      const response = await fetch('http://192.168.1.7:3000/saveBleSetting', {
+      const response = await fetch('http://10.229.10.189:3000/saveBleSetting', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

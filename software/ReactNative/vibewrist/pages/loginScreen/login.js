@@ -12,7 +12,7 @@ import braceletPng from '../../assets/blue_bracelet.png';
 import User from '../User';
 import { useUser } from '../UserContext';
 
-const SERVER_URL = 'http://192.168.1.7:3000/login'; // Update with your server URL
+const SERVER_URL = 'http://10.229.10.189:3000/login'; // Update with your server URL
 
 export default function Login({ navigation }) {
   const [username, setUsername] = useState('');
@@ -33,7 +33,7 @@ export default function Login({ navigation }) {
         console.log('Login successful!');
         navigation.navigate('Home');
         user.setUserName(username);
-        //console.log(user);
+        console.log(user);
         // Additional logic after successful login (e.g., redirect)
       }
     } catch (error) {

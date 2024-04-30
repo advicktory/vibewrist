@@ -50,7 +50,7 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     fetch(
-      `http://192.168.1.7:3000/pullUserStats?username=${encodeURIComponent(
+      `http://10.229.10.189:3000/pullUserStats?username=${encodeURIComponent(
         user.getUserName()
       )}`
     )
@@ -72,7 +72,7 @@ export default function HomeScreen({ navigation }) {
   const fetchUserSettings = async (username) => {
     try {
       const response = await fetch(
-        `http://192.168.1.7:3000/getUserSettings?username=${encodeURIComponent(
+        `http://10.229.10.189:3000/getUserSettings?username=${encodeURIComponent(
           username
         )}`
       );
@@ -148,13 +148,16 @@ export default function HomeScreen({ navigation }) {
   // Function to send session data to db
   const addStudySession = async (sessionData) => {
     try {
-      const response = await fetch('http://192.168.1.7:3000/addStudySession', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(sessionData),
-      });
+      const response = await fetch(
+        'http://10.229.10.189:3000/addStudySession',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(sessionData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Failed to send study session data');

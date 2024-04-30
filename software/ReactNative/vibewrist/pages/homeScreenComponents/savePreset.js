@@ -39,7 +39,7 @@ export default function NewPresetCycleButton(props) {
       setPreset([...preset, newPreset]);
       try {
         const response = await axios.post(
-          'http://192.168.1.7:3000/savePreset',
+          'http://10.229.10.189:3000/savePreset',
           newPreset
         );
         console.log('Preset saved successfully:', response.data);
