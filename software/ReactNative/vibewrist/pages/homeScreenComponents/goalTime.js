@@ -16,7 +16,7 @@ import { useUser } from "../UserContext";
  * Modal that aims to to allow the user to set a goal time.
  * @function GoalTimeModal
  * @param {boolean} isVisible - Determines if the modal is toggled or not.
- * @param {function} onClose - Calls a function to handle the save actions.
+ * @param {function} onClose - Calls a function to close the modal
  * @param {function} onSave - Calls a function to handle save actions.
  * @returns {JSX} Returns the JSX and CSS needed to display the necessary components.
  * */
@@ -29,7 +29,7 @@ const GoalTimeModal = ({ isVisible, onClose, onSave }) => {
    * @function updateGoal
    * @param {string} username - Username string associated with the user.
    * @param {number} newGoal - A number that the user selects as the new goal time.
-   * @returns {JSX} Returns the JSX and CSS needed to display the necessary components.
+   * @returns {JSX} Sends the username and newGoal to database 
    * @inner
    * */
   const updateGoal = async (username, newGoal) => {
@@ -59,7 +59,7 @@ const GoalTimeModal = ({ isVisible, onClose, onSave }) => {
   /**
    * A function to handle when a user saves a goal time.
    * @function handleSaveGoalTime
-   * @returns {None} - onSave and onClose passed as Parameters in the 'GoalTimeModal' are utilized to save the data.
+   * @returns {None} - onSave and onClose passed as Parameters in the 'GoalTimeModal' are utilized to save the data locally.
    * @inner
    * */
   const handleSaveGoalTime = () => {

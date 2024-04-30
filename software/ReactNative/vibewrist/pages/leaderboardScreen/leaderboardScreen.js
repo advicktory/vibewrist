@@ -13,7 +13,7 @@ export default function LeaderboardScreen() {
    * A function that defines that account screen of the VibeWrist application.
    * @function AccountScreen
    * @param {None} No Parameters are needed for this function.
-   * @returns {JSX} Returns the JSX and CSS needed to display the necessary components.
+   * @returns {JSX} Returns the leaderboard with data pulled from the database and a filter option.
    * @inner
    * */
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -26,7 +26,7 @@ export default function LeaderboardScreen() {
   /**
    * Used to fetch leaderboard stats from the database.
    * @function fetchLeaderboardData
-   * @returns {None} - Updates 'leaderboardData'.
+   * @returns {None} - Fills in leaderboard with the data requested from the database and sorts it
    * @inner
    * */
   const fetchLeaderboardData = async () => {

@@ -35,7 +35,7 @@ export default function Login({ navigation }) {
    * Handles the communication with the database.
    * @function handleSubmit
    * @params {None} This function takes no parameters.
-   * @returns {None} Sets the user object with the account in the database.
+   * @returns {None} Sends the username and password to the database
    *
    * */
   const handleSubmit = async () => {

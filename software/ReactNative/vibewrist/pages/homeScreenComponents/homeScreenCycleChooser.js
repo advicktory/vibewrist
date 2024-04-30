@@ -19,7 +19,7 @@ import { SelectList } from "react-native-dropdown-select-list";
  * A function that allows the user to select the Study Length, Break Length, and how many Cycles they would like to complete.
  * @function cycleLengthSelector
  * @param {User} user - The user object associated with the person using the application.
- * @returns {JSX} Returns the JSX and CSS needed to display the necessary components.
+ * @returns {JSX} Returns the study, break, cycle, and preset drop downs as well as a save preset button.
  * */
 export default function cycleLengthSelector(user) {
   const [studyLengthSelected, setStudyLengthSelected] = useState([]);
@@ -112,8 +112,8 @@ export default function cycleLengthSelector(user) {
   /**
    * A function that updates the users study options based on the preset.
    * @function handleSelectPreset
-   * @param {number} key - A number to index incoming preset array.
-   * @returns {None} - Updates cycle options as nessesary. Nothing is returned.
+   * @param {number} key - The index from the select list which determines where in the drop down the item appears
+   * @returns {None} - Updates cycles current study, break, and cyce amounts when selected.
    * */
   const handleSelectPreset = (key) => {
     // setCurrPresetKey(key);
@@ -136,7 +136,7 @@ export default function cycleLengthSelector(user) {
   /**
    * A function to update a preset when the user changes the settings within a preset.
    * @function handleUpdatePreset
-   * @param {JavascriptObject?} newPreset- From that I understand this is a Javascript Object that is made in 'SavePreset'.
+   * @param {JavascriptObject?} newPreset- This is an update preset function meant to be sent to 'SavePreset'.
    * @returns {None} - Updates selected Study Length, Break Length, and Cycle Amount based on newPreset.
    */
   const handleUpdatePreset = (newPreset) => {

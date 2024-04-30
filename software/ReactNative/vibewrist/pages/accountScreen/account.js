@@ -14,7 +14,7 @@ export default function AccountScreen() {
    * A function that defines that account screen of the VibeWrist application.
    * @function AccountScreen
    * @param {None} No Parameters are needed for this function.
-   * @returns {JSX} Returns the JSX and CSS needed to display the necessary components.
+   * @returns {JSX} Returns the account page 
    * @inner
    * */
   const user = useUser();
@@ -30,7 +30,7 @@ export default function AccountScreen() {
   /**
    * Used to communicate with the database.
    * @function useFocusEffect
-   * @returns {None} - Updates stats.
+   * @returns {None} - Pulls data from the database to set stats. 
    * @inner
    * */
   useFocusEffect(
