@@ -1,11 +1,11 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const { MongoClient } = require('mongodb'); // Import MongoClient
+const express = require("express");
+const bodyParser = require("body-parser");
+const { MongoClient } = require("mongodb"); // Import MongoClient
 
 const app = express();
 const port = 3000;
-const cors = require('cors');
-const crypto = require('crypto');
+const cors = require("cors");
+const crypto = require("crypto");
 app.use(cors()); // Use CORS to allow all origins (for development)
 
 app.use(bodyParser.json());
@@ -24,31 +24,44 @@ app.use(bodyParser.json());
 //     }
 // }
 const uri =
-  'mongodb+srv://anthonynoyes16:Xi1RaL7n0hPG221z@vibewrist.lhxehif.mongodb.net/?retryWrites=true&w=majority&appName=VibeWrist';
+  "mongodb+srv://anthonynoyes16:Xi1RaL7n0hPG221z@vibewrist.lhxehif.mongodb.net/?retryWrites=true&w=majority&appName=VibeWrist";
 const client = new MongoClient(uri);
 
+/**
+ * Function to make an API call to the MongoDB Database.
+ * @function addUser
+ * @param {MongoClient} client - MongoDB Client used to reach out to the database.
+ * @param {string} body - User object of the new user.
+ * @returns {None} - Returns if the was in the Database already, else it adds the new user to the database.
+ * */
 async function addUser(client, body) {
   const existingUser = await client
-    .db('VibeWrist')
-    .collection('users')
+    .db("VibeWrist")
+    .collection("users")
     .findOne({ username: body.username });
   if (existingUser) {
     console.log(`User with username '${body.username}' already exists.`);
     return; // Exit the function if user already exists
   }
   const result = await client
-    .db('VibeWrist')
-    .collection('users')
+    .db("VibeWrist")
+    .collection("users")
     .insertOne(body);
   console.log(`New user created with the following id: ${result.insertedId}`);
 }
 
+/**
+ * Create an empty user stats document
+ * @function createEmptyUserStats
+ * @param {MongoClient} client - MongoDB Client used to reach out to the database.
+ * @param {string} body - User object of the new user.
+ * @returns {None} - Returns if the was in the Database already, else it adds the new user to the database.
+ * */
 async function createEmptyUserStats(client, username) {
   try {
-    // Create an empty user stats document
     const result = await client
-      .db('VibeWrist')
-      .collection('userStats')
+      .db("VibeWrist")
+      .collection("userStats")
       .insertOne({
         username,
         cyclesCompleted: 0,
@@ -60,112 +73,112 @@ async function createEmptyUserStats(client, username) {
       });
     console.log(`Empty user stats created for ${username}`);
   } catch (error) {
-    console.error('Error creating empty user stats:', error);
+    console.error("Error creating empty user stats:", error);
     throw error;
   }
 }
 
-app.post('/signup', async (req, res) => {
+app.post("/signup", async (req, res) => {
   const { username, password } = req.body;
   try {
     const existingUser = await client
-      .db('VibeWrist')
-      .collection('users')
+      .db("VibeWrist")
+      .collection("users")
       .findOne({ username });
     if (existingUser) {
-      res.status(400).json({ error: 'User already exists' });
+      res.status(400).json({ error: "User already exists" });
     } else {
       await addUser(client, { username, password });
       await createEmptyUserStats(client, username);
 
-      res.status(201).json({ message: 'User registered successfully' });
+      res.status(201).json({ message: "User registered successfully" });
     }
   } catch (error) {
-    console.error('Error registering user:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error registering user:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 async function loginUser(client, body) {
   const user = await client
-    .db('VibeWrist')
-    .collection('users')
+    .db("VibeWrist")
+    .collection("users")
     .findOne({ username: body.username, password: body.password });
   return user;
 }
 
-app.post('/login', async (req, res) => {
+app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await loginUser(client, { username, password });
     if (user) {
-      res.status(200).json({ message: 'Login successful', user });
+      res.status(200).json({ message: "Login successful", user });
     } else {
-      res.status(401).json({ error: 'Invalid username or password' });
+      res.status(401).json({ error: "Invalid username or password" });
     }
   } catch (error) {
-    console.error('Error logging in:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error logging in:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 async function savePreset(client, presetData) {
   try {
     const result = await client
-      .db('VibeWrist')
-      .collection('presets')
+      .db("VibeWrist")
+      .collection("presets")
       .insertOne(presetData);
     console.log(`New preset saved with the following id: ${result.insertedId}`);
     return result.insertedId;
   } catch (error) {
-    console.error('Error saving preset:', error);
+    console.error("Error saving preset:", error);
     throw error; // Throw error to handle it in the calling function
   }
 }
 
-app.post('/savePreset', async (req, res) => {
+app.post("/savePreset", async (req, res) => {
   const presetData = req.body;
   try {
     const insertedId = await savePreset(client, presetData);
-    res.status(201).json({ message: 'Preset saved successfully', insertedId });
+    res.status(201).json({ message: "Preset saved successfully", insertedId });
   } catch (error) {
-    console.error('Error saving preset:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error saving preset:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-app.post('/saveBleSetting', async (req, res) => {
-  console.log('Request received', req.body); // Log the body to ensure it's receiving data
+app.post("/saveBleSetting", async (req, res) => {
+  console.log("Request received", req.body); // Log the body to ensure it's receiving data
   // Your existing code...
   const { username, detectionRange, vibrationRhythm, vibrationStrength } =
     req.body;
   try {
-    const database = client.db('VibeWrist');
-    const userSettings = database.collection('userSettings');
+    const database = client.db("VibeWrist");
+    const userSettings = database.collection("userSettings");
     // Update the user's settings in the database
     const result = await userSettings.updateOne(
       { username: username },
       { $set: { detectionRange, vibrationRhythm, vibrationStrength } },
-      { upsert: true } // If the user does not exist, create a new entry
+      { upsert: true }, // If the user does not exist, create a new entry
     );
 
     if (result.modifiedCount === 1 || result.upsertedCount === 1) {
-      res.status(200).send('User settings updated successfully');
+      res.status(200).send("User settings updated successfully");
     } else {
-      res.status(404).send('Settings did not change!');
+      res.status(404).send("Settings did not change!");
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error updating user settings');
+    res.status(500).send("Error updating user settings");
   }
 });
 
-app.post('/addStudySession', async (req, res) => {
+app.post("/addStudySession", async (req, res) => {
   const { username, duration, violations, date } = req.body;
   const sessionID = crypto.randomUUID();
   try {
-    const database = client.db('VibeWrist');
-    const sessions = database.collection('studySessions');
+    const database = client.db("VibeWrist");
+    const sessions = database.collection("studySessions");
 
     const result = await sessions.insertOne({
       username,
@@ -176,67 +189,67 @@ app.post('/addStudySession', async (req, res) => {
     });
 
     res.status(201).json({
-      message: 'Study session added successfully',
+      message: "Study session added successfully",
       id: result.insertedId,
     });
   } catch (error) {
-    console.error('Failed to add study session:', error);
-    res.status(500).json({ error: 'Failed to add study session' });
+    console.error("Failed to add study session:", error);
+    res.status(500).json({ error: "Failed to add study session" });
   }
 });
 
-app.listen(port, '0.0.0.0', () => console.log(`Listening on port ${port}`));
+app.listen(port, "0.0.0.0", () => console.log(`Listening on port ${port}`));
 
-app.get('/getPresets/:username', async (req, res) => {
+app.get("/getPresets/:username", async (req, res) => {
   const { username } = req.params;
   try {
     const presets = await client
-      .db('VibeWrist')
-      .collection('presets')
+      .db("VibeWrist")
+      .collection("presets")
       .find({ username }) // Query presets based on the username
       .toArray();
     res.status(200).json({ presets });
   } catch (error) {
-    console.error('Error fetching presets:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error fetching presets:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 async function deletePreset(client, presetId, username) {
   try {
     const result = await client
-      .db('VibeWrist')
-      .collection('presets')
+      .db("VibeWrist")
+      .collection("presets")
       .deleteOne({ presetId, username }); // Add username to filter criteria
     console.log(`Preset deleted with the following id: ${presetId}`);
     return result.deletedCount;
   } catch (error) {
-    console.error('Error deleting preset:', error);
+    console.error("Error deleting preset:", error);
     throw error; // Throw error to handle it in the calling function
   }
 }
 
 // Route to handle deleting presets
-app.delete('/deletePreset/:username/:presetId', async (req, res) => {
+app.delete("/deletePreset/:username/:presetId", async (req, res) => {
   const { username, presetId } = req.params;
   try {
     const deletedCount = await deletePreset(client, presetId, username);
     if (deletedCount === 1) {
-      res.status(200).json({ message: 'Preset deleted successfully' });
+      res.status(200).json({ message: "Preset deleted successfully" });
     } else {
-      res.status(404).json({ error: 'Preset not found' });
+      res.status(404).json({ error: "Preset not found" });
     }
   } catch (error) {
-    console.error('Error deleting preset:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error deleting preset:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-app.get('/leaderboard', async (req, res) => {
+app.get("/leaderboard", async (req, res) => {
   try {
     const leaderboardData = await client
-      .db('VibeWrist')
-      .collection('userStats')
+      .db("VibeWrist")
+      .collection("userStats")
       .find({}, { projection: { username: 1, timeStudied: 1, violations: 1 } }) //Empty filter means fetch all documents; Include username, timeStudied, and violations fields
       .sort({ timeStudied: -1, violations: -1 }) // Sort by timeStudied and violations in descending order
       .toArray();
@@ -244,33 +257,33 @@ app.get('/leaderboard', async (req, res) => {
 
     res.status(200).json(leaderboardData);
   } catch (error) {
-    console.error('Error fetching leaderboard data:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error fetching leaderboard data:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // Pulling user stats from db for account
-app.get('/getUserStats', async (req, res) => {
+app.get("/getUserStats", async (req, res) => {
   const username = req.query.username;
   const today = new Date();
   const startOfDay = new Date(
-    Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate())
+    Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()),
   );
   const startOfWeek = new Date(
     Date.UTC(
       today.getUTCFullYear(),
       today.getUTCMonth(),
-      today.getUTCDate() - today.getUTCDay()
-    )
+      today.getUTCDate() - today.getUTCDay(),
+    ),
   );
 
   try {
     await client.connect();
-    const database = client.db('VibeWrist');
+    const database = client.db("VibeWrist");
 
     // Aggregate total violations for the user
     const violationSum = await database
-      .collection('studySessions')
+      .collection("studySessions")
       .aggregate([
         {
           $match: { username: username },
@@ -278,7 +291,7 @@ app.get('/getUserStats', async (req, res) => {
         {
           $group: {
             _id: null,
-            totalViolations: { $sum: '$violations' },
+            totalViolations: { $sum: "$violations" },
           },
         },
       ])
@@ -286,7 +299,7 @@ app.get('/getUserStats', async (req, res) => {
 
     // Aggregate durations for today
     const todayDuration = await database
-      .collection('studySessions')
+      .collection("studySessions")
       .aggregate([
         {
           $match: {
@@ -299,7 +312,7 @@ app.get('/getUserStats', async (req, res) => {
         {
           $group: {
             _id: null,
-            totalDuration: { $sum: '$duration' },
+            totalDuration: { $sum: "$duration" },
           },
         },
       ])
@@ -307,7 +320,7 @@ app.get('/getUserStats', async (req, res) => {
 
     // Aggregate durations for the current week
     const weekDuration = await database
-      .collection('studySessions')
+      .collection("studySessions")
       .aggregate([
         {
           $match: {
@@ -320,14 +333,14 @@ app.get('/getUserStats', async (req, res) => {
         {
           $group: {
             _id: null,
-            totalDuration: { $sum: '$duration' },
+            totalDuration: { $sum: "$duration" },
           },
         },
       ])
       .toArray();
 
     const allTimeSum = await database
-      .collection('studySessions')
+      .collection("studySessions")
       .aggregate([
         {
           $match: { username: username },
@@ -335,7 +348,7 @@ app.get('/getUserStats', async (req, res) => {
         {
           $group: {
             _id: null,
-            totalDuration: { $sum: '$duration' },
+            totalDuration: { $sum: "$duration" },
           },
         },
       ])
@@ -352,16 +365,16 @@ app.get('/getUserStats', async (req, res) => {
         ? allTimeSum[0].totalDuration
         : 0;
     await database
-      .collection('userStats')
+      .collection("userStats")
       .updateOne(
         { username: username },
         { $set: { timeStudied: allTime, violations: totalViolations } },
-        { upsert: true }
+        { upsert: true },
       );
 
     // Fetch updated stats including the newly calculated total violations and durations
     const stats = await database
-      .collection('userStats')
+      .collection("userStats")
       .findOne({ username: username });
     if (stats) {
       stats.todayDuration = todayDuration[0]
@@ -371,53 +384,53 @@ app.get('/getUserStats', async (req, res) => {
       res.status(200).json(stats);
       console.log(stats);
     } else {
-      res.status(404).send('User not found');
+      res.status(404).send("User not found");
     }
   } catch (error) {
-    console.error('Error fetching user stats in server:', error);
-    res.status(500).send('Error fetching user stats');
+    console.error("Error fetching user stats in server:", error);
+    res.status(500).send("Error fetching user stats");
   } finally {
     //await client.close();
   }
 });
 
-app.get('/pullUserStats', async (req, res) => {
+app.get("/pullUserStats", async (req, res) => {
   const { username } = req.query;
 
   try {
     //await client.connect();
-    const database = client.db('VibeWrist');
+    const database = client.db("VibeWrist");
     const userStats = await database
-      .collection('userStats')
+      .collection("userStats")
       .findOne({ username: username });
 
     if (userStats) {
       const { timeStudied, currentGoal, violations } = userStats;
       res.status(200).json({ timeStudied, currentGoal, violations });
     } else {
-      res.status(404).send('User stats not found');
+      res.status(404).send("User stats not found");
     }
   } catch (error) {
-    console.error('Error fetching user stats:', error);
-    res.status(500).send('Error fetching user stats');
+    console.error("Error fetching user stats:", error);
+    res.status(500).send("Error fetching user stats");
   } finally {
     //await client.close();
   }
 });
 
 // Get the rest of the user data from database on login
-app.get('/getUserSettings', async (req, res) => {
+app.get("/getUserSettings", async (req, res) => {
   const username = req.query.username; // Obtain the username from the query parameters
 
   if (!username) {
-    return res.status(400).send('Username is required');
+    return res.status(400).send("Username is required");
   }
 
   try {
     await client.connect(); // Ensure the database connection is open
-    const database = client.db('VibeWrist');
+    const database = client.db("VibeWrist");
     const userSettings = await database
-      .collection('userSettings')
+      .collection("userSettings")
       .findOne({ username: username });
 
     if (userSettings) {
@@ -429,36 +442,36 @@ app.get('/getUserSettings', async (req, res) => {
       };
       res.status(200).json(settingsResponse);
     } else {
-      res.status(404).send('User settings not found');
+      res.status(404).send("User settings not found");
     }
   } catch (error) {
-    console.error('Error fetching user settings:', error);
-    res.status(500).send('Error fetching user settings');
+    console.error("Error fetching user settings:", error);
+    res.status(500).send("Error fetching user settings");
   }
 });
 
-app.post('/updateGoal', async (req, res) => {
+app.post("/updateGoal", async (req, res) => {
   const { username, newGoal } = req.body;
 
   try {
-    const database = client.db('VibeWrist');
-    const userStats = database.collection('userStats');
+    const database = client.db("VibeWrist");
+    const userStats = database.collection("userStats");
 
     const result = await userStats.updateOne(
       { username: username },
-      { $set: { currentGoal: newGoal } }
+      { $set: { currentGoal: newGoal } },
     );
 
     if (result.modifiedCount === 1) {
-      res.status(200).send('Goal updated successfully');
+      res.status(200).send("Goal updated successfully");
     } else if (result.matchedCount === 0) {
-      res.status(404).send('User not found');
+      res.status(404).send("User not found");
     } else {
-      res.status(304).send('No changes made');
+      res.status(304).send("No changes made");
     }
   } catch (error) {
-    console.error('Error updating goal:', error);
-    res.status(500).send('Internal server error');
+    console.error("Error updating goal:", error);
+    res.status(500).send("Internal server error");
   }
 });
 
